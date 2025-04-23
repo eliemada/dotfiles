@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+DB="{{ .keepassdb }}"
+
+# Create a temporary environment variable to store the password
+# This avoids having to enter it multiple times
+read -s -p "Enter KeePassXC password (will not be echoed): " KEEPASS_PASSWORD
+echo
+
+# Helper function using the stored password
+dump_key() {
+    ENTRY="$1"
+    FILENAME="$2"
+    echo "Dumping key for $ENTRY → ~/.ssh/$FILENAME"
+    echo "$KEEPASS_PASSWORD" | keepassxc-cli show -q -s "$DB" "$ENTRY" --attributes SSHPrivateKey > "$HOME/.ssh/$FILENAME"
+    chmod 600 "$HOME/.ssh/$FILENAME"
+    
+    # Check if public key exists before trying to extract it
+    if echo "$KEEPASS_PASSWORD" | keepassxc-cli show -q -s "$DB" "$ENTRY" --attributes SSHPublicKey &> /dev/null; then
+        echo "$KEEPASS_PASSWORD" | keepassxc-cli show -q -s "$DB" "$ENTRY" --attributes SSHPublicKey > "$HOME/.ssh/$FILENAME.pub"
+        chmod 644 "$HOME/.ssh/$FILENAME.pub"
+    fi
+}
+
+mkdir -p "$HOME/.ssh"
+dump_key "config/ssh/github.com" "id_ed25519_github"
+dump_key "config/ssh/gitlab.epfl.ch" "id_ed25519_gitlab_epfl"
+
+# Clear the password from memory
+unset KEEPASS_PASSWORD
+echo "SSH key restoration done."

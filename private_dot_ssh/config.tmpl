@@ -1,0 +1,11 @@
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile {{ (keepassxc "config/ssh/github.com").SSHKeyPath }}
+    IdentitiesOnly yes
+
+Host gitlab.epfl.ch
+    HostName gitlab.epfl.ch
+    User git
+    IdentityFile {{ (keepassxc "config/ssh/gitlab.epfl.ch").SSHKeyPath }}
+    IdentitiesOnly yes

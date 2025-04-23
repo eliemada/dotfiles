@@ -1,0 +1,93 @@
+import builtins
+import os
+import os.path
+import sys
+import readline
+
+print("Configuring .pythonrc")
+python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+
+# Colorize the >>> and ... PS1 of the REPL
+sys.ps1 = "\001\033[96m\002>>> \001\033[0m\002"
+sys.ps2 = "\001\033[96m\002... \001\033[0m\002"
+
+
+# Enter venv if present
+def enter_venv() -> None:
+    if "VIRTUAL_ENV" not in os.environ:
+        return
+
+    try:
+        should_add_venv = int(os.getenv("PYTHONRC_ENTER_VENV", "1"))
+    except TypeError:
+        print("PYTHONRC_ENTER_VENV must be 1 or 0")
+        return
+
+    if not should_add_venv:
+        return
+
+    venv = os.environ["VIRTUAL_ENV"]
+
+    paths = [
+        os.path.join(venv, "lib", python_version, "site-packages"),
+        os.path.join(venv, "lib64", python_version, "site-packages"),
+    ]
+    for p in paths:
+        if p not in sys.path:
+            sys.path.append(p)
+
+
+enter_venv()
+
+
+# If rich is present, use it to improve stuff
+try:
+    import rich
+    from rich.traceback import install
+
+    install(show_locals=False)
+    builtins.help = rich.inspect
+    del install
+except ModuleNotFoundError:
+    print("Rich is not present")
+
+
+try:
+    import rlcompleter
+
+    del rlcompleter
+except ImportError:
+    pass
+else:
+    if sys.platform == "darwin":
+        # Work around a bug in Mac OS X's readline module.
+        readline.parse_and_bind("bind ^I rl_complete")
+    else:
+        readline.parse_and_bind("tab: complete")
+
+
+# use this function to customize how stuff is displayed in REPL
+def displayhook(value):
+    if value is None:
+        return
+    # Set '_' to None to avoid recursion
+    builtins._ = None
+    text = repr(value)
+    try:
+        sys.stdout.write(text)
+    except UnicodeEncodeError:
+        bytes = text.encode(sys.stdout.encoding, "backslashreplace")
+        if hasattr(sys.stdout, "buffer"):
+            sys.stdout.buffer.write(bytes)
+        else:
+            text = bytes.decode(sys.stdout.encoding, "strict")
+            sys.stdout.write(text)
+    sys.stdout.write("\n")
+    builtins._ = value
+
+
+sys.displayhook = displayhook
+
+del os
+del readline
+del enter_venv

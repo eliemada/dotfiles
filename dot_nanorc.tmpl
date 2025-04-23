@@ -1,0 +1,53 @@
+# ~/.nanorc - with Nord color palette
+# =============================================================================
+# Configures default options for text editor Nano.
+
+# Indent new lines to the previous line's indentation.
+set autoindent
+# Backup files to `filename` + `~`.
+set backup
+# Constantly show the cursor position in the status bar.
+set constantshow
+# Log search and replace strings to `~/.nano_history`.
+set historylog
+# Show line numbers in front of the text.
+set linenumbers
+# Enable mouse support, if available for your system.
+set mouse
+# Keep original end-of-line formatting.
+set noconvert
+# Preserve the XON `^Q` and XOFF `^S` keys for the terminal.
+set preserve
+# Make the Home key smarter.
+set smarthome
+# Enable smooth scrolling.
+# set smooth
+# Allow nano to be suspended with `^Z`.
+# set suspend
+# Use this tab size (greater than 0) instead of the default (8).
+set tabsize 4
+# Convert typed tabs to spaces.
+set tabstospaces
+# Detect word boundaries more accurately.
+set wordbounds
+# Let `Backspace` and `Delete` keys erase a marked region.
+set zap
+
+
+# Change interface colors using the Nord palette
+set errorcolor brightwhite,red        # Keep error visible
+set functioncolor cyan                # For function keys – Nord teal
+set keycolor brightblue               # Keys – Nord blue
+set numbercolor brightblue            # Line numbers – Nord blue
+set selectedcolor brightwhite,magenta # Selected text – placeholder magenta (no Nord equivalent)
+set statuscolor brightcyan            # Status bar – Nord teal
+set stripecolor black,brightyellow    # Stripe – Nord yellow
+set titlecolor brightwhite,blue       # Title – Nord dark_blue
+
+# For true terminal color fidelity, consider using 24-bit RGB escape sequences
+# when your terminal supports it and nano is compiled with --enable-nanorc.
+
+# Include syntax highlighting files if directory exists
+# include "/usr/share/nano/*.nanorc"
+# Only include personal configs if directory exists
+# include "~/.nano/*.nanorc"

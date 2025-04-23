@@ -1,0 +1,29 @@
+[user]
+	name = Elie Bruno
+	email = "contact@eliebruno.com"
+
+[includeIf "hasconfig:remote.*.url:https://github.com/**"]
+	path = ~/.gitconfig-github
+
+[includeIf "hasconfig:remote.*.url:https://**gitlab**/**"]
+	path = ~/.gitconfig-gitlab
+
+[includeIf "hasconfig:remote.*.url:git@**gitlab**:*/**"]
+    path = ~/.gitconfig-gitlab
+
+[includeIf "hasconfig:remote.*.url:git@github.com:*/**"]
+	path = ~/.gitconfig-github
+
+[core]
+	editor = "nano"
+	excludesfile = ~/.gitignore_global
+	autocrlf = input
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = false
+
+[color]
+	ui = auto

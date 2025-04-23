@@ -1,0 +1,67 @@
+for file in $(find ~/.shrc.d -name '*.sh.pre' -type f) ; do 
+  source "$file" ;
+done
+
+# PYENV
+if [[ -d "$PYENV_ROOT" ]] ; then
+    prepend_path "$PYENV_ROOT"/bin
+    eval "$(pyenv init -)"
+fi
+
+# NVM
+if [[ -d "$NVM_DIR" ]] ; then
+    . "$NVM_DIR/nvm.sh"
+    if [[ -f "$HOME/.nvmrc" ]] ; then nvm use > /dev/null ; fi 
+fi
+
+for file in $(find ~/.shrc.d -name '*.sh' -type f) ; do 
+  source "$file" ;
+done
+
+for file in $(find ~/.shrc.d -name '*.bash' -type f) ; do 
+  source "$file" ;
+done
+
+if command -v starship >/dev/null 2>&1; then
+  export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
+    eval "$(starship init bash)"
+else
+    echo "Starship not found"
+fi
+
+# Oh My Posh must be enabled after oh-my-zsh to ensure correct working
+# if command oh-my-posh > /dev/null 2>&1 ; then
+#     eval "$(oh-my-posh init zsh --config ~/.config/omp/config.toml)"
+# else
+#     echo "oh-my-posh not found"
+#     # PS1
+#     GIT_PS1_SHOWDIRTYSTATE=1
+#     GIT_PS1_SHOWSTASHSTATE=1
+#     GIT_PS1_SHOWUNTRACKEDFILES=1
+#     GIT_PS1_SHOWUPSTREAM="verbose"
+#     GIT_PS1_SHOWCONFLICTSTATE="yes"
+#     GIT_PS1_SHOWCOLORHINTS=true
+
+#     PROMPT_COMMAND='PS1="\[\033[35m\]\t\[\033[m\] - \[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]`__git_ps1 " [%s]"`\n\`if [[ \$? = "0" ]]; then echo "\\[\\033[32m\\]"; else echo "\\[\\033[31m\\]"; fi\`\$ \[\033[m\]"'
+# fi
+
+
+# Includes
+# -----------------------------------------------------------------------------
+
+# Load functions declarations from separate configuration file.
+if [ -f "$HOME"/.bash_functions ]; then
+    \. "$HOME"/.bash_functions
+fi
+
+# Load alias definitions from separate configuration file.
+if [ -f "$HOME"/.bash_aliases ]; then
+    \. "$HOME"/.bash_aliases
+fi
+
+# Load custom code from separate configuration file.
+if [ -f "$HOME"/.bash_extras ]; then
+    \. "$HOME"/.bash_extras
+fi
+
+export PYTHONSTARTUP="$HOME/.pythonrc"

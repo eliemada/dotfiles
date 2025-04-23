@@ -1,0 +1,20 @@
+# ~/.chezmoi.toml.tmpl
+# Configuration file for chezmoi
+
+[data]
+    name = "{{ promptString "name" }}"
+    email = "{{ promptString "email" }}"
+    keepassdb = "/Users/eliebruno/Dropbox/PW.kdbx"
+[diff]
+    pager = "delta"
+
+[merge]
+    command = "vimdiff"
+
+[data.macos]
+    # Set to true to enable macOS specific configs
+    enabled = {{ eq .chezmoi.os "darwin" }}
+
+[keepassxc]
+    args = ["--all"]
+    database = "/Users/eliebruno/Dropbox/PW.kdbx"
