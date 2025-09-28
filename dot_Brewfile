@@ -114,9 +114,8 @@ brew "colordiff"                            # Colour-highlighted diff output
 # GUI APPLICATIONS - BROWSERS
 ################################################################################
 
-cask "librewolf"                            # Privacy-focused Firefox fork
+cask "librewolf"                            # Privacy-focused Firefox fork, remove quarantine after https://librewolf.net/docs/faq/#why-is-librewolf-marked-as-broken
 cask "brave-browser"                        # Privacy-focused Chromium browser
-cask "firefox"                              # Mozilla Firefox browser
 cask "firefox"                              # Mozilla Firefox browser
 cask "brave-browser"                        # Privacy-focused Chromium browser
 
