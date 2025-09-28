@@ -1,6 +1,6 @@
 [user]
-	name = Elie Bruno
-	email = "contact@eliebruno.com"
+	name = {{ .name | quote }}
+	email = {{ .email | quote }}
 
 [includeIf "hasconfig:remote.*.url:https://github.com/**"]
 	path = ~/.gitconfig-github

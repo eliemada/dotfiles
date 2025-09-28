@@ -1,22 +1,15 @@
-for file in $(find ~/.shrc.d -name '*.sh.pre' -type f) ; do 
+# Source shared shell configuration
+for file in $(find ~/.shrc.d -name '*.sh.pre' -type f) ; do
   source "$file" ;
 done
 
-
-for file in $(find ~/.shrc.d -name '*.sh' -type f) ; do 
+for file in $(find ~/.shrc.d -name '*.sh' -type f) ; do
   source "$file" ;
 done
 
-for file in $(find ~/.shrc.d -name '*.bash' -type f) ; do 
+for file in $(find ~/.shrc.d -name '*.bash' -type f) ; do
   source "$file" ;
 done
-
-if command -v starship >/dev/null 2>&1; then
-  export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
-    eval "$(starship init bash)"
-else
-    echo "Starship not found"
-fi
 
 # Includes
 # -----------------------------------------------------------------------------
@@ -36,4 +29,3 @@ if [ -f "$HOME"/.bash_extras ]; then
     \. "$HOME"/.bash_extras
 fi
 
-export PYTHONSTARTUP="$HOME/.pythonrc"

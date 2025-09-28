@@ -1,0 +1,32 @@
+# ~/.ripgreprc
+# Configuration file for ripgrep
+
+# Don't let ripgrep vomit really long lines to the terminal
+--max-columns=150
+
+# Add my custom type definitions
+--type-add=web:*.{html,css,js}*
+--type-add=config:*.{yaml,yml,toml,json,ini,conf,config}*
+
+# Search case insensitively if the pattern is all lowercase
+--smart-case
+
+# Show line numbers
+--line-number
+
+# Show colors
+--color=always
+
+# Follow symbolic links
+--follow
+
+# Don't search in these directories
+--glob=!.git/*
+--glob=!node_modules/*
+--glob=!.venv/*
+--glob=!__pycache__/*
+--glob=!*.pyc
+--glob=!build/*
+--glob=!dist/*
+--glob=!target/*
+--glob=!.DS_Store

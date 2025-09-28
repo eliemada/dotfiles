@@ -154,7 +154,7 @@ cask "little-snitch"                        # Network monitor
 # HARDWARE & SECURITY TOOLS
 ################################################################################
 
-brew "proxmark3"                            # RFID research toolkit
+brew "rfidresearchgroup/proxmark3/proxmark3"                            # RFID research toolkit
 
 ################################################################################
 # GUI APPLICATIONS - NETWORKING & SECURITY
