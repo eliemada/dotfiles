@@ -1,5 +1,7 @@
+################################################################################
 # ~/.ripgreprc
-# Configuration file for ripgrep
+# Configuration for ripgrep
+################################################################################
 
 # Don't let ripgrep vomit really long lines to the terminal
 --max-columns=150

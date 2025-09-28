@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+################################################################################
+# run_onchange_brew_bundle.sh.tmpl
+# Keep Homebrew apps in sync with ~/.Brewfile when it changes
+################################################################################
 set -euo pipefail
 
 # Only run on macOS
@@ -30,4 +34,3 @@ if [ -f "$HOME/.Brewfile" ]; then
 else
   echo "Warning: ~/.Brewfile not found; nothing to bundle."
 fi
-

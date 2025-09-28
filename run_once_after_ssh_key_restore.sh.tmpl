@@ -1,4 +1,8 @@
 #!/bin/bash
+################################################################################
+# run_once_after_ssh_key_restore.sh.tmpl
+# Restore SSH keys from KeePassXC entries (run once by chezmoi)
+################################################################################
 set -euo pipefail
 DB="{{ .keepassdb }}"
 

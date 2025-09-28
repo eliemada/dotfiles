@@ -1,8 +1,9 @@
 #!/bin/bash
-
-# Configuration script for macOS
-# This will be run once by chezmoi when setting up a new machine
+################################################################################
+# run_once_configure-macos.sh
+# Configure sensible defaults on macOS (run once by chezmoi)
 # Adapted from https://mths.be/macos
+################################################################################
 
 # Close any open System Preferences panes to prevent them from overriding settings
 osascript -e 'tell application "System Preferences" to quit'

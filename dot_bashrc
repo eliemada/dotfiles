@@ -1,3 +1,8 @@
+################################################################################
+# ~/.bashrc
+# Bash startup: source shared snippets and includes
+################################################################################
+
 # Source shared shell configuration
 for file in $(find ~/.shrc.d -name '*.sh.pre' -type f) ; do
   source "$file" ;
@@ -11,8 +16,9 @@ for file in $(find ~/.shrc.d -name '*.bash' -type f) ; do
   source "$file" ;
 done
 
+################################################################################
 # Includes
-# -----------------------------------------------------------------------------
+################################################################################
 
 # Load functions declarations from separate configuration file.
 if [ -f "$HOME"/.bash_functions ]; then
@@ -28,4 +34,3 @@ fi
 if [ -f "$HOME"/.bash_extras ]; then
     \. "$HOME"/.bash_extras
 fi
-

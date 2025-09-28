@@ -1,12 +1,18 @@
 #!/bin/bash
+################################################################################
 # ~/.shrc.d/00-common.sh
 # Common shell configuration shared between bash and zsh
+################################################################################
 
-# Export common environment variables
+################################################################################
+# Environment variables
+################################################################################
 export PYTHONSTARTUP="$HOME/.pythonrc"
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
+################################################################################
 # Modern CLI tools integration
+################################################################################
 if command -v zoxide > /dev/null 2>&1; then
   if [ -n "$ZSH_VERSION" ]; then
     eval "$(zoxide init zsh)"
@@ -30,7 +36,9 @@ if command -v eza > /dev/null 2>&1; then
   alias tree='eza --tree'
 fi
 
+################################################################################
 # Starship prompt initialization
+################################################################################
 if command -v starship > /dev/null 2>&1; then
   export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
   if [ -n "$ZSH_VERSION" ]; then

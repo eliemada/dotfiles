@@ -1,9 +1,16 @@
+################################################################################
+# ~/.ssh/config (template)
+# Per-host SSH configuration with keys from KeePassXC
+################################################################################
 Host github.com
     HostName github.com
     User git
     IdentityFile {{ (keepassxc "config/ssh/github.com").SSHKeyPath }}
     IdentitiesOnly yes
 
+################################################################################
+# GitLab EPFL
+################################################################################
 Host gitlab.epfl.ch
     HostName gitlab.epfl.ch
     User git

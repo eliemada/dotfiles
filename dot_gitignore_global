@@ -1,5 +1,7 @@
+################################################################################
 # ~/.gitignore_global
-# Global gitignore file for common files to ignore across all projects
+# Global ignores across all Git repositories
+################################################################################
 
 # macOS
 .DS_Store

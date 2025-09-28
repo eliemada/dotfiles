@@ -1,3 +1,7 @@
+################################################################################
+# ~/.zshrc
+# Zsh configuration and Oh My Zsh setup
+################################################################################
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -97,10 +101,9 @@ plugins+=(zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
 
-
-
+################################################################################
 # Includes
-# -----------------------------------------------------------------------------
+################################################################################
 
 # Load cross-compatible Bash functions declarations from separate file.
 if [ -f "$HOME"/.bash_functions ]; then
@@ -121,4 +124,3 @@ fi
 for file in $(find ~/.shrc.d -name '*.sh' -type f) ; do
   source "$file"
 done
-

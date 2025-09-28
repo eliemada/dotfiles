@@ -160,9 +160,9 @@ brew "rfidresearchgroup/proxmark3/proxmark3"                            # RFID r
 # GUI APPLICATIONS - NETWORKING & SECURITY
 ################################################################################
 
-cask "syncthing"                            # File synchronization
+cask "syncthing-app"                            # File synchronization
 cask "protonvpn"                            # VPN client
-cask "tailscale"                            # Mesh VPN
+cask "tailscale-app"                            # Mesh VPN
 
 ################################################################################
 # GUI APPLICATIONS - DEVELOPMENT & CONTAINERS

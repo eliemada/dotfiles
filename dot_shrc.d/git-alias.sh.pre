@@ -1,3 +1,8 @@
+################################################################################
+# ~/.shrc.d/git-alias.sh.pre
+# Git alias shortcuts (sourced early)
+################################################################################
+
 alias egrep='egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
 alias fgrep='fgrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
 alias g=git
