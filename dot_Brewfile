@@ -6,83 +6,178 @@
 #
 # See https://github.com/Homebrew/homebrew-bundle
 
+################################################################################
+# HOMEBREW TAPS
+################################################################################
+
 tap "buo/cask-upgrade"
 tap "eugenmayer/dockersync"
 tap "heroku/brew"
 tap "homebrew/services"
+tap "RfidResearchGroup/proxmark3"
 
-# brew "adminer"                              # Database management in PHP
-brew "asdf"                                 # Extendable version manager
-brew "autoconf"                             # Configuration shell script maker
+################################################################################
+# SHELL & DEVELOPMENT ENVIRONMENT
+################################################################################
+
 brew "bash"                                 # Bourne again shell
 brew "bash-completion"                      # Autocompletions for `bash`
-brew "colordiff"                            # Colour-highlighted diff output
+brew "asdf"                                 # Extendable version manager
 brew "direnv"                               # Directory specific env variables
-# brew "flake8"                               # Python style guide enforcer
-brew "fswatch"                              # File change monitor
+brew "autoconf"                             # Configuration shell script maker
 
-brew "gnupg"                                # GNU privacy guard
+################################################################################
+# MODERN CLI TOOLS
+################################################################################
+
+brew "starship"                             # Cross-shell prompt
+brew "atuin"                                # Shell history reimagined
+brew "zoxide"                               # A smarter cd command
+brew "eza"                                  # A modern replacement for 'ls'
+brew "dust"                                 # A more intuitive version of du in rust
+brew "fzf"                                  # Command-line fuzzy finder
+brew "carapace-bin"                         # Multi-shell command-line completion framework
+brew "ripgrep"                              # Recursive regex search tool
+
+################################################################################
+# SYSTEM UTILITIES
+################################################################################
+
 brew "htop"                                 # Interactive system-monitor
-#brew "graphicsmagick"                      # GraphicsMagick image processor
-#brew "imagemagick"                         # ImageMagick image processor
-brew "jpegoptim"                            # JPEG compressor/optimizer
+brew "neofetch"                             # System information tool
+brew "screenfetch"                          # Screenshot information tool
+brew "fswatch"                              # File change monitor
+brew "gnupg"                                # GNU privacy guard
+
+################################################################################
+# TERMINAL & SESSION MANAGEMENT
+################################################################################
+
+brew "tmux"                                 # Terminal multiplexer
+brew "tmuxinator"                           # Tmux session controller
 brew "less"                                 # Terminal pager
 brew "lesspipe"                             # Input filter for `less`
-# brew "mariadb"                              # MariaDB RDBMS
+
+################################################################################
+# TEXT EDITORS
+################################################################################
+
 brew "micro"                                # Micro text editor
 brew "nano"                                 # Nano text editor
+
+################################################################################
+# NETWORKING & FILE TRANSFER
+################################################################################
+
+brew "wget"                                 # Web content downloader
+brew "rsync"                                # File transfer and sync tool
+brew "unison"                               # Unison file synchronizer
+brew "telnet"                               # Virtual terminal client
+
+################################################################################
+# DEVELOPMENT TOOLS
+################################################################################
+
+brew "gh"                                   # GitHub CLI
 brew "npm"                                  # Node package manager
+brew "uv"                                   # UV - A python manager
+
+################################################################################
+# IMAGE & VIDEO OPTIMIZATION
+################################################################################
+
+brew "jpegoptim"                            # JPEG compressor/optimizer
 brew "optipng"                              # PNG compressor/optimizer
 brew "tidy-html5"                           # HTML corrector
-brew "neofetch"                             # System information tool
-# brew "php-code-sniffer"                     # PHP coding standard validator
-# brew "phplint"                              # PHP code quality checker
-# brew "phpmd"                                # PHP mess detector
-# brew "phpunit"                              # PHP unit testig framework
-# brew "pipenv"                               # Python packaging tool
+
+################################################################################
+# DATABASES
+################################################################################
+
 brew "postgresql", restart_service: true    # PostgreSQL RDBMS
-brew "pyenv"                                # Python version manager
-brew "pyenv-virtualenv"                     # virtualenv and conda manager
-brew "ruby-build"                           # Ruby version managger
-brew "rbenv"                                # Ruby environment manager
-brew "ripgrep"                              # Recursive Regex search tool
-brew "rsync"                                # File transfer and sync tool
-brew "screenfetch"                          # Screenshot information tool
-brew "starship"                             # starship cross-shell prompt
-brew "telnet"                               # Virtual terminal client
-brew "tmux"                                 # Tmux
-brew "tmuxinator"                           # Tmux session controller
-# brew "travis"                               # Travis CI client
-brew "unison"                               # Unison file synchronizer
-brew "wget"                                 # Web content downloader
+brew "mariadb"                              # MariaDB RDBMS
+
+################################################################################
+# CONTAINERIZATION
+################################################################################
+
+brew "podman"                               # Container management
+
+################################################################################
+# SYSTEM LIBRARIES
+################################################################################
+
 brew "zlib"                                 # Lossless data-compression library
-# brew "eugenmayer/dockersync/unox"           # Docker sync daemon
-# brew "heroku/brew/heroku"                   # Heroku CLI
+brew "colordiff"                            # Colour-highlighted diff output
 
+################################################################################
+# GUI APPLICATIONS - BROWSERS
+################################################################################
 
-cask "librewolf"
-cask "firefox"
-cask "brave-browser"
-cask "keepassxc"
-cask "appcleaner"
-cask "whatsapp"
-cask "visual-studio-code"
-cask "pycharm"
-cask "keka"
-cask "iina"
-cask "syncthing"
-cask "protonvpn"
-cask "iterm2"
-cask "docker"
-cask "tailscale"
-cask "slack"
+cask "librewolf"                            # Privacy-focused Firefox fork
+cask "firefox"                              # Mozilla Firefox browser
+cask "brave-browser"                        # Privacy-focused Chromium browser
 
+################################################################################
+# GUI APPLICATIONS - DEVELOPMENT
+################################################################################
 
+cask "visual-studio-code"                   # Code editor
+cask "pycharm"                              # Python IDE
+cask "ghostty"                              # Terminal emulator
 
-cask "android-platform-tools"               # Android SDK platform-tools
-cask "font-dejavu-sans-mono-nerd-font"   # DejaVu Sans Mono Nerd Font
-cask "font-fira-code-nerd-font"              # Fira Code Nerd Font
-cask "font-hack-nerd-font"             # Hack Mono Nerd Font
-cask "font-meslo-lg-nerd-font"            # Meslo Mono Nerd Font
-cask "font-sauce-code-pro-nerd-font"    # Source Code Pro Mono Nerd Font
-# cask "powershell"                           # Cross-platform shell
+################################################################################
+# GUI APPLICATIONS - PRODUCTIVITY
+################################################################################
+
+cask "keepassxc"                            # Password manager
+cask "notion"                               # Note-taking and productivity
+cask "obsidian"                             # Knowledge management
+
+################################################################################
+# GUI APPLICATIONS - COMMUNICATION
+################################################################################
+
+cask "whatsapp"                             # WhatsApp desktop
+cask "slack"                                # Team communication
+
+################################################################################
+# GUI APPLICATIONS - UTILITIES
+################################################################################
+
+cask "appcleaner"                           # Application uninstaller
+cask "keka"                                 # Archive utility
+cask "iina"                                 # Media player
+cask "little-snitch"                        # Network monitor
+
+################################################################################
+# HARDWARE & SECURITY TOOLS
+################################################################################
+
+brew "proxmark3"                            # RFID research toolkit
+
+################################################################################
+# GUI APPLICATIONS - NETWORKING & SECURITY
+################################################################################
+
+cask "syncthing"                            # File synchronization
+cask "protonvpn"                            # VPN client
+cask "tailscale"                            # Mesh VPN
+
+################################################################################
+# GUI APPLICATIONS - DEVELOPMENT & CONTAINERS
+################################################################################
+
+cask "docker"                               # Container platform
+
+################################################################################
+# DEVELOPMENT TOOLS - MOBILE
+################################################################################
+
+cask "android-platform-tools"              # Android SDK platform-tools
+
+################################################################################
+# FONTS
+################################################################################
+
+cask "font-jetbrains-mono-nerd-font"       # JetBrains Mono Nerd Font

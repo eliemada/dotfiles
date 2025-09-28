@@ -94,19 +94,6 @@ add_plugin pip
 add_plugin npm
 
 
-# PYENV
-if [[ -d "$PYENV_ROOT" ]] ; then
-    prepend_path "$PYENV_ROOT"/bin
-    plugins+=(pyenv) 
-    eval "$(pyenv init -)"
-fi
-
-# NVM
-if [[ -d "$NVM_DIR" ]] ; then
-    . "$NVM_DIR/nvm.sh"
-    plugins+=(nvm)
-    if [[ -f "$HOME/.nvmrc" ]] ; then nvm use > /dev/null ; fi 
-fi
 
 # Note that zsh-syntax-highlighting must be the last plugin sourced.
 plugins+=(zsh-syntax-highlighting)
@@ -114,16 +101,6 @@ plugins+=(zsh-syntax-highlighting)
 # Enable Oh My Zsh after selecting all the plugins
 source $ZSH/oh-my-zsh.sh
 
-# Oh My Posh must be enabled after oh-my-zsh to ensure correct working
-# if command oh-my-posh > /dev/null 2>&1 ; then
-#     eval "$(oh-my-posh init zsh --config ~/.config/omp/config.toml)"
-# else
-#     echo "oh-my-posh not found"
-# fi
-
-# for file in $(find ~/.shrc.d -name '*.sh' -type f) ; do 
-#   source "$file" ;
-# done
 
 # Usung Starship as a prompt
 if command -v starship > /dev/null 2>&1; then
@@ -133,11 +110,6 @@ else
   echo "starship not found, see https://starship.rs"
 fi
 
-
-# Enable Python version management.
-if command -v pyenv > /dev/null; then
-    eval "$(pyenv init -)"
-fi
 
 # Point ripgrep to its configuration file.
 # See https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
