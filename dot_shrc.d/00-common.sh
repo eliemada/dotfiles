@@ -23,9 +23,9 @@ fi
 
 if command -v atuin > /dev/null 2>&1; then
   if [ -n "$ZSH_VERSION" ]; then
-    eval "$(atuin init zsh)"
+    eval "$(atuin init zsh --disable-up-arrow)"
   elif [ -n "$BASH_VERSION" ]; then
-    eval "$(atuin init bash)"
+    eval "$(atuin init bash --disable-up-arrow)"
   fi
 fi
 

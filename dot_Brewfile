@@ -36,7 +36,7 @@ brew "zoxide"                               # A smarter cd command
 brew "eza"                                  # A modern replacement for 'ls'
 brew "dust"                                 # A more intuitive version of du in rust
 brew "fzf"                                  # Command-line fuzzy finder
-brew "carapace-bin"                         # Multi-shell command-line completion framework
+brew "carapace"                         # Multi-shell command-line completion framework
 brew "ripgrep"                              # Recursive regex search tool
 
 ################################################################################
@@ -115,6 +115,8 @@ brew "colordiff"                            # Colour-highlighted diff output
 ################################################################################
 
 cask "librewolf"                            # Privacy-focused Firefox fork
+cask "brave-browser"                        # Privacy-focused Chromium browser
+cask "firefox"                              # Mozilla Firefox browser
 cask "firefox"                              # Mozilla Firefox browser
 cask "brave-browser"                        # Privacy-focused Chromium browser
 
@@ -168,7 +170,7 @@ cask "tailscale-app"                            # Mesh VPN
 # GUI APPLICATIONS - DEVELOPMENT & CONTAINERS
 ################################################################################
 
-cask "docker"                               # Container platform
+cask "docker-desktop"                               # Container platform
 
 ################################################################################
 # DEVELOPMENT TOOLS - MOBILE
