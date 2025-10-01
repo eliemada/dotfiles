@@ -38,7 +38,7 @@ brew "dust"                                 # A more intuitive version of du in 
 brew "fzf"                                  # Command-line fuzzy finder
 brew "carapace"                         # Multi-shell command-line completion framework
 brew "ripgrep"                              # Recursive regex search tool
-
+brew "nicotine-plus"                       # Soulseek client
 ################################################################################
 # SYSTEM UTILITIES
 ################################################################################
@@ -124,8 +124,10 @@ cask "brave-browser"                        # Privacy-focused Chromium browser
 ################################################################################
 
 cask "visual-studio-code"                   # Code editor
-cask "pycharm"                              # Python IDE
+cask "jetbrains-toolbox"                    # JetBrains IDE Toolbox
 cask "ghostty"                              # Terminal emulator
+cask "basictex"                             # Minimal TeX Live distribution
+cask "monitorcontrol"                       # Control external monitor brightness
 
 ################################################################################
 # GUI APPLICATIONS - PRODUCTIVITY
@@ -134,6 +136,8 @@ cask "ghostty"                              # Terminal emulator
 cask "keepassxc"                            # Password manager
 cask "notion"                               # Note-taking and productivity
 cask "obsidian"                             # Knowledge management
+cask "anki"                                 # Flashcard learning app
+cask "jordanbaird-ice"                      # Menu bar
 
 ################################################################################
 # GUI APPLICATIONS - COMMUNICATION
@@ -141,6 +145,9 @@ cask "obsidian"                             # Knowledge management
 
 cask "whatsapp"                             # WhatsApp desktop
 cask "slack"                                # Team communication
+cask "zoom"                                 # Video conferencing
+cask "telegram"                             # Telegram desktop
+cask "webcord"                              # Chat for communities and friends
 
 ################################################################################
 # GUI APPLICATIONS - UTILITIES
@@ -150,6 +157,13 @@ cask "appcleaner"                           # Application uninstaller
 cask "keka"                                 # Archive utility
 cask "iina"                                 # Media player
 cask "little-snitch"                        # Network monitor
+cask "anydesk"                              # Remote desktop
+cask "omnissa-horizon-client"               # VPN client for work
+cask "wireguard"                            # VPN client
+cask "wireshark"                            # Network protocol analyzer
+cask "logi-options-plus"                    # Logitech device manager
+cask "tailscale"                            # Mesh VPN
+
 
 ################################################################################
 # HARDWARE & SECURITY TOOLS
