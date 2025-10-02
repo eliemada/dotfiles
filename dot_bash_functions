@@ -151,19 +151,19 @@ function update() {
         fi
     fi
 
-    if command -v npm &> /dev/null; then
-        echo 'Updating Node.js packages with npm...'
-        which npm
-        npm update -g
-    fi
+    # if command -v npm &> /dev/null; then
+    #     echo 'Updating Node.js packages with npm...'
+    #     which npm
+    #     npm update -g
+    # fi
 
-    if command -v npm &> /dev/null; then
-        echo 'Updating Ruby gems...'
-        which gem
-        gem update --system
-        gem update
-        gem cleanup
-    fi
+    # if command -v npm &> /dev/null; then
+    #     echo 'Updating Ruby gems...'
+    #     which gem
+    #     gem update --system
+    #     gem update
+    #     gem cleanup
+    # fi
 }
 
 

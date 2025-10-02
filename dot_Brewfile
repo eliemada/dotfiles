@@ -13,7 +13,6 @@
 tap "buo/cask-upgrade"
 tap "eugenmayer/dockersync"
 tap "heroku/brew"
-tap "homebrew/services"
 tap "RfidResearchGroup/proxmark3"
 
 ################################################################################
@@ -147,7 +146,6 @@ cask "whatsapp"                             # WhatsApp desktop
 cask "slack"                                # Team communication
 cask "zoom"                                 # Video conferencing
 cask "telegram"                             # Telegram desktop
-cask "webcord"                              # Chat for communities and friends
 
 ################################################################################
 # GUI APPLICATIONS - UTILITIES
@@ -159,7 +157,6 @@ cask "iina"                                 # Media player
 cask "little-snitch"                        # Network monitor
 cask "anydesk"                              # Remote desktop
 cask "omnissa-horizon-client"               # VPN client for work
-cask "wireguard"                            # VPN client
 cask "wireshark"                            # Network protocol analyzer
 cask "logi-options-plus"                    # Logitech device manager
 cask "tailscale"                            # Mesh VPN
