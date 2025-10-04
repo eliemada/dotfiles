@@ -38,6 +38,12 @@ brew "fzf"                                  # Command-line fuzzy finder
 brew "carapace"                         # Multi-shell command-line completion framework
 brew "ripgrep"                              # Recursive regex search tool
 brew "nicotine-plus"                       # Soulseek client
+brew "dockutil"                           # Manage macOS Dock items
+brew "yt-dlp"                                 # YouTube video downloader
+brew "ffmpeg"                               # Audio and video processing
+brew "parallel"                              # Run jobs in parallel
+brew "pre-commit"                           # Framework for managing and maintaining multi-language pre-commit hooks
+
 ################################################################################
 # SYSTEM UTILITIES
 ################################################################################
@@ -146,6 +152,8 @@ cask "whatsapp"                             # WhatsApp desktop
 cask "slack"                                # Team communication
 cask "zoom"                                 # Video conferencing
 cask "telegram"                             # Telegram desktop
+cask "signal"                               # Signal desktop
+cask "spotify"                              # Music streaming
 
 ################################################################################
 # GUI APPLICATIONS - UTILITIES

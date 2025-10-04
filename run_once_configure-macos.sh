@@ -137,8 +137,8 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
 # Set a blazingly fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 1
-defaults write NSGlobalDomain InitialKeyRepeat -int 10
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
 # Set language and text formats
 # Note: set these to your region preferences
@@ -245,6 +245,9 @@ defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 
 # Keep folders on top when sorting by name
 defaults write com.apple.finder _FXSortFoldersFirst -bool true
+
+# Group items by name
+defaults write com.apple.finder FXPreferredGroupBy -string "Name"
 
 # When performing a search, search the current folder by default
 defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
@@ -439,6 +442,7 @@ defaults write com.apple.dock wvous-br-modifier -int 0
 
 # Add the keyboard shortcut ⌘ + Enter to send an email in Mail.app
 # defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\U21a9"
+defaults write -g com.apple.keyboard.fnState -bool true
 
 # Display emails in threaded mode, sorted by date (oldest at the top)
 # defaults write com.apple.mail DraftsViewerAttributes -dict-add "DisplayInThreadedMode" -string "yes"
