@@ -32,5 +32,20 @@ for target in "${targets[@]}"; do
 
 done
 
+# Add the Downloads folder to the Dock
+downloads_path="${HOME}/Downloads"
+if [[ -d "${downloads_path}" ]]; then
+  dockutil --remove "${downloads_path}" --no-restart >/dev/null 2>&1 || true
+  dockutil --add "${downloads_path}" \
+    --view grid \
+    --display folder \
+    --sort dateadded \
+    --section others \
+    --no-restart
+  echo "Added Downloads folder to the Dock."
+else
+  echo "Downloads folder not found at ${downloads_path}." >&2
+fi
+
 # Restart Dock once after all changes to avoid flicker.
 dockutil --restart || killall Dock
