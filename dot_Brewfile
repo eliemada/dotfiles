@@ -43,6 +43,8 @@ brew "yt-dlp"                                 # YouTube video downloader
 brew "ffmpeg"                               # Audio and video processing
 brew "parallel"                              # Run jobs in parallel
 brew "pre-commit"                           # Framework for managing and maintaining multi-language pre-commit hooks
+brew "git-lfs"                              # Git extension for versioning large files
+cask "typst"                             # Typst - a modern typesetting system
 
 ################################################################################
 # SYSTEM UTILITIES
