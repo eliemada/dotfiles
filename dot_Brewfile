@@ -44,7 +44,7 @@ brew "ffmpeg"                               # Audio and video processing
 brew "parallel"                              # Run jobs in parallel
 brew "pre-commit"                           # Framework for managing and maintaining multi-language pre-commit hooks
 brew "git-lfs"                              # Git extension for versioning large files
-cask "typst"                             # Typst - a modern typesetting system
+cask "typst"                             # Typst - a modern typesetting systemlt
 
 ################################################################################
 # SYSTEM UTILITIES
@@ -96,6 +96,7 @@ brew "uv"                                   # UV - A python manager
 brew "jpegoptim"                            # JPEG compressor/optimizer
 brew "optipng"                              # PNG compressor/optimizer
 brew "tidy-html5"                           # HTML corrector
+brew "latexindent"                           # LaTeX indent tool
 
 ################################################################################
 # DATABASES
@@ -156,6 +157,7 @@ cask "zoom"                                 # Video conferencing
 cask "telegram"                             # Telegram desktop
 cask "signal"                               # Signal desktop
 cask "spotify"                              # Music streaming
+cask "plex"                                # Media server
 
 ################################################################################
 # GUI APPLICATIONS - UTILITIES
