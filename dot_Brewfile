@@ -43,8 +43,8 @@ brew "yt-dlp"                                 # YouTube video downloader
 brew "ffmpeg"                               # Audio and video processing
 brew "parallel"                              # Run jobs in parallel
 brew "pre-commit"                           # Framework for managing and maintaining multi-language pre-commit hooks
+brew "prek"                                 # A modern replacement for 'pre-co'
 brew "git-lfs"                              # Git extension for versioning large files
-cask "typst"                             # Typst - a modern typesetting systemlt
 
 ################################################################################
 # SYSTEM UTILITIES
@@ -135,6 +135,7 @@ cask "visual-studio-code"                   # Code editor
 cask "jetbrains-toolbox"                    # JetBrains IDE Toolbox
 cask "ghostty"                              # Terminal emulator
 cask "basictex"                             # Minimal TeX Live distribution
+cask "typst"                                # Typst - a modern typesetting systemlt
 cask "monitorcontrol"                       # Control external monitor brightness
 
 ################################################################################
