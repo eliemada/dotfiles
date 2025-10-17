@@ -90,20 +90,20 @@ alias take=mkcd
 
 # Repeats a command a set number of times.
 # Syntax: `repeat <count> <command>`
-function repeat() {
-    if [ -z "$1" ] || [ "$#" -lt 2 ]; then
-        echo "Usage: repeat <count> <command> ..."
-        echo "Help: repeat runs a command x number of times."
-        return $#
-    fi
+# function repeat() {
+#     if [ -z "$1" ] || [ "$#" -lt 2 ]; then
+#         echo "Usage: repeat <count> <command> ..."
+#         echo "Help: repeat runs a command x number of times."
+#         return $#
+#     fi
 
-    local i max
-    max=$1; shift;
-    for ((i=1; i <= max ; i++)); do
-        eval "$@";
-    done
-}
-alias r=repeat
+#     local i max
+#     max=$1; shift;
+#     for ((i=1; i <= max ; i++)); do
+#         eval "$@";
+#     done
+# }
+# alias r=repeat
 
 
 ################################################################################
