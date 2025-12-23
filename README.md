@@ -1,57 +1,138 @@
 # Dotfiles (chezmoi)
 
-These are my personal dotfiles managed with `chezmoi`. They are organized with clear, readable section headers using 80-`#` lines for quick scanning in editors.
+Cross-platform dotfiles managed with [chezmoi](https://www.chezmoi.io). Supports **macOS**, **Linux**, and **Windows**.
 
 ## Quick Start
 
-- Install chezmoi: `brew install chezmoi` (macOS) or see https://www.chezmoi.io
-- Initialize from this directory: run inside this repo or `chezmoi init --source ~/.local/share/chezmoi`
-- Apply configs: `chezmoi apply`
+### macOS
+
+```bash
+# Install Homebrew if needed, then:
+brew install chezmoi
+chezmoi init --apply <github-username>
+```
+
+### Linux
+
+```bash
+# Option 1: Linuxbrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install chezmoi
+chezmoi init --apply <github-username>
+
+# Option 2: Direct install
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply <github-username>
+```
+
+### Windows (PowerShell)
+
+```powershell
+# 1. Install Scoop
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+# 2. Install chezmoi via Scoop
+scoop install chezmoi
+
+# 3. Initialize dotfiles
+chezmoi init --apply <github-username>
+```
+
+## What Gets Installed
+
+| Component | macOS | Linux | Windows |
+|-----------|-------|-------|---------|
+| Package manager | Homebrew | Linuxbrew | Scoop |
+| CLI tools (starship, fzf, etc.) | ✓ | ✓ | ✓ |
+| GUI apps (casks) | ✓ | ✗ | ✗ |
+| JetBrains Mono Nerd Font | ✓ | ✓ | ✓ |
+| GitHub identity | ✓ | ✗ | ✗ |
+| KeePassXC integration | ✓ | ✗ | ✗ |
 
 ## Structure
 
-- `dot_zshrc`: Zsh + Oh My Zsh setup, plugins, includes
-- `dot_bashrc`: Bash startup that sources shared snippets and includes
-- `dot_bash_aliases`: Common aliases grouped by purpose
-- `dot_bash_functions`: Utility functions (extract, mkcd, update, etc.)
-- `dot_shrc.d/`: Cross‑shell snippets loaded by Bash and Zsh
-- `dot_Brewfile`: Homebrew taps, formulae and casks (used by `brew bundle --global`)
-- `dot_gitconfig.tmpl`: Global Git config with conditional includes
-- `dot_gitignore_global`: Global Git ignore patterns
-- `private_dot_ssh/config.tmpl`: SSH hosts, keys resolved via KeePassXC
-- `dot_config/starship/starship.toml.tmpl`: Starship prompt config
-- `dot_ripgreprc`: ripgrep defaults and ignore globs
-- `dot_nanorc.tmpl`: Nano configuration using a Nord palette
-- `dot_pythonrc`: Interactive Python REPL tweaks
-- `.chezmoi.toml.tmpl`: Chezmoi configuration and data prompts
-- `run_once_configure-macos.sh`: One‑time macOS sensible defaults
-- `run_onchange_brew_bundle.sh.tmpl`: Sync Homebrew from `~/.Brewfile` when it changes
-- `run_once_install_cli_tools.sh`: One‑time global CLI tooling
-- `run_once_after_ssh_key_restore.sh.tmpl`: Restore SSH keys from KeePassXC
+### Shell Configuration
+- `dot_zshrc` - Zsh + Oh My Zsh setup, plugins
+- `dot_bashrc` - Bash startup
+- `dot_bash_aliases` - Common aliases
+- `dot_bash_functions` - Utility functions
+- `dot_shrc.d/` - Cross-shell snippets
+- `Documents/PowerShell/Microsoft.PowerShell_profile.ps1` - PowerShell profile (Windows)
 
-## Conventions
+### Package Lists
+- `dot_Brewfile` - macOS Homebrew (taps, formulae, casks)
+- `dot_Brewfile.linux` - Linux Homebrew (CLI tools only)
+- `dot_config/scoop/Scoopfile.json` - Windows Scoop packages
 
-- Section separators: 80 `#` characters frame major sections for readability.
-- Shebangs stay on the first line; headers follow them.
-- Template files (`*.tmpl`) use Go templates for dynamic values (e.g., Git identity, KeePassXC lookup, OS checks).
+### Git Configuration
+- `dot_gitconfig.tmpl` - Global Git config with conditional includes
+- `dot_gitconfig-github` - GitHub identity (macOS only)
+- `dot_gitconfig-gitlab` - GitLab/work identity (all platforms)
+- `dot_gitignore_global` - Global ignore patterns
 
-## macOS Notes
+### Other Configs
+- `dot_config/starship/starship.toml.tmpl` - Starship prompt
+- `dot_ripgreprc` - ripgrep defaults
+- `dot_nanorc.tmpl` - Nano editor config
+- `dot_pythonrc` - Python REPL tweaks
 
-- After first apply, run_once scripts configure system defaults and bootstrap tools.
-- Homebrew apps are managed by `dot_Brewfile`; changes are applied via `brew bundle --global`.
+### Run Scripts
+- `run_onchange_brew_bundle.sh.tmpl` - Sync Homebrew packages (macOS/Linux)
+- `run_onchange_scoop_install.ps1.tmpl` - Sync Scoop packages (Windows)
+- `run_once_install_nerd_font.sh.tmpl` - Install Nerd Font (Linux)
+- `run_once_configure-macos.sh` - macOS defaults (macOS only)
+- `run_once_install_ohmyzsh.sh` - Install Oh My Zsh
+
+## OS Detection
+
+Templates use chezmoi's OS detection. You can use these flags in any `.tmpl` file:
+
+```
+{{- if .macos.enabled }}
+# macOS specific
+{{- else if .linux.enabled }}
+# Linux specific
+{{- else if .windows.enabled }}
+# Windows specific
+{{- end }}
+```
 
 ## Common Commands
 
-- Diff desired vs actual: `chezmoi diff`
-- Apply changes: `chezmoi apply` or `chezmoi apply --verbose`
-- Edit and re‑apply one file: `chezmoi edit --apply <target>`
+```bash
+chezmoi diff              # Preview changes
+chezmoi apply             # Apply changes
+chezmoi apply --verbose   # Apply with details
+chezmoi edit --apply FILE # Edit and apply one file
+chezmoi update            # Pull latest and apply
+```
 
-## Secrets & Keys
+## Adding New Packages
 
-- SSH keys are referenced from a KeePassXC database configured in `.chezmoi.toml.tmpl`.
-- The restore script (`run_once_after_ssh_key_restore.sh.tmpl`) can extract keys and add them to `ssh-agent`.
+- **macOS**: Edit `dot_Brewfile`, run `chezmoi apply`
+- **Linux**: Edit `dot_Brewfile.linux`, run `chezmoi apply`
+- **Windows**: Edit `dot_config/scoop/Scoopfile.json`, run `chezmoi apply`
 
-## Updating
+## Windows PowerShell Profile
 
-Make changes in the source repo (this folder), commit as you like, and re‑apply with `chezmoi apply`.
+The PowerShell profile (`Documents/PowerShell/Microsoft.PowerShell_profile.ps1`) includes:
 
+- **Starship** prompt initialization
+- **Zoxide** (`z` command for smart directory jumping)
+- **Atuin** shell history
+- **Carapace** completions
+- **Eza** aliases (`ls`, `ll`, `la`, `lt`)
+- **FZF** Ctrl+R history search
+- Common aliases ported from bash (`..`, `...`, `dls`, `docs`, etc.)
+- Python venv helpers (`va`, `ve`)
+- Network utilities (`publicip`, `localip`, `flushdns`)
+- Weather functions (`weather`, `forecast`)
+
+## macOS-Only Features
+
+These are excluded on Linux/Windows via `.chezmoiignore`:
+- KeePassXC password manager integration
+- SSH key restoration from KeePassXC
+- Personal GitHub identity
+- GUI applications (casks)
+- Dock and macOS system configuration

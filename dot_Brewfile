@@ -37,8 +37,20 @@ brew "dust"                                 # A more intuitive version of du in 
 brew "fzf"                                  # Command-line fuzzy finder
 brew "carapace"                         # Multi-shell command-line completion framework
 brew "ripgrep"                              # Recursive regex search tool
-brew "nicotine-plus"                       # Soulseek client
-brew "dockutil"                           # Manage macOS Dock items
+brew "fd"                                   # Modern find replacement
+brew "bat"                                  # Modern cat with syntax highlighting
+brew "bottom"                               # Modern top/htop replacement
+brew "procs"                                # Modern ps replacement
+brew "duf"                                  # Modern df replacement
+brew "sd"                                   # Modern sed replacement
+brew "tealdeer"                             # Simplified man pages (tldr)
+brew "jq"                                   # JSON processor
+brew "yq"                                   # YAML processor
+brew "glow"                                 # Terminal markdown viewer
+brew "lazygit"                              # Terminal UI for git
+brew "lazydocker"                           # Terminal UI for docker
+brew "nicotine-plus"                        # Soulseek client
+brew "dockutil"                             # Manage macOS Dock items
 brew "yt-dlp"                                 # YouTube video downloader
 brew "ffmpeg"                               # Audio and video processing
 brew "parallel"                              # Run jobs in parallel
@@ -117,6 +129,8 @@ brew "podman"                               # Container management
 
 brew "zlib"                                 # Lossless data-compression library
 brew "colordiff"                            # Colour-highlighted diff output
+brew "typst"                                # Typst - a modern typesetting systemlt
+
 
 ################################################################################
 # GUI APPLICATIONS - BROWSERS
@@ -135,7 +149,6 @@ cask "visual-studio-code"                   # Code editor
 cask "jetbrains-toolbox"                    # JetBrains IDE Toolbox
 cask "ghostty"                              # Terminal emulator
 cask "basictex"                             # Minimal TeX Live distribution
-cask "typst"                                # Typst - a modern typesetting systemlt
 cask "monitorcontrol"                       # Control external monitor brightness
 
 ################################################################################
@@ -170,9 +183,9 @@ cask "iina"                                 # Media player
 cask "little-snitch"                        # Network monitor
 cask "anydesk"                              # Remote desktop
 cask "omnissa-horizon-client"               # VPN client for work
-cask "wireshark"                            # Network protocol analyzer
-cask "logi-options-plus"                    # Logitech device manager
-cask "tailscale"                            # Mesh VPN
+cask "wireshark-app"                        # Network protocol analyzer
+cask "logi-options+"                        # Logitech device manager
+cask "tailscale-app"                        # Mesh VPN
 
 
 ################################################################################
@@ -193,7 +206,7 @@ cask "tailscale-app"                            # Mesh VPN
 # GUI APPLICATIONS - DEVELOPMENT & CONTAINERS
 ################################################################################
 
-cask "docker-desktop"                               # Container platform
+# cask "docker-desktop"                               # Container platform
 
 ################################################################################
 # DEVELOPMENT TOOLS - MOBILE
@@ -205,4 +218,4 @@ cask "android-platform-tools"              # Android SDK platform-tools
 # FONTS
 ################################################################################
 
-cask "font-jetbrains-mono-nerd-font"       # JetBrains Mono Nerd Font
+cask "font-jetbrains-mono-nerd-font"    # JetBrains Mono Nerd Font

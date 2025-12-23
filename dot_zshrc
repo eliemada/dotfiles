@@ -124,3 +124,10 @@ fi
 for file in $(find ~/.shrc.d -name '*.sh' -type f) ; do
   source "$file"
 done
+
+################################################################################
+# Zoxide (MUST be last to override cd properly)
+################################################################################
+if command -v zoxide > /dev/null 2>&1; then
+  eval "$(zoxide init zsh --cmd cd)"
+fi

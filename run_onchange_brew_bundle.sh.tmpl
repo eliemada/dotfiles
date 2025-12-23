@@ -1,36 +1,63 @@
 #!/usr/bin/env bash
 ################################################################################
 # run_onchange_brew_bundle.sh.tmpl
-# Keep Homebrew apps in sync with ~/.Brewfile when it changes
+# Keep Homebrew apps in sync with Brewfile when it changes
+# Supports macOS (full Brewfile) and Linux (CLI-only Brewfile.linux)
 ################################################################################
 set -euo pipefail
 
-# Only run on macOS
-if [ "{{ .chezmoi.os }}" != "darwin" ]; then
+OS="{{ .chezmoi.os }}"
+
+# Only run on macOS or Linux
+if [ "$OS" != "darwin" ] && [ "$OS" != "linux" ]; then
   exit 0
 fi
 
 # Ensure Homebrew is available in PATH
 if ! command -v brew >/dev/null 2>&1; then
-  if [ -x /opt/homebrew/bin/brew ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [ -x /usr/local/bin/brew ]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-  else
-    echo "Homebrew not found. Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # Load brew into current shell
+  if [ "$OS" = "darwin" ]; then
+    # macOS Homebrew paths
     if [ -x /opt/homebrew/bin/brew ]; then
       eval "$(/opt/homebrew/bin/brew shellenv)"
     elif [ -x /usr/local/bin/brew ]; then
       eval "$(/usr/local/bin/brew shellenv)"
+    else
+      echo "Homebrew not found. Installing Homebrew..."
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      if [ -x /opt/homebrew/bin/brew ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      elif [ -x /usr/local/bin/brew ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+      fi
+    fi
+  elif [ "$OS" = "linux" ]; then
+    # Linuxbrew path
+    if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    elif [ -x "$HOME/.linuxbrew/bin/brew" ]; then
+      eval "$("$HOME/.linuxbrew/bin/brew" shellenv)"
+    else
+      echo "Homebrew not found. Installing Linuxbrew..."
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      elif [ -x "$HOME/.linuxbrew/bin/brew" ]; then
+        eval "$("$HOME/.linuxbrew/bin/brew" shellenv)"
+      fi
     fi
   fi
 fi
 
-if [ -f "$HOME/.Brewfile" ]; then
-  echo "Running brew bundle --global using ~/.Brewfile ..."
-  brew bundle --global
+# Select appropriate Brewfile based on OS
+if [ "$OS" = "darwin" ]; then
+  BREWFILE="$HOME/.Brewfile"
+elif [ "$OS" = "linux" ]; then
+  BREWFILE="$HOME/.Brewfile.linux"
+fi
+
+if [ -f "$BREWFILE" ]; then
+  echo "Running brew bundle using $BREWFILE ..."
+  brew bundle --file="$BREWFILE"
 else
-  echo "Warning: ~/.Brewfile not found; nothing to bundle."
+  echo "Warning: $BREWFILE not found; nothing to bundle."
 fi

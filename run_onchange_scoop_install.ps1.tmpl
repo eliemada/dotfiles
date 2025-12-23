@@ -1,0 +1,45 @@
+{{- if eq .chezmoi.os "windows" -}}
+################################################################################
+# run_onchange_scoop_install.ps1.tmpl
+# Keep Scoop apps in sync with Scoopfile.json when it changes (Windows only)
+################################################################################
+
+$ErrorActionPreference = "Stop"
+
+# Check if Scoop is installed
+if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+    Write-Host "Scoop not found. Installing Scoop..."
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+}
+
+$ScoopfilePath = "$env:USERPROFILE\.config\scoop\Scoopfile.json"
+
+if (Test-Path $ScoopfilePath) {
+    Write-Host "Importing Scoop packages from $ScoopfilePath..."
+
+    $scoopfile = Get-Content $ScoopfilePath | ConvertFrom-Json
+
+    # Add buckets first
+    foreach ($bucket in $scoopfile.buckets) {
+        $existingBuckets = scoop bucket list 2>$null
+        if ($existingBuckets -notcontains $bucket.Name) {
+            Write-Host "Adding bucket: $($bucket.Name)"
+            scoop bucket add $bucket.Name $bucket.Source
+        }
+    }
+
+    # Install apps
+    foreach ($app in $scoopfile.apps) {
+        $installed = scoop list $app.Name 2>$null
+        if (-not $installed) {
+            Write-Host "Installing: $($app.Name)"
+            scoop install $app.Name
+        }
+    }
+
+    Write-Host "Scoop packages synchronized."
+} else {
+    Write-Host "Warning: Scoopfile.json not found at $ScoopfilePath"
+}
+{{- end }}

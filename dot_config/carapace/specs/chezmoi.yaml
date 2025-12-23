@@ -1,0 +1,16 @@
+# Custom completions for chezmoi
+# Adds common file path completions
+name: chezmoi
+commands:
+  - name: edit
+    flags:
+      - name: apply
+        shorthand: a
+        description: Apply after editing
+    positionalany:
+      - files:
+          - ~/.local/share/chezmoi/
+  - name: add
+    positionalany:
+      - directories:
+          - ~/

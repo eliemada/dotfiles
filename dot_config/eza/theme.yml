@@ -1,0 +1,43 @@
+# ~/.config/eza/theme.yml
+# Eza theme configuration (Catppuccin Mocha inspired)
+
+# File types
+filetype:
+  normal: {foreground: white}
+  directory: {foreground: blue, style: bold}
+  symlink: {foreground: cyan}
+  executable: {foreground: green, style: bold}
+
+  # Media
+  image: {foreground: magenta}
+  video: {foreground: magenta}
+  music: {foreground: magenta}
+
+  # Documents
+  document: {foreground: yellow}
+  compressed: {foreground: red}
+
+  # Development
+  compiled: {foreground: gray}
+  source: {foreground: green}
+
+# Permissions
+perms:
+  user_read: {foreground: green}
+  user_write: {foreground: yellow}
+  user_execute: {foreground: red, style: bold}
+  group_read: {foreground: green}
+  group_write: {foreground: yellow}
+  group_execute: {foreground: red}
+  other_read: {foreground: green}
+  other_write: {foreground: yellow}
+  other_execute: {foreground: red}
+
+# Git
+git:
+  new: {foreground: green, style: bold}
+  modified: {foreground: yellow}
+  deleted: {foreground: red}
+  renamed: {foreground: cyan}
+  ignored: {foreground: gray}
+  conflicted: {foreground: red, style: bold}

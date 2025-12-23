@@ -1,22 +1,41 @@
 ################################################################################
 # ~/.chezmoi.toml.tmpl
 # Chezmoi configuration (template)
+# Supports: macOS, Linux, Windows
 ################################################################################
 
 [data]
     name = "{{ promptString "name" }}"
     email = "{{ promptString "email" }}"
-    keepassdb = "/Users/eliebruno/Dropbox/PW.kdbx"
+{{- if eq .chezmoi.os "darwin" }}
+    keepassdb = "/Users/{{ .chezmoi.username }}/Dropbox/PW.kdbx"
+{{- end }}
+
 [diff]
     pager = "delta"
 
 [merge]
     command = "vimdiff"
 
+################################################################################
+# OS Detection Flags
+################################################################################
+
 [data.macos]
-    # Set to true to enable macOS specific configs
     enabled = {{ eq .chezmoi.os "darwin" }}
+
+[data.linux]
+    enabled = {{ eq .chezmoi.os "linux" }}
+
+[data.windows]
+    enabled = {{ eq .chezmoi.os "windows" }}
+
+################################################################################
+# KeePassXC Integration (macOS only)
+################################################################################
+{{- if eq .chezmoi.os "darwin" }}
 
 [keepassxc]
     args = ["--all"]
-    database = "/Users/eliebruno/Dropbox/PW.kdbx"
+    database = "/Users/{{ .chezmoi.username }}/Dropbox/PW.kdbx"
+{{- end }}

@@ -1,0 +1,67 @@
+{
+    "buckets": [
+        {
+            "Name": "main",
+            "Source": "https://github.com/ScoopInstaller/Main"
+        },
+        {
+            "Name": "extras",
+            "Source": "https://github.com/ScoopInstaller/Extras"
+        },
+        {
+            "Name": "nerd-fonts",
+            "Source": "https://github.com/matthewjberger/scoop-nerd-fonts"
+        }
+    ],
+    "apps": [
+        {"Name": "git", "Source": "main"},
+        {"Name": "git-lfs", "Source": "main"},
+
+        {"Name": "starship", "Source": "main"},
+        {"Name": "atuin", "Source": "main"},
+        {"Name": "zoxide", "Source": "main"},
+        {"Name": "eza", "Source": "main"},
+        {"Name": "dust", "Source": "main"},
+        {"Name": "fzf", "Source": "main"},
+        {"Name": "ripgrep", "Source": "main"},
+        {"Name": "carapace-bin", "Source": "extras"},
+
+        {"Name": "fd", "Source": "main"},
+        {"Name": "bat", "Source": "main"},
+        {"Name": "bottom", "Source": "main"},
+        {"Name": "procs", "Source": "main"},
+        {"Name": "duf", "Source": "main"},
+        {"Name": "sd", "Source": "main"},
+        {"Name": "tealdeer", "Source": "main"},
+
+        {"Name": "jq", "Source": "main"},
+        {"Name": "yq", "Source": "main"},
+        {"Name": "glow", "Source": "main"},
+
+        {"Name": "lazygit", "Source": "extras"},
+        {"Name": "lazydocker", "Source": "main"},
+
+        {"Name": "micro", "Source": "main"},
+        {"Name": "nano", "Source": "main"},
+        {"Name": "less", "Source": "main"},
+
+        {"Name": "btop", "Source": "main"},
+        {"Name": "fastfetch", "Source": "main"},
+
+        {"Name": "wget", "Source": "main"},
+        {"Name": "rsync", "Source": "main"},
+        {"Name": "curl", "Source": "main"},
+
+        {"Name": "nodejs", "Source": "main"},
+        {"Name": "python", "Source": "main"},
+        {"Name": "uv", "Source": "main"},
+
+        {"Name": "ffmpeg", "Source": "main"},
+        {"Name": "yt-dlp", "Source": "main"},
+
+        {"Name": "7zip", "Source": "main"},
+        {"Name": "delta", "Source": "main"},
+
+        {"Name": "JetBrainsMono-NF", "Source": "nerd-fonts"}
+    ]
+}

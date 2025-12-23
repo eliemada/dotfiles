@@ -1,0 +1,51 @@
+# .chezmoiignore
+# Files to ignore based on OS
+# See: https://www.chezmoi.io/reference/special-files-and-directories/chezmoiignore/
+
+################################################################################
+# macOS-only files (ignore on Linux and Windows)
+################################################################################
+{{- if ne .chezmoi.os "darwin" }}
+
+# GitHub identity (personal)
+.gitconfig-github
+
+# macOS-specific scripts
+run_once_configure-macos.sh
+run_once_configure-dock.sh
+
+# Brewfile (Linux uses .Brewfile.linux, Windows uses Scoop)
+.Brewfile
+
+# KeePassXC-dependent files (personal password manager)
+run_once_after_ssh_key_restore.sh
+.ssh/config
+
+{{- end }}
+
+################################################################################
+# Linux/macOS only (ignore on Windows)
+################################################################################
+{{- if eq .chezmoi.os "windows" }}
+
+# Brewfiles (Windows uses Scoop)
+.Brewfile
+.Brewfile.linux
+
+# SSH config (Windows handles SSH differently)
+.ssh/config
+
+{{- end }}
+
+################################################################################
+# Windows-only files (ignore on macOS and Linux)
+################################################################################
+{{- if ne .chezmoi.os "windows" }}
+
+# Scoop config
+.config/scoop/
+
+# PowerShell profile
+Documents/
+
+{{- end }}

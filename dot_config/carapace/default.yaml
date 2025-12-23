@@ -1,0 +1,53 @@
+# ~/.config/carapace/default.yaml
+# Carapace completion framework configuration
+# See: https://carapace-sh.github.io/carapace-bin/configuration.html
+
+# Enable completions from other shells (bridges)
+# These provide fallback completions when native ones aren't available
+bridges:
+  - zsh
+  - fish
+  - bash
+  - inshellisense
+
+# Style configuration (Catppuccin Mocha inspired)
+style:
+  # Description text style
+  description:
+    foreground: "245"        # Gray for descriptions
+
+  # Value/suggestion style
+  value:
+    foreground: "blue"
+    bold: true
+
+  # Selected item style
+  selected:
+    foreground: "white"
+    background: "60"         # Muted purple
+    bold: true
+
+# FZF integration for fuzzy completion
+# When enabled, completions are piped through fzf
+fzf:
+  # Use fzf for completion selection when many options
+  enabled: true
+
+  # FZF options for completion
+  options:
+    - --height=50%
+    - --layout=reverse
+    - --border=rounded
+    - --info=inline
+
+# Caching for faster completions
+cache:
+  # Enable completion caching
+  enabled: true
+
+  # Cache TTL in seconds (1 hour)
+  ttl: 3600
+
+# Excluded commands (if any completions cause issues)
+# exclude:
+#   - some-problematic-command

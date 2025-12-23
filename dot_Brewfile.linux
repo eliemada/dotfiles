@@ -1,0 +1,94 @@
+# -*-mode:ruby-*- vim:ft=ruby
+
+# ~/.Brewfile.linux
+# =============================================================================
+# CLI tools for Linux via Homebrew (Linuxbrew)
+# No casks - Linux only supports formulae
+#
+# See https://docs.brew.sh/Homebrew-on-Linux
+
+################################################################################
+# SHELL & DEVELOPMENT ENVIRONMENT
+################################################################################
+
+brew "bash"                                 # Bourne again shell
+brew "bash-completion"                      # Autocompletions for `bash`
+brew "asdf"                                 # Extendable version manager
+brew "direnv"                               # Directory specific env variables
+
+################################################################################
+# MODERN CLI TOOLS
+################################################################################
+
+brew "starship"                             # Cross-shell prompt
+brew "atuin"                                # Shell history reimagined
+brew "zoxide"                               # A smarter cd command
+brew "eza"                                  # A modern replacement for 'ls'
+brew "dust"                                 # A more intuitive version of du in rust
+brew "fzf"                                  # Command-line fuzzy finder
+brew "carapace"                             # Multi-shell completion framework
+brew "ripgrep"                              # Recursive regex search tool
+brew "fd"                                   # Modern find replacement
+brew "bat"                                  # Modern cat with syntax highlighting
+brew "bottom"                               # Modern top/htop replacement
+brew "procs"                                # Modern ps replacement
+brew "duf"                                  # Modern df replacement
+brew "sd"                                   # Modern sed replacement
+brew "tealdeer"                             # Simplified man pages (tldr)
+brew "jq"                                   # JSON processor
+brew "yq"                                   # YAML processor
+brew "glow"                                 # Terminal markdown viewer
+brew "lazygit"                              # Terminal UI for git
+brew "lazydocker"                           # Terminal UI for docker
+brew "yt-dlp"                               # YouTube video downloader
+brew "ffmpeg"                               # Audio and video processing
+brew "parallel"                             # Run jobs in parallel
+brew "pre-commit"                           # Pre-commit hook framework
+brew "git-lfs"                              # Git extension for versioning large files
+
+################################################################################
+# SYSTEM UTILITIES
+################################################################################
+
+brew "htop"                                 # Interactive system-monitor
+brew "neofetch"                             # System information tool
+brew "fswatch"                              # File change monitor
+brew "gnupg"                                # GNU privacy guard
+
+################################################################################
+# TERMINAL & SESSION MANAGEMENT
+################################################################################
+
+brew "tmux"                                 # Terminal multiplexer
+brew "tmuxinator"                           # Tmux session controller
+brew "less"                                 # Terminal pager
+brew "lesspipe"                             # Input filter for `less`
+
+################################################################################
+# TEXT EDITORS
+################################################################################
+
+brew "micro"                                # Micro text editor
+brew "nano"                                 # Nano text editor
+
+################################################################################
+# NETWORKING & FILE TRANSFER
+################################################################################
+
+brew "wget"                                 # Web content downloader
+brew "rsync"                                # File transfer and sync tool
+brew "unison"                               # Unison file synchronizer
+
+################################################################################
+# DEVELOPMENT TOOLS
+################################################################################
+
+brew "npm"                                  # Node package manager
+brew "uv"                                   # UV - A python manager
+
+################################################################################
+# SYSTEM LIBRARIES
+################################################################################
+
+brew "colordiff"                            # Colour-highlighted diff output
+brew "typst"                                # Typst - a modern typesetting systemlt
