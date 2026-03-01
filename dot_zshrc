@@ -129,5 +129,5 @@ done
 # Zoxide (MUST be last to override cd properly)
 ################################################################################
 if command -v zoxide > /dev/null 2>&1; then
-  eval "$(zoxide init zsh --cmd cd)"
+  eval "$(zoxide init zsh --cmd z)"
 fi
