@@ -10,7 +10,6 @@
 #   epfl stop    - Disconnect from EPFL VPN
 #   epfl-ssh     - Connect VPN, SSH to izar, disconnect VPN on exit
 
-_EPFL_PID_FILE="/tmp/openconnect-epfl.pid"
 _EPFL_KDBX="$HOME/Library/CloudStorage/Dropbox/PW.kdbx"
 _EPFL_ENTRY="isa.epfl.ch"
 
@@ -67,8 +66,7 @@ _epfl_connect() {
         --useragent="AnyConnect" \
         --cookie="$COOKIE" \
         --servercert="$FINGERPRINT" \
-        --background \
-        --pid-file="$_EPFL_PID_FILE"
+        --background
 
     sleep 2
     echo "VPN connected."
@@ -76,19 +74,17 @@ _epfl_connect() {
 
 # Disconnect VPN
 _epfl_disconnect() {
-    if [ -f "$_EPFL_PID_FILE" ] && kill -0 "$(cat "$_EPFL_PID_FILE")" 2>/dev/null; then
-        sudo kill "$(cat "$_EPFL_PID_FILE")" 2>/dev/null
-        sudo rm -f "$_EPFL_PID_FILE"
+    if pgrep -x openconnect >/dev/null 2>&1; then
+        sudo pkill -x openconnect
         echo "VPN disconnected."
     else
         echo "VPN is not running."
-        rm -f "$_EPFL_PID_FILE" 2>/dev/null
     fi
 }
 
 # Check if VPN is already connected
 _epfl_is_connected() {
-    [ -f "$_EPFL_PID_FILE" ] && kill -0 "$(cat "$_EPFL_PID_FILE")" 2>/dev/null
+    pgrep -x openconnect >/dev/null 2>&1
 }
 
 # epfl [stop] — connect or disconnect the EPFL VPN
