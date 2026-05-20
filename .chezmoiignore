@@ -49,3 +49,15 @@ run_once_after_ssh_key_restore.sh
 Documents/
 
 {{- end }}
+
+################################################################################
+# Opt-in features (toggled by ~/.config/chezmoi/chezmoi.toml)
+################################################################################
+# EPFL VPN helpers — installed only when `epfl_vpn = true` in chezmoi.toml.
+# Default falls back to "macOS only" for installs that predate the flag, so
+# existing personal Macs keep working without re-running `chezmoi init`.
+{{- $epfl_vpn := eq .chezmoi.os "darwin" -}}
+{{- if hasKey . "epfl_vpn" }}{{ $epfl_vpn = .epfl_vpn }}{{ end }}
+{{- if not $epfl_vpn }}
+.shrc.d/epfl-vpn.sh
+{{- end }}

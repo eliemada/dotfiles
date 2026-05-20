@@ -11,6 +11,12 @@
     keepassdb = "/Users/{{ .chezmoi.username }}/Dropbox/PW.kdbx"
 {{- end }}
 
+    # Opt-in: install EPFL VPN helpers (epfl, epfl-ssh shell functions).
+    # Requires openconnect + keepassxc + macOS Keychain entry "keepassxc-master".
+    # Defaults to ON for macOS, OFF for Linux/Windows (e.g. Citadel workstations).
+    # Change later by editing ~/.config/chezmoi/chezmoi.toml and running `chezmoi apply`.
+    epfl_vpn = {{ promptBoolOnce . "epfl_vpn" "Install EPFL VPN helpers" (eq .chezmoi.os "darwin") }}
+
 [diff]
     pager = "delta"
 

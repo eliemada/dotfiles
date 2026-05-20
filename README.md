@@ -154,3 +154,27 @@ These are excluded on Linux/Windows via `.chezmoiignore`:
 - Personal GitHub identity
 - GUI applications (casks)
 - Dock and macOS system configuration
+
+## Opt-in Features (per-machine toggles)
+
+Some features are too machine-specific to install everywhere (e.g. EPFL VPN
+helpers don't belong on Citadel workstations). They're gated by booleans in
+`~/.config/chezmoi/chezmoi.toml` — `chezmoi init` prompts once and remembers.
+
+| Toggle | What it installs | Default |
+|---|---|---|
+| `epfl_vpn` | `~/.shrc.d/epfl-vpn.sh` (`epfl`, `epfl-ssh` shell functions; needs openconnect + keepassxc + macOS Keychain) | `true` on macOS, `false` on Linux/Windows |
+
+**Flip a toggle later** without re-running init:
+
+```bash
+# Edit the resolved config
+$EDITOR ~/.config/chezmoi/chezmoi.toml      # set epfl_vpn = false (or true)
+chezmoi apply                                # chezmoi removes/adds the file
+```
+
+**Re-prompt cleanly** (forgets previous answers):
+
+```bash
+chezmoi init --force                         # re-runs the prompt
+```
