@@ -1,0 +1,29 @@
+{{/*
+  Atlassian (Jira + Confluence) MCP — sooperset/mcp-atlassian via uvx.
+  Version-pinned past Feb 2026 CVEs (CVE-2026-27825 RCE, CVE-2026-27826 SSRF).
+  Work-only: gated by `work_mcps`. macOS pulls from KeePassXC `Claude/atlassian`,
+  other OSes prompt once at `chezmoi init` (stored in chezmoi.toml plaintext —
+  acceptable for personal-laptop use; swap to corp vault for true SOTA).
+
+  Required KeePassXC entry: `Claude/atlassian`
+    - URL      → JIRA_URL / CONFLUENCE_URL (e.g. https://citadel.atlassian.net)
+    - UserName → email (Atlassian Cloud uses email as identity)
+    - Password → API token from id.atlassian.com/manage-profile/security/api-tokens
+*/ -}}
+{
+  "type": "stdio",
+  "command": "uvx",
+  "args": [
+    "--from",
+    "mcp-atlassian>=0.17.0",
+    "mcp-atlassian"
+  ],
+  "env": {
+    "JIRA_URL":              "{{ template "claude-mcp-secret" (merge (dict "entry" "atlassian" "field" "URL") .) }}",
+    "JIRA_USERNAME":         "{{ template "claude-mcp-secret" (merge (dict "entry" "atlassian" "field" "UserName") .) }}",
+    "JIRA_API_TOKEN":        "{{ template "claude-mcp-secret" (merge (dict "entry" "atlassian" "field" "Password") .) }}",
+    "CONFLUENCE_URL":        "{{ template "claude-mcp-secret" (merge (dict "entry" "atlassian" "field" "URL") .) }}/wiki",
+    "CONFLUENCE_USERNAME":   "{{ template "claude-mcp-secret" (merge (dict "entry" "atlassian" "field" "UserName") .) }}",
+    "CONFLUENCE_API_TOKEN":  "{{ template "claude-mcp-secret" (merge (dict "entry" "atlassian" "field" "Password") .) }}"
+  }
+}

@@ -1,0 +1,20 @@
+{{/*
+  Moodle MCP — runs via `uvx --from git+ssh://` (no local clone needed).
+  Personal-only: gated by `personal_mcps` in chezmoi.toml.
+  Required KeePassXC entry: `Claude/moodle`
+    - URL      → MOODLE_DOMAIN (e.g. moodle.epfl.ch, no protocol)
+    - Password → MOODLE_TOKEN  (Moodle API token; rotate when expired)
+*/ -}}
+{
+  "type": "stdio",
+  "command": "uvx",
+  "args": [
+    "--from",
+    "git+ssh://git@github.com/franklintra/moodle-mcp-v2",
+    "moodle-mcp"
+  ],
+  "env": {
+    "MOODLE_DOMAIN": "{{ template "claude-mcp-secret" (merge (dict "entry" "moodle" "field" "URL") .) }}",
+    "MOODLE_TOKEN":  "{{ template "claude-mcp-secret" (merge (dict "entry" "moodle" "field" "Password") .) }}"
+  }
+}

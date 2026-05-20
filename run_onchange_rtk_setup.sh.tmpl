@@ -33,13 +33,11 @@ echo "Configuring rtk ($("$RTK_BIN" --version 2>/dev/null | tr -d '\n'))..."
 # Privacy default: disable anonymous telemetry (RGPD/GDPR friendly).
 "$RTK_BIN" telemetry disable >/dev/null 2>&1 || true
 
-# Claude Code: install global hook + refresh RTK.md.
-if [ -d "$HOME/.claude" ]; then
-  "$RTK_BIN" init -g --auto-patch >/dev/null
-  echo "  [Claude Code] hook installed and RTK.md refreshed"
-fi
+# Claude Code: settings.json and RTK.md are now chezmoi-owned (the RTK hook
+# is baked into dot_claude/settings.json.tmpl). No `rtk init` for Claude
+# anymore — it would re-patch settings.json and cause perpetual chezmoi diffs.
 
-# Codex CLI: install global hook + refresh RTK.md.
+# Codex CLI: still imperative (rtk init writes RTK.md + AGENTS.md reference).
 if [ -d "$HOME/.codex" ]; then
   "$RTK_BIN" init -g --codex --auto-patch >/dev/null
   echo "  [Codex CLI] hook installed and RTK.md refreshed"

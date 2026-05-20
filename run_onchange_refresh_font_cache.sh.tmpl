@@ -1,0 +1,14 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+################################################################################
+# run_onchange_refresh_font_cache.sh.tmpl
+# Refresh the font cache after .chezmoiexternal.toml drops fonts into
+# ~/.local/share/fonts/. Idempotent; cheap.
+################################################################################
+set -euo pipefail
+
+FONT_DIR="$HOME/.local/share/fonts"
+if [ -d "$FONT_DIR" ] && command -v fc-cache >/dev/null 2>&1; then
+    fc-cache -f "$FONT_DIR" >/dev/null
+fi
+{{- end }}

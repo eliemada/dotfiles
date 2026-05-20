@@ -1,0 +1,38 @@
+################################################################################
+# .chezmoiexternal.toml.tmpl
+# Declarative external resources that chezmoi clones/downloads itself.
+# Anything in here replaces what would otherwise be a shell script doing
+# `git clone` or `curl | unzip`.
+#
+# Reference: https://www.chezmoi.io/reference/special-files/chezmoiexternal-format/
+################################################################################
+
+################################################################################
+# Oh My Zsh + community plugins (all platforms with zsh)
+################################################################################
+[".oh-my-zsh"]
+    type          = "git-repo"
+    url           = "https://github.com/ohmyzsh/ohmyzsh.git"
+    refreshPeriod = "168h"   # weekly pull
+
+[".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+    type          = "git-repo"
+    url           = "https://github.com/zsh-users/zsh-autosuggestions.git"
+    refreshPeriod = "168h"
+
+[".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+    type          = "git-repo"
+    url           = "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    refreshPeriod = "168h"
+
+################################################################################
+# JetBrains Mono Nerd Font (Linux only — macOS uses brew cask, Windows scoop)
+# fc-cache is still needed after extraction; see run_once_install_nerd_font.sh
+################################################################################
+{{- if eq .chezmoi.os "linux" }}
+[".local/share/fonts/JetBrainsMonoNerdFont"]
+    type            = "archive"
+    url             = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
+    refreshPeriod   = "8760h"   # yearly
+    exact           = true
+{{- end }}

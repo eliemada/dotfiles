@@ -1,0 +1,30 @@
+{{/*
+  Slack MCP (Korotovsky) — stealth mode via xoxc/xoxd browser session tokens.
+  Work-only: gated by `work_mcps`.
+
+  ⚠️  Stealth mode bypasses your org's Slack-app provisioning. Risk acknowledged
+  by user. Browser-session tokens expire periodically — re-paste from devtools
+  when that happens.
+
+  Required KeePassXC entry: `Claude/slack`
+    - custom "xoxc_token" → SLACK_MCP_XOXC_TOKEN
+    - custom "xoxd_token" → SLACK_MCP_XOXD_TOKEN
+
+  How to grab the tokens (Chrome/Firefox devtools on app.slack.com):
+    - xoxc: localStorage  →  config.token  (starts with "xoxc-")
+    - xoxd: Cookies       →  `d` cookie    (URL-decoded, starts with "xoxd-")
+*/ -}}
+{
+  "type": "stdio",
+  "command": "npx",
+  "args": [
+    "-y",
+    "slack-mcp-server@latest",
+    "--transport",
+    "stdio"
+  ],
+  "env": {
+    "SLACK_MCP_XOXC_TOKEN": "{{ template "claude-mcp-secret" (merge (dict "entry" "slack" "field" "xoxc_token") .) }}",
+    "SLACK_MCP_XOXD_TOKEN": "{{ template "claude-mcp-secret" (merge (dict "entry" "slack" "field" "xoxd_token") .) }}"
+  }
+}

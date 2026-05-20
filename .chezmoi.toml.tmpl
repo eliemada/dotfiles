@@ -17,6 +17,49 @@
     # Change later by editing ~/.config/chezmoi/chezmoi.toml and running `chezmoi apply`.
     epfl_vpn = {{ promptBoolOnce . "epfl_vpn" "Install EPFL VPN helpers" (eq .chezmoi.os "darwin") }}
 
+    # Opt-in: personal-life MCP servers for Claude Code (moodle + edstem).
+    # Secrets come from KeePassXC on macOS, promptStringOnce elsewhere.
+    # Defaults to ON for macOS, OFF for Linux/Windows.
+    personal_mcps = {{ promptBoolOnce . "personal_mcps" "Install personal MCP servers (moodle + edstem)" (eq .chezmoi.os "darwin") }}
+
+    # Opt-in: work MCP servers for Claude Code (Atlassian + Slack stealth).
+    # Defaults to OFF everywhere — turn ON on Citadel workstations at init.
+    work_mcps = {{ promptBoolOnce . "work_mcps" "Install work MCP servers (Atlassian + Slack)" false }}
+
+################################################################################
+# Claude MCP secrets (non-macOS only)
+# On macOS we read from KeePassXC at apply time via `keepassxcAttribute`.
+# On Linux/Windows we have no native vault helper baked into chezmoi, so we
+# capture the secrets once at `chezmoi init` and persist them in this file.
+# CAUTION: ~/.config/chezmoi/chezmoi.toml will then contain plaintext secrets
+# (mode 0600, never committed). For corp environments swap this block for
+# `[secret]` + a custom secretCommand calling op/keeper/secret-tool.
+################################################################################
+{{- $is_other := ne .chezmoi.os "darwin" -}}
+{{- $personal := false -}}{{- if hasKey . "personal_mcps" }}{{ $personal = .personal_mcps }}{{ end -}}
+{{- $work := false -}}{{- if hasKey . "work_mcps" }}{{ $work = .work_mcps }}{{ end -}}
+
+{{- if and $is_other (or $personal $work) }}
+[data.claude_secrets]
+{{- if and $is_other $personal }}
+    [data.claude_secrets.moodle]
+        URL      = "{{ promptStringOnce . "claude_moodle_url"      "Moodle domain (e.g. moodle.epfl.ch)" }}"
+        Password = "{{ promptStringOnce . "claude_moodle_token"    "Moodle API token" }}"
+    [data.claude_secrets.edstem]
+        Password = "{{ promptStringOnce . "claude_edstem_token"    "Ed (edstem.org) API token" }}"
+        Region   = "{{ promptStringOnce . "claude_edstem_region"   "Ed region (eu or us)" }}"
+{{- end }}
+{{- if and $is_other $work }}
+    [data.claude_secrets.atlassian]
+        URL      = "{{ promptStringOnce . "claude_atlassian_url"   "Atlassian URL (https://yourorg.atlassian.net)" }}"
+        UserName = "{{ promptStringOnce . "claude_atlassian_email" "Atlassian email" }}"
+        Password = "{{ promptStringOnce . "claude_atlassian_token" "Atlassian API token" }}"
+    [data.claude_secrets.slack]
+        xoxc_token = "{{ promptStringOnce . "claude_slack_xoxc" "Slack xoxc browser token (starts with xoxc-)" }}"
+        xoxd_token = "{{ promptStringOnce . "claude_slack_xoxd" "Slack xoxd browser cookie (URL-decoded, starts with xoxd-)" }}"
+{{- end }}
+{{- end }}
+
 [diff]
     pager = "delta"
 

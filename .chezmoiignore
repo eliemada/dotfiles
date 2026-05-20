@@ -61,3 +61,17 @@ Documents/
 {{- if not $epfl_vpn }}
 .shrc.d/epfl-vpn.sh
 {{- end }}
+
+# Claude Code MCP servers — gated by personal_mcps / work_mcps flags.
+{{- $personal_mcps := eq .chezmoi.os "darwin" -}}
+{{- if hasKey . "personal_mcps" }}{{ $personal_mcps = .personal_mcps }}{{ end }}
+{{- $work_mcps := false -}}
+{{- if hasKey . "work_mcps" }}{{ $work_mcps = .work_mcps }}{{ end }}
+{{- if not $personal_mcps }}
+.claude/mcp-servers/moodle.json
+.claude/mcp-servers/edstem.json
+{{- end }}
+{{- if not $work_mcps }}
+.claude/mcp-servers/atlassian.json
+.claude/mcp-servers/slack.json
+{{- end }}

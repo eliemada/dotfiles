@@ -1,0 +1,20 @@
+{{/*
+  Ed Discussion (edstem.org) MCP — runs via `uvx --from git+ssh://`.
+  Personal-only: gated by `personal_mcps`.
+  Required KeePassXC entry: `Claude/edstem`
+    - Password         → ED_API_TOKEN
+    - custom "Region"  → ED_REGION (e.g. "eu" or "us")
+*/ -}}
+{
+  "type": "stdio",
+  "command": "uvx",
+  "args": [
+    "--from",
+    "git+ssh://git@github.com/eliemada/edstem-mcp",
+    "edstem-mcp"
+  ],
+  "env": {
+    "ED_API_TOKEN": "{{ template "claude-mcp-secret" (merge (dict "entry" "edstem" "field" "Password") .) }}",
+    "ED_REGION":    "{{ template "claude-mcp-secret" (merge (dict "entry" "edstem" "field" "Region") .) }}"
+  }
+}

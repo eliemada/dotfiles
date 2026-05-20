@@ -1,0 +1,94 @@
+{{- if or .macos.enabled .linux.enabled -}}
+#!/usr/bin/env bash
+################################################################################
+# run_onchange_claude_mcp_setup.sh.tmpl
+# Reconcile Claude Code MCP servers against the declarative .json files in
+# ~/.claude/mcp-servers/.
+#
+# Algorithm:
+#   1. Read current desired set:  basenames of ~/.claude/mcp-servers/*.json
+#   2. Read last-applied set:     ~/.claude/mcp-servers/.last-applied
+#   3. For each name in last-applied \ desired:  `claude mcp remove`
+#   4. For each name in desired:                 remove (if exists) + add-json
+#   5. Write desired set to .last-applied for next run.
+#
+# Cloud MCPs (claude.ai Gmail / Drive / Calendar) have spaces in their names
+# and never match our basenames, so they're untouched by this reconciliation.
+#
+# Marker forces re-run on chezmoi-managed JSON changes:
+# mcp configs sha:
+#   {{- $manifest := list -}}
+#   {{- range (glob (joinPath .chezmoi.sourceDir "dot_claude/mcp-servers/*.json.tmpl")) -}}
+#     {{- $manifest = append $manifest (include . | sha256sum) -}}
+#   {{- end -}}
+#   {{- $manifest | join "," | sha256sum }}
+################################################################################
+set -euo pipefail
+
+MCP_DIR="$HOME/.claude/mcp-servers"
+STATE_FILE="$MCP_DIR/.last-applied"
+
+if ! command -v claude >/dev/null 2>&1; then
+    echo "claude CLI not found; skipping MCP reconciliation."
+    exit 0
+fi
+
+if [ ! -d "$MCP_DIR" ]; then
+    echo "No $MCP_DIR yet; nothing to reconcile."
+    exit 0
+fi
+
+# 1. Currently desired servers (filenames without .json)
+desired=()
+shopt -s nullglob
+for f in "$MCP_DIR"/*.json; do
+    name=$(basename "$f" .json)
+    desired+=("$name")
+done
+shopt -u nullglob
+
+# 2. Last-applied set (empty if first run)
+last_applied=()
+if [ -f "$STATE_FILE" ]; then
+    while IFS= read -r line; do
+        [ -n "$line" ] && last_applied+=("$line")
+    done < "$STATE_FILE"
+fi
+
+# 3. Orphans: in last_applied but not in desired
+for name in "${last_applied[@]}"; do
+    found=0
+    for d in "${desired[@]:-}"; do
+        if [ "$d" = "$name" ]; then found=1; break; fi
+    done
+    if [ "$found" -eq 0 ]; then
+        echo "  [mcp] removing orphan: $name"
+        claude mcp remove "$name" -s user >/dev/null 2>&1 || true
+    fi
+done
+
+# 4. Add/refresh every desired server
+for name in "${desired[@]:-}"; do
+    json_path="$MCP_DIR/$name.json"
+    # Guard: skip files that didn't render (e.g. KeePassXC unavailable left them empty)
+    if [ ! -s "$json_path" ]; then
+        echo "  [mcp] skipping empty $name.json (template rendered nothing — secret backend unavailable?)"
+        continue
+    fi
+    claude mcp remove "$name" -s user >/dev/null 2>&1 || true
+    if claude mcp add-json -s user "$name" "$(cat "$json_path")" >/dev/null; then
+        echo "  [mcp] applied: $name"
+    else
+        echo "  [mcp] FAILED to apply: $name (check $json_path)"
+    fi
+done
+
+# 5. Persist desired set as new last-applied
+if [ ${#desired[@]} -eq 0 ]; then
+    : > "$STATE_FILE"
+else
+    printf '%s\n' "${desired[@]}" > "$STATE_FILE"
+fi
+
+echo "Claude MCP reconciliation complete (${#desired[@]} server(s) active)."
+{{- end }}
