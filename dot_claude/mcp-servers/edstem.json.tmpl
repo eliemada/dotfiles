@@ -2,8 +2,9 @@
   Ed Discussion (edstem.org) MCP — runs via `uvx --from git+ssh://`.
   Personal-only: gated by `personal_mcps`.
   Required KeePassXC entry: `Claude/edstem`
-    - Password         → ED_API_TOKEN
-    - custom "Region"  → ED_REGION (e.g. "eu" or "us")
+    - Password → ED_API_TOKEN
+    - URL      → ED_REGION (e.g. "eu" or "us"). Stored in URL field because
+                 keepassxc-cli 2.7.x can't write custom string attributes.
 */ -}}
 {
   "type": "stdio",
@@ -15,6 +16,6 @@
   ],
   "env": {
     "ED_API_TOKEN": "{{ template "claude-mcp-secret" (merge (dict "entry" "edstem" "field" "Password") .) }}",
-    "ED_REGION":    "{{ template "claude-mcp-secret" (merge (dict "entry" "edstem" "field" "Region") .) }}"
+    "ED_REGION":    "{{ template "claude-mcp-secret" (merge (dict "entry" "edstem" "field" "URL") .) }}"
   }
 }

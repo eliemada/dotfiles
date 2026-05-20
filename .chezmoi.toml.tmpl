@@ -46,8 +46,8 @@
         URL      = "{{ promptStringOnce . "claude_moodle_url"      "Moodle domain (e.g. moodle.epfl.ch)" }}"
         Password = "{{ promptStringOnce . "claude_moodle_token"    "Moodle API token" }}"
     [data.claude_secrets.edstem]
-        Password = "{{ promptStringOnce . "claude_edstem_token"    "Ed (edstem.org) API token" }}"
-        Region   = "{{ promptStringOnce . "claude_edstem_region"   "Ed region (eu or us)" }}"
+        Password = "{{ promptStringOnce . "claude_edstem_token"  "Ed (edstem.org) API token" }}"
+        URL      = "{{ promptStringOnce . "claude_edstem_region" "Ed region (eu or us)" }}"
 {{- end }}
 {{- if and $is_other $work }}
     [data.claude_secrets.atlassian]

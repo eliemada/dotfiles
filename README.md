@@ -211,7 +211,7 @@ template renders a stdio MCP definition; the reconciliation script
 | Flag | Entry | Fields |
 |---|---|---|
 | `personal_mcps` | `Claude/moodle` | URL = `moodle.epfl.ch` (no protocol), Password = Moodle API token |
-| `personal_mcps` | `Claude/edstem` | Password = Ed API token, custom string `Region` = `eu` or `us` |
+| `personal_mcps` | `Claude/edstem` | Password = Ed API token, URL = `eu` or `us` (region; URL field used because keepassxc-cli 2.7.x can't write custom strings) |
 | `work_mcps` (if you run macOS Citadel-like) | `Claude/atlassian` | URL = `https://yourorg.atlassian.net`, UserName = email, Password = API token |
 | `work_mcps` (if you run macOS Citadel-like) | `Claude/slack` | Custom strings `xoxc_token` and `xoxd_token` (from Slack web devtools) |
 
