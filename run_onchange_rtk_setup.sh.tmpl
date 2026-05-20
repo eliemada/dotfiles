@@ -1,0 +1,54 @@
+{{- if or .macos.enabled .linux.enabled -}}
+#!/usr/bin/env bash
+################################################################################
+# run_onchange_rtk_setup.sh.tmpl
+# Configure RTK (Rust Token Killer) hooks for installed AI CLIs.
+#
+# Runs whenever this script's contents change. The marker below embeds the
+# installed rtk version so the script reruns automatically after a brew upgrade
+# (idempotent otherwise). Brewfile installs rtk first because alphabetical
+# ordering puts `brew_bundle` (b) before `rtk_setup` (r) within the
+# `run_onchange_*` group.
+#
+# rtk version marker: {{ if lookPath "rtk" }}{{ output "rtk" "--version" | trim }}{{ else }}not-yet-installed{{ end }}
+################################################################################
+set -euo pipefail
+
+# Resolve rtk binary (brew may not be on PATH yet during first chezmoi apply)
+RTK_BIN=""
+for candidate in rtk /opt/homebrew/bin/rtk /usr/local/bin/rtk /home/linuxbrew/.linuxbrew/bin/rtk "$HOME/.linuxbrew/bin/rtk"; do
+  if command -v "$candidate" >/dev/null 2>&1; then
+    RTK_BIN="$(command -v "$candidate")"
+    break
+  fi
+done
+
+if [ -z "$RTK_BIN" ]; then
+  echo "rtk not found on PATH yet; skipping (will retry on next chezmoi apply)."
+  exit 0
+fi
+
+echo "Configuring rtk ($("$RTK_BIN" --version 2>/dev/null | tr -d '\n'))..."
+
+# Privacy default: disable anonymous telemetry (RGPD/GDPR friendly).
+"$RTK_BIN" telemetry disable >/dev/null 2>&1 || true
+
+# Claude Code: install global hook + refresh RTK.md.
+if [ -d "$HOME/.claude" ]; then
+  "$RTK_BIN" init -g --auto-patch >/dev/null
+  echo "  [Claude Code] hook installed and RTK.md refreshed"
+fi
+
+# Codex CLI: install global hook + refresh RTK.md.
+if [ -d "$HOME/.codex" ]; then
+  "$RTK_BIN" init -g --codex --auto-patch >/dev/null
+  echo "  [Codex CLI] hook installed and RTK.md refreshed"
+fi
+
+# Opt-in extras (uncomment if you actually use these agents):
+# [ -d "$HOME/.cursor" ]   && "$RTK_BIN" init -g --auto-patch --agent cursor   >/dev/null
+# [ -d "$HOME/.windsurf" ] && "$RTK_BIN" init -g --auto-patch --agent windsurf >/dev/null
+# [ -d "$HOME/.config/opencode" ] && "$RTK_BIN" init -g --auto-patch --opencode >/dev/null
+
+echo "rtk setup complete."
+{{- end }}

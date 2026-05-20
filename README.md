@@ -79,9 +79,27 @@ chezmoi init --apply <github-username>
 ### Run Scripts
 - `run_onchange_brew_bundle.sh.tmpl` - Sync Homebrew packages (macOS/Linux)
 - `run_onchange_scoop_install.ps1.tmpl` - Sync Scoop packages (Windows)
+- `run_onchange_rtk_setup.sh.tmpl` - Configure RTK hooks for Claude Code + Codex (macOS/Linux). Re-runs on rtk version change.
+- `run_onchange_rtk_setup.ps1.tmpl` - Install RTK (from GitHub release) and configure hooks (Windows). Bump `$DesiredVersion` inside the file to upgrade.
 - `run_once_install_nerd_font.sh.tmpl` - Install Nerd Font (Linux)
 - `run_once_configure-macos.sh` - macOS defaults (macOS only)
 - `run_once_install_ohmyzsh.sh` - Install Oh My Zsh
+
+### RTK (Rust Token Killer)
+
+[RTK](https://www.rtk-ai.app) is a CLI proxy that strips noisy output from shell commands before it
+reaches your LLM, cutting token usage by 60-90% on dev workflows. The setup is split into install
+(package manager) and configure (hook patching):
+
+- **Install** — `rtk` ships in Homebrew core (macOS + Linux); Windows pulls the official GitHub
+  release zip into `%LOCALAPPDATA%\rtk\bin` and adds it to the user PATH.
+- **Configure** — `run_onchange_rtk_setup.*` calls `rtk init -g --auto-patch` for Claude Code and
+  `rtk init -g --codex --auto-patch` for Codex CLI. Telemetry is disabled by default.
+- **Idempotent upgrades** — the macOS/Linux template embeds `rtk --version`; whenever brew upgrades
+  rtk, chezmoi notices the script content changed and re-runs `init` to refresh the RTK.md and
+  hook. On Windows, bump `$DesiredVersion` in the `.ps1.tmpl`.
+- **Add another agent** (Cursor, Windsurf, OpenCode, etc.) — uncomment the relevant line at the
+  bottom of `run_onchange_rtk_setup.sh.tmpl`.
 
 ## OS Detection
 

@@ -102,6 +102,12 @@ brew "npm"                                  # Node package manager
 brew "uv"                                   # UV - A python manager
 
 ################################################################################
+# AI / LLM TOOLING
+################################################################################
+
+brew "rtk"                                  # Rust Token Killer - CLI proxy that filters noisy command output to cut LLM token usage 60-90%
+
+################################################################################
 # IMAGE & VIDEO OPTIMIZATION
 ################################################################################
 

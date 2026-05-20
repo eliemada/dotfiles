@@ -1,0 +1,94 @@
+{{- if .windows.enabled -}}
+################################################################################
+# run_onchange_rtk_setup.ps1.tmpl
+# Install and configure RTK (Rust Token Killer) on Windows.
+#
+# rtk is not (yet) in the main Scoop bucket, so we fetch the official GitHub
+# release zip, drop it under %LOCALAPPDATA%\rtk\bin, and patch the user PATH.
+# Reruns whenever this script's contents change; the marker below pins the
+# desired version so a chezmoi update triggers an upgrade.
+#
+# To bump rtk: change the version pin below, then `chezmoi apply`.
+################################################################################
+
+$ErrorActionPreference = "Stop"
+
+# ---- Version pin (bump to upgrade) -------------------------------------------
+$DesiredVersion = "0.40.0"
+# ------------------------------------------------------------------------------
+
+$InstallRoot = Join-Path $env:LOCALAPPDATA "rtk"
+$BinDir      = Join-Path $InstallRoot "bin"
+$ExePath     = Join-Path $BinDir "rtk.exe"
+
+function Get-InstalledVersion {
+    if (-not (Test-Path $ExePath)) { return $null }
+    try {
+        $raw = & $ExePath --version 2>$null
+        if ($raw -match 'rtk\s+(\S+)') { return $Matches[1] }
+    } catch {}
+    return $null
+}
+
+$current = Get-InstalledVersion
+
+if ($current -ne $DesiredVersion) {
+    Write-Host "Installing rtk $DesiredVersion (currently: $($current ?? 'none'))..."
+
+    # Pick the right archive for the current architecture.
+    $arch = if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") { "aarch64" } else { "x86_64" }
+    $assetName = "rtk-$arch-pc-windows-msvc.zip"
+    $url = "https://github.com/rtk-ai/rtk/releases/download/v$DesiredVersion/$assetName"
+
+    New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
+    $tmpZip = Join-Path $env:TEMP "rtk-$DesiredVersion-$arch.zip"
+    $tmpDir = Join-Path $env:TEMP "rtk-$DesiredVersion-$arch"
+
+    try {
+        Invoke-WebRequest -Uri $url -OutFile $tmpZip -UseBasicParsing
+        if (Test-Path $tmpDir) { Remove-Item -Recurse -Force $tmpDir }
+        Expand-Archive -Path $tmpZip -DestinationPath $tmpDir -Force
+
+        # The release zip nests the exe one directory deep; find it.
+        $found = Get-ChildItem -Path $tmpDir -Filter "rtk.exe" -Recurse | Select-Object -First 1
+        if (-not $found) { throw "rtk.exe not found in downloaded archive at $tmpDir" }
+        Copy-Item $found.FullName $ExePath -Force
+    }
+    finally {
+        if (Test-Path $tmpZip) { Remove-Item -Force $tmpZip }
+        if (Test-Path $tmpDir) { Remove-Item -Recurse -Force $tmpDir }
+    }
+
+    # Add %LOCALAPPDATA%\rtk\bin to the user PATH if missing.
+    $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if (-not ($userPath -split ';' | Where-Object { $_ -eq $BinDir })) {
+        $newPath = if ([string]::IsNullOrEmpty($userPath)) { $BinDir } else { "$userPath;$BinDir" }
+        [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+        $env:Path = "$env:Path;$BinDir"
+        Write-Host "  Added $BinDir to user PATH (open a new terminal for changes to take effect)."
+    }
+}
+else {
+    Write-Host "rtk $DesiredVersion already installed."
+}
+
+# Make sure the freshly-installed binary is resolvable for the rest of this script.
+if (-not (Test-Path $ExePath)) { throw "rtk.exe missing after install at $ExePath" }
+
+# Privacy default: disable anonymous telemetry.
+& $ExePath telemetry disable | Out-Null
+
+# Claude Code: install global hook + refresh RTK.md.
+if (Test-Path (Join-Path $env:USERPROFILE ".claude")) {
+    & $ExePath init -g --auto-patch | Out-Null
+    Write-Host "  [Claude Code] hook installed and RTK.md refreshed"
+}
+
+# Codex CLI: install global hook + refresh RTK.md.
+if (Test-Path (Join-Path $env:USERPROFILE ".codex")) {
+    & $ExePath init -g --codex --auto-patch | Out-Null
+    Write-Host "  [Codex CLI] hook installed and RTK.md refreshed"
+}
+
+Write-Host "rtk setup complete."
+{{- end }}
