@@ -39,7 +39,7 @@ echo "Configuring rtk ($("$RTK_BIN" --version 2>/dev/null | tr -d '\n'))..."
 
 # Codex CLI: still imperative (rtk init writes RTK.md + AGENTS.md reference).
 if [ -d "$HOME/.codex" ]; then
-  "$RTK_BIN" init -g --codex --auto-patch >/dev/null
+  "$RTK_BIN" init -g --codex >/dev/null
   echo "  [Codex CLI] hook installed and RTK.md refreshed"
 fi
 
