@@ -1,11 +1,38 @@
 ################################################################################
-# ~/.ssh/config (template)
-# Per-host SSH configuration with keys from KeePassXC
+# ~/.ssh/config  —  managed by chezmoi (edit private_dot_ssh/config.tmpl)
+# Per-host SSH configuration. Keys for github/gitlab restored from KeePassXC
+# by run_once_after_ssh_key_restore.sh; other keys are referenced directly.
+################################################################################
+
+################################################################################
+# Global defaults — applied to every host unless a later block overrides
+################################################################################
+Host *
+    # Agent + macOS Keychain: passphrase is remembered securely once entered
+    AddKeysToAgent yes
+{{- if eq .chezmoi.os "darwin" }}
+    UseKeychain yes
+{{- end }}
+
+    # Privacy: hash hostnames in known_hosts so a leak doesn't reveal targets
+    HashKnownHosts yes
+
+    # Liveness: keepalive every 60s, drop after 3 missed (~3 min)
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+
+    # Connection multiplexing: reuse one TCP session across ssh / scp / rsync
+    ControlMaster auto
+    ControlPath ~/.ssh/control/%C
+    ControlPersist 10m
+
+################################################################################
+# GitHub
 ################################################################################
 Host github.com
     HostName github.com
     User git
-    IdentityFile {{ (keepassxc "config/ssh/github.com").SSHKeyPath }}
+    IdentityFile {{ keepassxcAttribute "config/ssh/github.com" "SSHKeyPath" }}
     IdentitiesOnly yes
 
 ################################################################################
@@ -14,5 +41,26 @@ Host github.com
 Host gitlab.epfl.ch
     HostName gitlab.epfl.ch
     User git
-    IdentityFile {{ (keepassxc "config/ssh/gitlab.epfl.ch").SSHKeyPath }}
+    IdentityFile {{ keepassxcAttribute "config/ssh/gitlab.epfl.ch" "SSHKeyPath" }}
+    IdentitiesOnly yes
+
+################################################################################
+# EPFL HPC clusters (Izar, Jed, Kuma)
+################################################################################
+Host izar.hpc.epfl.ch jed.hpc.epfl.ch kuma.hpc.epfl.ch
+    User enbruno
+    IdentityFile ~/.ssh/id_ed25519_epfl_hpc
+    IdentitiesOnly yes
+
+################################################################################
+# Hetzner — tactics (root)
+# Key restored by run_once_after_ssh_key_restore.sh from KeePassXC entry
+# `config/ssh/hetzner-tactics`. Until that entry exists, the local key file
+# (~/.ssh/hetzner-tactics, chmod 600) is the canonical source.
+################################################################################
+Host tactics
+    HostName 178.105.210.150
+    Port 22
+    User root
+    IdentityFile ~/.ssh/hetzner-tactics
     IdentitiesOnly yes

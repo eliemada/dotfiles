@@ -85,6 +85,9 @@
 {{- if eq .chezmoi.os "darwin" }}
 
 [keepassxc]
-    args = ["--all"]
+    # No global args: `--all` here would override per-call `--attributes` and
+    # make keepassxcAttribute return the full multi-line entry dump, producing
+    # invalid JSON in MCP files. Per-attribute lookups (keepassxcAttribute) work
+    # for both default and custom string attributes without it.
     database = "/Users/{{ .chezmoi.username }}/Dropbox/PW.kdbx"
 {{- end }}

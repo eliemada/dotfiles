@@ -80,6 +80,7 @@ mkdir -p "$HOME/.ssh"
 echo "Starting SSH key restoration..."
 dump_key "config/ssh/github.com" "id_ed25519_github"
 dump_key "config/ssh/gitlab.epfl.ch" "id_ed25519_gitlab_epfl"
+dump_key "config/ssh/hetzner-tactics" "hetzner-tactics"
 
 # Clear the password from memory
 unset KEEPASS_PASSWORD
