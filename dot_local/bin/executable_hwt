@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# hwt — new git worktree as a herdr workspace, with a coding agent started inside.
+#
+#   hwt <branch> [task...]          from inside a repo; task is sent as the first prompt
+#   hwt                             interactive (used by the herdr popup key)
+#   HWT_AGENT=codex hwt fix/x       other agent kind (default: claude)
+#   HWT_BASE=origin/main hwt feat/y base ref (default: main if it exists, else HEAD)
+#   claude is started with --dangerously-skip-permissions
+set -euo pipefail
+
+die() { printf 'hwt: %s\n' "$*" >&2; exit 1; }
+
+[[ "${HERDR_ENV:-}" == 1 ]] || die "run this inside a herdr pane"
+command -v jq >/dev/null || die "jq is required (brew install jq)"
+repo=$(git rev-parse --show-toplevel 2>/dev/null) || die "not inside a git repository"
+
+branch=${1:-}
+shift || true
+task="$*"
+interactive=false
+if [[ -z "$branch" ]]; then
+  interactive=true
+  printf 'Repo: %s\n' "$(basename "$repo")"
+  read -r -p 'Branch (e.g. feat/thing): ' branch
+  [[ -n "$branch" ]] || die "no branch given"
+  read -r -p 'Task for the agent (empty = none): ' task
+fi
+
+kind=${HWT_AGENT:-claude}
+if [[ -n "${HWT_BASE:-}" ]]; then
+  base=$HWT_BASE
+elif git -C "$repo" show-ref --verify --quiet refs/heads/main; then
+  base=main
+else
+  base=HEAD
+fi
+
+# Agent names must match [a-z][a-z0-9_-]{0,31} and be unique among live agents.
+name=$(printf '%s' "$branch" | tr '[:upper:]' '[:lower:]' | sed -E 's#.*/##; s/[^a-z0-9_-]+/-/g; s/^[^a-z]+//' | cut -c1-28)
+[[ -n "$name" ]] || name=agent
+if herdr agent get "$name" >/dev/null 2>&1; then
+  name="${name:0:24}-$RANDOM"
+  name=${name:0:32}
+fi
+
+existing=$(git -C "$repo" worktree list --porcelain \
+  | awk -v b="refs/heads/$branch" '/^worktree /{p=substr($0,10)} $0=="branch "b{print p; exit}')
+if [[ -n "$existing" ]]; then
+  out=$(herdr worktree open --cwd "$repo" --path "$existing" --focus) || die "$out"
+elif git -C "$repo" show-ref --verify --quiet "refs/heads/$branch"; then
+  root=$(sed -nE '/^\[worktrees\]/,/^\[/{s/^directory *= *"(.*)"/\1/p;}' "$HOME/.config/herdr/config.toml")
+  root=${root:-$HOME/.herdr/worktrees}; root=${root/#\~/$HOME}
+  dir="$root/$(basename "$repo")/${branch//\//-}"
+  git -C "$repo" worktree add --quiet "$dir" "$branch" || die "git worktree add failed"
+  out=$(herdr worktree open --cwd "$repo" --path "$dir" --focus) || die "$out"
+else
+  out=$(herdr worktree create --cwd "$repo" --branch "$branch" --base "$base" --focus) || die "$out"
+fi
+pane=$(jq -er '.result.root_pane.pane_id // .result.workspace.root_pane.pane_id // empty' <<<"$out") \
+  || pane=$(herdr workspace get "$(jq -er '.result.workspace.workspace_id' <<<"$out")" | jq -er '.result.workspace.panes[0].pane_id // empty')
+[[ -n "$pane" ]] || die "could not find the new workspace pane: $out"
+
+# Python tooling: give the checkout its own .venv so ty / pytest / IDE resolve imports.
+wt=$(herdr pane get "$pane" 2>/dev/null | jq -er '.result.pane.cwd // empty' 2>/dev/null) || wt=""
+[[ -n "$wt" ]] || wt=$(git -C "$repo" worktree list --porcelain \
+  | awk -v b="refs/heads/$branch" '/^worktree /{p=substr($0,10)} $0=="branch "b{print p; exit}')
+if [[ -n "$wt" && -f "$wt/pyproject.toml" ]] && command -v uv >/dev/null; then
+  printf 'hwt: uv sync in %s\n' "$wt"
+  (cd "$wt" && uv sync --quiet) || printf 'hwt: uv sync failed (continuing)\n' >&2
+fi
+
+agent_args=()
+[[ "$kind" == claude ]] && agent_args=(--dangerously-skip-permissions)
+
+herdr agent start "$name" --kind "$kind" --pane "$pane" --timeout 90000 -- ${agent_args[@]+"${agent_args[@]}"} >/dev/null \
+  || die "worktree ready but $kind did not start in $pane"
+
+if [[ -n "$task" ]]; then
+  herdr agent prompt "$name" "$task" >/dev/null
+fi
+
+printf 'hwt: %s on %s (base %s) → agent "%s" in %s\n' "$kind" "$branch" "$base" "$name" "$pane"
+$interactive && sleep 1
+exit 0

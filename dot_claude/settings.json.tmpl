@@ -1,24 +1,7 @@
 {
   "includeCoAuthoredBy": false,
+  "model": "haiku",
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"{{ .chezmoi.homeDir }}/.claude/hooks/gsd-check-update.js\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"{{ .chezmoi.homeDir }}/.claude/hooks/gsd-session-state.sh\""
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
         "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
@@ -47,6 +30,26 @@
             "type": "command",
             "command": "bash \"{{ .chezmoi.homeDir }}/.claude/hooks/gsd-phase-boundary.sh\"",
             "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.git-ai/bin/git-ai checkpoint claude --hook-input stdin"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ ! -f '{{ .chezmoi.homeDir }}/.claude/skills/impeccable/scripts/impeccable' ] || '{{ .chezmoi.homeDir }}/.claude/skills/impeccable/scripts/impeccable' hook",
+            "timeout": 5,
+            "statusMessage": "Checking UI changes"
           }
         ]
       }
@@ -100,21 +103,85 @@
             "command": "rtk hook claude"
           }
         ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{ .chezmoi.homeDir }}/.git-ai/bin/git-ai checkpoint claude --hook-input stdin"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"{{ .chezmoi.homeDir }}/.claude/hooks/gsd-check-update.js\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"{{ .chezmoi.homeDir }}/.claude/hooks/gsd-session-state.sh\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ ! -f '{{ .chezmoi.homeDir }}/.claude/skills/impeccable/scripts/impeccable' ] || '{{ .chezmoi.homeDir }}/.claude/skills/impeccable/scripts/impeccable' hook",
+            "timeout": 5,
+            "statusMessage": "Preparing build session"
+          }
+        ]
+      },
+      {
+        "matcher": "^(startup|resume|clear|compact|fork)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ ! -f '{{ .chezmoi.homeDir }}/.claude/skills/impeccable/scripts/impeccable' ] || '{{ .chezmoi.homeDir }}/.claude/skills/impeccable/scripts/impeccable' hook",
+            "timeout": 30,
+            "statusMessage": "Design deep pass"
+          }
+        ]
       }
     ]
   },
+  "enableArtifact": false,
   "statusLine": {
     "type": "command",
     "command": "node \"{{ .chezmoi.homeDir }}/.claude/hooks/gsd-statusline.js\""
   },
   "enabledPlugins": {
-    "document-skills@anthropic-agent-skills": true,
-    "superpowers@superpowers-marketplace": true,
-    "clangd-lsp@claude-plugins-official": true,
     "astral@astral-sh": true,
-    "everything-claude-code@everything-claude-code": true,
+    "clangd-lsp@claude-plugins-official": true,
     "claude-seo@agricidaniel-seo": true,
-    "ui-ux-pro-max@ui-ux-pro-max-skill": true
+    "document-skills@anthropic-agent-skills": true,
+    "everything-claude-code@everything-claude-code": true,
+    "superpowers@superpowers-marketplace": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "travel-hacker@borski": true,
+    "sentry@claude-plugins-official": true,
+    "expo@claude-plugins-official": true,
+    "resend@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "agricidaniel-seo": {
@@ -128,15 +195,33 @@
         "source": "github",
         "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
       }
+    },
+    "borski": {
+      "source": {
+        "source": "github",
+        "repo": "borski/travel-hacking-toolkit"
+      }
     }
   },
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "medium"
+    }
+  },
+  "fastMode": true,
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "switchModelsOnFlag": true,
+  "skipAutoPermissionPrompt": true,
   "plugins": {
     "superpowers": {
       "enabled": true,
       "path": "{{ .chezmoi.homeDir }}/.claude/plugins/cache/superpowers"
     }
   },
-  "skipAutoPermissionPrompt": true
+  "description": "Impeccable design detector: immediate-tier checks after Edit/Write on UI files, full-rule deep pass on Stop."
 }

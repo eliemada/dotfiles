@@ -1,0 +1,75 @@
+# herdr — tuned for Ghostty on macOS (ABC layout)
+# Reference: herdr --default-config  ·  https://herdr.dev/tui/docs/configuration/
+# Apply live: herdr server reload-config  (or ctrl+b then shift+r)
+
+onboarding = false
+
+[theme]
+# Use Ghostty's own palette and background, so herdr always matches the host
+# (light or dark, whatever Ghostty theme is active).
+name = "terminal"
+auto_switch = false
+
+[terminal]
+new_cwd = "follow"
+kitty_graphics = true
+
+[worktrees]
+# Inside nii-thesis (code/ is gitignored there) so PyCharm, ruff and ty see them.
+# Layout: code/.worktrees/<repo>/<branch-slug>
+directory = "~/Desktop/code/nii-thesis/code/.worktrees"
+
+[keys]
+# Prefix-only bindings. Direct shortcuts live in Ghostty as cmd+… → "ctrl+b <key>"
+# (ctrl+alt is owned by Rectangle Pro, so herdr stays off it).
+open_notification_target = "prefix+o"
+previous_workspace = "prefix+u"
+next_workspace     = "prefix+d"
+next_agent         = "prefix+a"
+previous_agent     = "prefix+shift+a"
+open_worktree      = "prefix+i"
+remove_worktree    = "prefix+shift+i"
+last_pane          = "prefix+semicolon"
+focus_agent        = "alt+1..9"
+
+# New worktree + agent in one go (asks branch and task).
+[[keys.command]]
+key = "prefix+t"
+type = "popup"
+command = "$HOME/.local/bin/hwt"
+width = 70
+height = 9
+
+[[keys.command]]
+key = "prefix+y"
+type = "popup"
+command = "lazygit"
+width = "90%"
+height = "90%"
+
+[ui]
+# Attention queue: blocked agents float to the top of the sidebar.
+agent_panel_sort = "priority"
+status_indicators = "symbols"
+show_agent_labels_on_pane_borders = true
+prompt_new_tab_name = false
+window_title = "{workspace} · {tab}"
+tab_bar_right = [
+  { type = "zoom" },
+  { type = "datetime", format = "%H:%M" },
+]
+tab_bar_right_separator = " · "
+
+[ui.toast]
+delivery = "system"
+delay_seconds = 1
+
+[ui.sound]
+enabled = true
+
+[session]
+resume_agents_on_restore = true
+
+[experimental]
+# Keep recent pane screen history across full server restarts / updates.
+pane_history = true

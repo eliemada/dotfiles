@@ -1,0 +1,90 @@
+# Ghostty — host terminal for herdr
+# Docs: ghostty +show-config --default --docs  ·  reload: cmd+shift+,
+
+# --- Look ---
+# theme removed: Ghostty default (dark), herdr follows it via name = "terminal"
+font-family = JetBrainsMono Nerd Font
+font-size = 14
+window-padding-x = 6
+window-padding-y = 4
+window-padding-balance = true
+window-save-state = always
+mouse-hide-while-typing = true
+
+# --- herdr integration ---
+# Every window is a herdr client (the cmd shortcuts below assume herdr is in front).
+command = /opt/homebrew/bin/herdr
+
+# Option types accents again (option+e e = é, option+c = ç). Only option+1..9 is
+# forwarded as Alt, for herdr's focus_agent = "alt+1..9".
+macos-option-as-alt = false
+keybind = alt+digit_1=esc:1
+keybind = alt+digit_2=esc:2
+keybind = alt+digit_3=esc:3
+keybind = alt+digit_4=esc:4
+keybind = alt+digit_5=esc:5
+keybind = alt+digit_6=esc:6
+keybind = alt+digit_7=esc:7
+keybind = alt+digit_8=esc:8
+keybind = alt+digit_9=esc:9
+
+# herdr copies via OSC 52; let it reach the macOS clipboard.
+clipboard-write = allow
+
+# --- Keys ---
+# Claude Code / agents: shift+enter inserts a newline.
+keybind = shift+enter=text:\x1b\r
+
+shell-integration-features = ssh-terminfo,ssh-env
+
+# --- cmd shortcuts → herdr (each sends ctrl+b then a key; no clash with Rectangle's ctrl+alt) ---
+# panes
+keybind = super+d=text:\x02v
+keybind = super+shift+d=text:\x02-
+keybind = super+w=text:\x02x
+keybind = super+enter=text:\x02z
+keybind = super+alt+arrow_left=text:\x02h
+keybind = super+alt+arrow_down=text:\x02j
+keybind = super+alt+arrow_up=text:\x02k
+keybind = super+alt+arrow_right=text:\x02l
+keybind = super+semicolon=text:\x02;
+# tabs
+keybind = super+t=text:\x02c
+keybind = super+shift+bracket_left=text:\x02p
+keybind = super+shift+bracket_right=text:\x02n
+keybind = super+digit_1=text:\x021
+keybind = super+digit_2=text:\x022
+keybind = super+digit_3=text:\x023
+keybind = super+digit_4=text:\x024
+keybind = super+digit_5=text:\x025
+keybind = super+digit_6=text:\x026
+keybind = super+digit_7=text:\x027
+keybind = super+digit_8=text:\x028
+keybind = super+digit_9=text:\x029
+# workspaces and navigation
+keybind = super+arrow_up=text:\x02u
+keybind = super+arrow_down=text:\x02d
+keybind = super+shift+n=text:\x02N
+keybind = super+e=text:\x02w
+keybind = super+g=text:\x02g
+keybind = super+b=text:\x02b
+keybind = super+slash=text:\x02?
+# agents
+keybind = super+o=text:\x02o
+keybind = ctrl+tab=text:\x02a
+keybind = ctrl+shift+tab=text:\x02A
+# worktrees
+keybind = super+shift+t=text:\x02t
+keybind = super+shift+g=text:\x02G
+keybind = super+shift+o=text:\x02i
+keybind = super+shift+x=text:\x02I
+keybind = super+shift+l=text:\x02y
+keybind = super+1=text:1
+keybind = super+2=text:2
+keybind = super+3=text:3
+keybind = super+4=text:4
+keybind = super+5=text:5
+keybind = super+6=text:6
+keybind = super+7=text:7
+keybind = super+8=text:8
+keybind = super+9=text:9
