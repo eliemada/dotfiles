@@ -1,0 +1,377 @@
+dot_claude/hooks/executable_herdr-agent-state.sh
+  s_624b6ffad80628::t_49c20227c774a4 1-100
+dot_claude/rules/common/agents.md
+  s_624b6ffad80628::t_0ff6aafb619181 1-49
+dot_claude/rules/common/coding-style.md
+  s_624b6ffad80628::t_496f03199fc735 1-48
+dot_claude/rules/common/development-workflow.md
+  s_624b6ffad80628::t_430e77ff9330bf 1-37
+dot_claude/rules/common/git-workflow.md
+  s_624b6ffad80628::t_0f3880c3612e85 1-24
+dot_claude/rules/common/hooks.md
+  s_624b6ffad80628::t_3f258b1899ac0f 1-30
+dot_claude/rules/common/patterns.md
+  s_624b6ffad80628::t_ff3fcceabde01b 1-31
+dot_claude/rules/common/performance.md
+  s_624b6ffad80628::t_c28ec4b887d7eb 1-55
+dot_claude/rules/common/security.md
+  s_624b6ffad80628::t_be839dbd99b45e 1-29
+dot_claude/rules/common/testing.md
+  s_624b6ffad80628::t_1e2c5c1266d832 1-29
+dot_claude/rules/python/coding-style.md
+  s_624b6ffad80628::t_cf9c8d8ce1fcfd 1-42
+dot_claude/rules/python/hooks.md
+  s_624b6ffad80628::t_fa36f623183dc5 1-19
+dot_claude/rules/python/patterns.md
+  s_624b6ffad80628::t_3d308e6c970cdf 1-39
+dot_claude/rules/python/security.md
+  s_624b6ffad80628::t_2c4e5f4db69080 1-30
+dot_claude/rules/python/testing.md
+  s_624b6ffad80628::t_2ab3a4529a0982 1-38
+dot_claude/rules/typescript/coding-style.md
+  s_624b6ffad80628::t_aa08077607c379 1-65
+dot_claude/rules/typescript/hooks.md
+  s_624b6ffad80628::t_56fb4e893e9e2f 1-22
+dot_claude/rules/typescript/patterns.md
+  s_624b6ffad80628::t_79d7b3c4b39dce 1-52
+dot_claude/rules/typescript/security.md
+  s_624b6ffad80628::t_acbc5bb8c99f8f 1-28
+dot_claude/rules/typescript/testing.md
+  s_624b6ffad80628::t_57fa871ebf48b2 1-18
+dot_claude/settings.json.tmpl
+  s_624b6ffad80628::t_6ca04bcb52d9ea 3,5,7,11-12,17,21-22,25,27,31-32,37,41,46,50-52,106-164,168,175,177-184,198-212,215-216,218-219,226
+dot_claude/skills/apple-design/README.md
+  s_624b6ffad80628::t_4df64172bc7bbd 1-198
+dot_claude/skills/apple-design/SKILL.md
+  s_624b6ffad80628::t_a29bcc77645b5e 1-422
+dot_claude/skills/apple-design/references/code-audit.md
+  s_624b6ffad80628::t_82b81dd21963c8 1-104
+dot_claude/skills/apple-design/references/cross-platform.md
+  s_624b6ffad80628::t_86818314e63654 1-45
+dot_claude/skills/apple-design/references/hig-lookup.md
+  s_624b6ffad80628::t_555d8d917ccb10 1-243
+dot_claude/skills/apple-design/references/hig/accessibility.md
+  s_624b6ffad80628::t_21ed44145f6bd0 1-149
+dot_claude/skills/apple-design/references/hig/action-sheets.md
+  s_624b6ffad80628::t_95518016c09c63 1-41
+dot_claude/skills/apple-design/references/hig/activity-views.md
+  s_624b6ffad80628::t_575b442a950cd0 1-55
+dot_claude/skills/apple-design/references/hig/airplay.md
+  s_624b6ffad80628::t_5c3ae00dae589b 1-97
+dot_claude/skills/apple-design/references/hig/alerts.md
+  s_624b6ffad80628::t_58766a64bf56d6 1-98
+dot_claude/skills/apple-design/references/hig/app-clips.md
+  s_624b6ffad80628::t_9a73bb5158be11 1-275
+dot_claude/skills/apple-design/references/hig/app-icons.md
+  s_624b6ffad80628::t_d8fc07f5c518b8 1-113
+dot_claude/skills/apple-design/references/hig/app-shortcuts.md
+  s_624b6ffad80628::t_0fb57c6b10f23f 1-77
+dot_claude/skills/apple-design/references/hig/apple-in-app-purchase.md
+  s_624b6ffad80628::t_46c1cde0e034a0 1-150
+dot_claude/skills/apple-design/references/hig/apple-pay.md
+  s_624b6ffad80628::t_85d7025778d02a 1-291
+dot_claude/skills/apple-design/references/hig/apple-pencil-and-scribble.md
+  s_624b6ffad80628::t_baa4c98b153ce9 1-106
+dot_claude/skills/apple-design/references/hig/augmented-reality.md
+  s_624b6ffad80628::t_3bf28a408f77be 1-169
+dot_claude/skills/apple-design/references/hig/boxes.md
+  s_624b6ffad80628::t_25b0b2b3974767 1-37
+dot_claude/skills/apple-design/references/hig/branding.md
+  s_624b6ffad80628::t_d90674a0c72416 1-46
+dot_claude/skills/apple-design/references/hig/buttons.md
+  s_624b6ffad80628::t_4124d7e00d6598 1-147
+dot_claude/skills/apple-design/references/hig/charting-data.md
+  s_624b6ffad80628::t_5d6bc11807deda 1-57
+dot_claude/skills/apple-design/references/hig/charts.md
+  s_624b6ffad80628::t_1d141690803a29 1-125
+dot_claude/skills/apple-design/references/hig/collaboration-and-sharing.md
+  s_624b6ffad80628::t_bcee5892e4aba4 1-52
+dot_claude/skills/apple-design/references/hig/collections.md
+  s_624b6ffad80628::t_a63ff091eb6b32 1-37
+dot_claude/skills/apple-design/references/hig/color-wells.md
+  s_624b6ffad80628::t_c9a942c9a0a624 1-29
+dot_claude/skills/apple-design/references/hig/color.md
+  s_624b6ffad80628::t_0f966f5f118eaa 1-193
+dot_claude/skills/apple-design/references/hig/column-views.md
+  s_624b6ffad80628::t_696d3a9329b968 1-33
+dot_claude/skills/apple-design/references/hig/combo-boxes.md
+  s_624b6ffad80628::t_5eb028312bf905 1-32
+dot_claude/skills/apple-design/references/hig/context-menus.md
+  s_624b6ffad80628::t_71b9d7ab1f121a 1-79
+dot_claude/skills/apple-design/references/hig/controls.md
+  s_624b6ffad80628::t_83994111b7746e 1-68
+dot_claude/skills/apple-design/references/hig/dark-mode.md
+  s_624b6ffad80628::t_e078c920bd01ef 1-76
+dot_claude/skills/apple-design/references/hig/design-principles.md
+  s_624b6ffad80628::t_5d021a03e4641e 1-132
+dot_claude/skills/apple-design/references/hig/designing-for-games.md
+  s_624b6ffad80628::t_489b7eec8ef0b4 1-99
+dot_claude/skills/apple-design/references/hig/designing-for-ios.md
+  s_624b6ffad80628::t_cf5fb5a6c90805 1-36
+dot_claude/skills/apple-design/references/hig/designing-for-ipados.md
+  s_624b6ffad80628::t_c9607b066ef491 1-34
+dot_claude/skills/apple-design/references/hig/designing-for-iphone-duo.md
+  s_624b6ffad80628::t_f62e6e21e7be0d 1-150
+dot_claude/skills/apple-design/references/hig/designing-for-macos.md
+  s_624b6ffad80628::t_cbde59b9f715b7 1-37
+dot_claude/skills/apple-design/references/hig/disclosure-controls.md
+  s_624b6ffad80628::t_0823a8a47a3ffb 1-53
+dot_claude/skills/apple-design/references/hig/dock-menus.md
+  s_624b6ffad80628::t_6c1d7326bdadec 1-30
+dot_claude/skills/apple-design/references/hig/drag-and-drop.md
+  s_624b6ffad80628::t_e38bace4124ec5 1-96
+dot_claude/skills/apple-design/references/hig/edit-menus.md
+  s_624b6ffad80628::t_17a918892e0ee9 1-69
+dot_claude/skills/apple-design/references/hig/entering-data.md
+  s_624b6ffad80628::t_399f39e4f24dcf 1-53
+dot_claude/skills/apple-design/references/hig/feedback.md
+  s_624b6ffad80628::t_4bf73927bd7c3b 1-42
+dot_claude/skills/apple-design/references/hig/file-management.md
+  s_624b6ffad80628::t_53134f085f029d 1-108
+dot_claude/skills/apple-design/references/hig/focus-and-selection.md
+  s_624b6ffad80628::t_a3626b93a5b735 1-64
+dot_claude/skills/apple-design/references/hig/game-controls.md
+  s_624b6ffad80628::t_2cb774c19e621c 1-100
+dot_claude/skills/apple-design/references/hig/gauges.md
+  s_624b6ffad80628::t_3ae0f46295d77c 1-57
+dot_claude/skills/apple-design/references/hig/generative-ai.md
+  s_624b6ffad80628::t_48bd1b48699c7e 1-95
+dot_claude/skills/apple-design/references/hig/gestures.md
+  s_624b6ffad80628::t_eb5848a94a430d 1-89
+dot_claude/skills/apple-design/references/hig/going-full-screen.md
+  s_624b6ffad80628::t_a14f946eac1aaf 1-60
+dot_claude/skills/apple-design/references/hig/gyro-and-accelerometer.md
+  s_624b6ffad80628::t_ad7e9129867348 1-27
+dot_claude/skills/apple-design/references/hig/home-screen-quick-actions.md
+  s_624b6ffad80628::t_2cd8fc8ab37c63 1-35
+dot_claude/skills/apple-design/references/hig/icloud.md
+  s_624b6ffad80628::t_dd2dd2eee8cac7 1-44
+dot_claude/skills/apple-design/references/hig/icons.md
+  s_624b6ffad80628::t_ce8eaf8467b6a0 1-195
+dot_claude/skills/apple-design/references/hig/image-views.md
+  s_624b6ffad80628::t_7ea9223670e9eb 1-48
+dot_claude/skills/apple-design/references/hig/image-wells.md
+  s_624b6ffad80628::t_f3dd9c5a193733 1-27
+dot_claude/skills/apple-design/references/hig/images.md
+  s_624b6ffad80628::t_54f52cf79c4b33 1-59
+dot_claude/skills/apple-design/references/hig/inclusion.md
+  s_624b6ffad80628::t_76accdc14f9df9 1-134
+dot_claude/skills/apple-design/references/hig/keyboards.md
+  s_624b6ffad80628::t_60b65dab20b5fc 1-202
+dot_claude/skills/apple-design/references/hig/labels.md
+  s_624b6ffad80628::t_7517820207f41d 1-58
+dot_claude/skills/apple-design/references/hig/launching.md
+  s_624b6ffad80628::t_ee0505c5b3ef73 1-54
+dot_claude/skills/apple-design/references/hig/layout.md
+  s_624b6ffad80628::t_b152ae8fb279df 1-110
+dot_claude/skills/apple-design/references/hig/liquid-glass.md
+  s_624b6ffad80628::t_92f47c29acddb7 1-138
+dot_claude/skills/apple-design/references/hig/lists-and-tables.md
+  s_624b6ffad80628::t_68211122a1bcee 1-67
+dot_claude/skills/apple-design/references/hig/live-activities.md
+  s_624b6ffad80628::t_308632e43f2578 1-267
+dot_claude/skills/apple-design/references/hig/live-viewing-apps.md
+  s_624b6ffad80628::t_8d4984cb5fc723 1-68
+dot_claude/skills/apple-design/references/hig/loading.md
+  s_624b6ffad80628::t_9389054b8d22ff 1-44
+dot_claude/skills/apple-design/references/hig/machine-learning.md
+  s_624b6ffad80628::t_6d192a0fc7e94d 1-291
+dot_claude/skills/apple-design/references/hig/managing-accounts.md
+  s_624b6ffad80628::t_5bdf759e7c56f1 1-69
+dot_claude/skills/apple-design/references/hig/managing-notifications.md
+  s_624b6ffad80628::t_1f99c6f3e6eb47 1-68
+dot_claude/skills/apple-design/references/hig/maps.md
+  s_624b6ffad80628::t_e566c05e001206 1-125
+dot_claude/skills/apple-design/references/hig/materials.md
+  s_624b6ffad80628::t_eefc449ce8f5c5 1-98
+dot_claude/skills/apple-design/references/hig/menus.md
+  s_624b6ffad80628::t_f9942c7bb74db7 1-118
+dot_claude/skills/apple-design/references/hig/modality.md
+  s_624b6ffad80628::t_b2f5a4b7532a33 1-58
+dot_claude/skills/apple-design/references/hig/motion.md
+  s_624b6ffad80628::t_23e9b28b0a864f 1-55
+dot_claude/skills/apple-design/references/hig/multitasking.md
+  s_624b6ffad80628::t_30056c06b046ad 1-71
+dot_claude/skills/apple-design/references/hig/nfc.md
+  s_624b6ffad80628::t_521f207e39ff7d 1-40
+dot_claude/skills/apple-design/references/hig/notifications.md
+  s_624b6ffad80628::t_c6fd0493e3324e 1-89
+dot_claude/skills/apple-design/references/hig/offering-help.md
+  s_624b6ffad80628::t_2843aaaaa5454f 1-71
+dot_claude/skills/apple-design/references/hig/onboarding.md
+  s_624b6ffad80628::t_cfce9abab51748 1-57
+dot_claude/skills/apple-design/references/hig/outline-views.md
+  s_624b6ffad80628::t_4a1a0d1c95f350 1-49
+dot_claude/skills/apple-design/references/hig/page-controls.md
+  s_624b6ffad80628::t_cf9c85fb1bd14c 1-71
+dot_claude/skills/apple-design/references/hig/panels.md
+  s_624b6ffad80628::t_02a421f30afa78 1-58
+dot_claude/skills/apple-design/references/hig/path-controls.md
+  s_624b6ffad80628::t_d59b3143419223 1-29
+dot_claude/skills/apple-design/references/hig/pickers.md
+  s_624b6ffad80628::t_ac05cde028dbdc 1-67
+dot_claude/skills/apple-design/references/hig/playing-audio.md
+  s_624b6ffad80628::t_45e2f1d26c2904 1-73
+dot_claude/skills/apple-design/references/hig/playing-haptics.md
+  s_624b6ffad80628::t_f5d36b17b44c76 1-93
+dot_claude/skills/apple-design/references/hig/playing-video.md
+  s_624b6ffad80628::t_b03a042b3ed331 1-85
+dot_claude/skills/apple-design/references/hig/pointing-devices.md
+  s_624b6ffad80628::t_fbb51adaded83d 1-165
+dot_claude/skills/apple-design/references/hig/pop-up-buttons.md
+  s_624b6ffad80628::t_0a4d437b33a88c 1-49
+dot_claude/skills/apple-design/references/hig/popovers.md
+  s_624b6ffad80628::t_e372051590a54f 1-58
+dot_claude/skills/apple-design/references/hig/printing.md
+  s_624b6ffad80628::t_995d9fa8bc2071 1-39
+dot_claude/skills/apple-design/references/hig/privacy.md
+  s_624b6ffad80628::t_1e087a9eb78572 1-131
+dot_claude/skills/apple-design/references/hig/progress-indicators.md
+  s_624b6ffad80628::t_092813d68e2f9b 1-72
+dot_claude/skills/apple-design/references/hig/pull-down-buttons.md
+  s_624b6ffad80628::t_58901bea6d6743 1-53
+dot_claude/skills/apple-design/references/hig/rating-indicators.md
+  s_624b6ffad80628::t_02e12898e64256 1-31
+dot_claude/skills/apple-design/references/hig/ratings-and-reviews.md
+  s_624b6ffad80628::t_fb32d99c218547 1-36
+dot_claude/skills/apple-design/references/hig/right-to-left.md
+  s_624b6ffad80628::t_14976404bb5bc1 1-81
+dot_claude/skills/apple-design/references/hig/scroll-views.md
+  s_624b6ffad80628::t_192899e8d5bb95 1-74
+dot_claude/skills/apple-design/references/hig/search-fields.md
+  s_624b6ffad80628::t_0204f3ef25c638 1-111
+dot_claude/skills/apple-design/references/hig/searching.md
+  s_624b6ffad80628::t_ddb1b55fb3695a 1-55
+dot_claude/skills/apple-design/references/hig/segmented-controls.md
+  s_624b6ffad80628::t_6250ad4d1a18b6 1-62
+dot_claude/skills/apple-design/references/hig/settings.md
+  s_624b6ffad80628::t_0fddb203ac1c0b 1-68
+dot_claude/skills/apple-design/references/hig/sf-symbols.md
+  s_624b6ffad80628::t_7b48eb0ce8a439 1-173
+dot_claude/skills/apple-design/references/hig/sheets.md
+  s_624b6ffad80628::t_a1ce86b4e293cc 1-87
+dot_claude/skills/apple-design/references/hig/sidebars.md
+  s_624b6ffad80628::t_dbc962c5001b80 1-66
+dot_claude/skills/apple-design/references/hig/sign-in-with-apple.md
+  s_624b6ffad80628::t_3e1f836bde250d 1-175
+dot_claude/skills/apple-design/references/hig/siri.md
+  s_624b6ffad80628::t_4729dd8a0d4514 1-119
+dot_claude/skills/apple-design/references/hig/sliders.md
+  s_624b6ffad80628::t_a507d77bec95d1 1-57
+dot_claude/skills/apple-design/references/hig/snippets.md
+  s_624b6ffad80628::t_aeef31f642abd3 1-52
+dot_claude/skills/apple-design/references/hig/split-views.md
+  s_624b6ffad80628::t_029d2893469f07 1-60
+dot_claude/skills/apple-design/references/hig/status-bars.md
+  s_624b6ffad80628::t_d5a4bfd809a162 1-21
+dot_claude/skills/apple-design/references/hig/steppers.md
+  s_624b6ffad80628::t_600680eb40e943 1-30
+dot_claude/skills/apple-design/references/hig/tab-bars.md
+  s_624b6ffad80628::t_a7680e66587a17 1-76
+dot_claude/skills/apple-design/references/hig/tab-views.md
+  s_624b6ffad80628::t_da4620702a666b 1-51
+dot_claude/skills/apple-design/references/hig/text-fields.md
+  s_624b6ffad80628::t_2f5fc8eabbe8e7 1-60
+dot_claude/skills/apple-design/references/hig/text-views.md
+  s_624b6ffad80628::t_0af3d369732f24 1-40
+dot_claude/skills/apple-design/references/hig/the-menu-bar.md
+  s_624b6ffad80628::t_70ccce62b7fd4d 1-266
+dot_claude/skills/apple-design/references/hig/toggles.md
+  s_624b6ffad80628::t_dc7ea111b04007 1-85
+dot_claude/skills/apple-design/references/hig/token-fields.md
+  s_624b6ffad80628::t_9ff32ea7bb7d01 1-35
+dot_claude/skills/apple-design/references/hig/toolbars.md
+  s_624b6ffad80628::t_cf5052107b397f 1-119
+dot_claude/skills/apple-design/references/hig/typography.md
+  s_624b6ffad80628::t_9fdec12c60d3f8 1-649
+dot_claude/skills/apple-design/references/hig/undo-and-redo.md
+  s_624b6ffad80628::t_e5edc5d3f4e8ab 1-40
+dot_claude/skills/apple-design/references/hig/virtual-keyboards.md
+  s_624b6ffad80628::t_13a07512dcf145 1-69
+dot_claude/skills/apple-design/references/hig/voiceover.md
+  s_624b6ffad80628::t_a9e866251f5659 1-55
+dot_claude/skills/apple-design/references/hig/web-views.md
+  s_624b6ffad80628::t_defc09442f1d1d 1-21
+dot_claude/skills/apple-design/references/hig/widgets.md
+  s_624b6ffad80628::t_c526ecfca794af 1-295
+dot_claude/skills/apple-design/references/hig/windows.md
+  s_624b6ffad80628::t_1ad08af9df052a 1-92
+dot_claude/skills/apple-design/references/hig/writing.md
+  s_624b6ffad80628::t_334c08050eacaa 1-71
+dot_claude/skills/apple-design/scripts/executable_pull-hig.mjs
+  s_624b6ffad80628::t_330b2516667653 1-786
+dot_claude/skills/asd-ste100/LICENSE
+  s_624b6ffad80628::t_6f0efba809515f 1-21
+dot_claude/skills/asd-ste100/README.md
+  s_624b6ffad80628::t_d54c9cc7b3702d 1-113
+dot_claude/skills/asd-ste100/SKILL.md
+  s_624b6ffad80628::t_e012dfe122b7c9 1-139
+dot_claude/skills/asd-ste100/examples/before-after.md
+  s_624b6ffad80628::t_45e3a1ad90d935 1-94
+dot_claude/skills/asd-ste100/examples/linter-edge-cases.md
+  s_624b6ffad80628::t_15ca4912fefb8c 1-14
+dot_claude/skills/asd-ste100/references/writing-rules.md
+  s_624b6ffad80628::t_e1ab85fea88df4 1-59
+dot_claude/skills/asd-ste100/scripts/executable_ste-lint.py
+  s_624b6ffad80628::t_bfd8629b417ce4 1-2048
+dot_claude/skills/docling-pdf/SKILL.md
+  s_624b6ffad80628::t_cc7630d0139ac5 1-55
+dot_claude/skills/docling-pdf/references/docling-cli.md
+  s_624b6ffad80628::t_5eca16904fb7a5 1-42
+dot_claude/skills/docling-pdf/scripts/executable_convert_pdf.sh
+  s_624b6ffad80628::t_c4a4a84d9e4b59 1-37
+dot_claude/skills/pdf-typst-diff/SKILL.md
+  s_624b6ffad80628::t_05ad13ab88c709 1-169
+dot_claude/skills/pdf-typst-diff/references/techniques.md
+  s_624b6ffad80628::t_a6e0ed0d3336c8 1-114
+dot_claude/skills/pdf-typst-diff/scripts/pdf_edit.py
+  s_624b6ffad80628::t_e69d25e243e6aa 1-176
+dot_claude/skills/pdf-typst-diff/scripts/pdf_to_typst.py
+  s_624b6ffad80628::t_8d0de49d4c992e 1-118
+dot_claude/skills/pdf-typst-diff/scripts/pdf_to_typst_faithful.py
+  s_624b6ffad80628::t_6de3b5b6070318 1-240
+dot_claude/skills/pdf-typst-diff/scripts/typst_diff.py
+  s_624b6ffad80628::t_300e194f402dec 1-213
+dot_claude/skills/reverse-engineer-anything/private_SKILL.md
+  s_624b6ffad80628::t_ca09c1c4ff3b29 1-221
+dot_claude/skills/reverse-engineer-anything/references/private_android-applications.md
+  s_624b6ffad80628::t_acdf76efb598f4 1-34
+dot_claude/skills/reverse-engineer-anything/references/private_connection-and-recovery.md
+  s_624b6ffad80628::t_ef664be51b63da 1-127
+dot_claude/skills/reverse-engineer-anything/references/private_evidence-workflows.md
+  s_624b6ffad80628::t_5796fdf7529adf 1-48
+dot_claude/skills/reverse-engineer-anything/references/private_javascript-applications.md
+  s_624b6ffad80628::t_14face0db7cee9 1-149
+dot_claude/skills/reverse-engineer-anything/references/private_native-and-artifacts.md
+  s_624b6ffad80628::t_cda988ab813da7 1-167
+dot_claude/skills/reverse-engineer-anything/references/private_runtime-observation.md
+  s_624b6ffad80628::t_4d3eb3b557a3e8 1-28
+dot_config/gh/private_config.yml
+  s_624b6ffad80628::t_bbe64011ebb3f1 1-27
+dot_config/herdr/config.toml
+  s_624b6ffad80628::t_4f6af09f812e75 1-75
+dot_config/private_atuin/private_config.toml
+  s_624b6ffad80628::t_c66ec4d095d284 1-280
+dot_config/zed/private_settings.json
+  s_624b6ffad80628::t_c4c4d41064edc3 1-42
+dot_local/bin/executable_hwt
+  s_624b6ffad80628::t_f6b282d551c42b 1-84
+"private_Library/private_Application Support/com.mitchellh.ghostty/config"
+  s_624b6ffad80628::t_ee1be1749a4c68 1-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a23fc508408ce5b0b9e15cacf02cd7c7ae5b4202",
+  "prompts": {},
+  "sessions": {
+    "s_624b6ffad80628": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1e743a-ac0c-414d-bd43-3d55a7340906",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    }
+  }
+}
