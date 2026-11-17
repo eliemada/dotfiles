@@ -1,0 +1,19 @@
+dot_Brewfile
+  s_624b6ffad80628::t_527169fd097b4d 16-19,30-40,74-76,96,113-121,129-140,147-148,158-163,170-171,178,197,208-216,227-232,245-249,264-267,274,301-326
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f3dd6489f79285511e77eba2296980ac68b812c0",
+  "prompts": {},
+  "sessions": {
+    "s_624b6ffad80628": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1e743a-ac0c-414d-bd43-3d55a7340906",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    }
+  }
+}
