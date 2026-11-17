@@ -3,6 +3,9 @@
 # run_onchange_brew_bundle.sh.tmpl
 # Keep Homebrew apps in sync with Brewfile when it changes
 # Supports macOS (full Brewfile) and Linux (CLI-only Brewfile.linux)
+# Re-run trigger (changes whenever a Brewfile changes):
+# .Brewfile       {{ include "dot_Brewfile" | sha256sum }}
+# .Brewfile.linux {{ include "dot_Brewfile.linux" | sha256sum }}
 ################################################################################
 set -euo pipefail
 

@@ -1,76 +1,88 @@
-# .chezmoiignore
-# Files to ignore based on OS
+# .chezmoiignore — what NOT to install, per OS and per feature flag.
+# Patterns match TARGET paths (relative to ~). Scripts match as
+# `.chezmoiscripts/<NN-name>` (the run_*/once/onchange prefixes are stripped).
 # See: https://www.chezmoi.io/reference/special-files-and-directories/chezmoiignore/
 
+# Repo-only files
+README.md
+.claude/settings.local.json
+
+# Junk that must never be captured by `chezmoi add`
+**/.DS_Store
+**/.venv
+**/__pycache__
+**/node_modules
+
 ################################################################################
-# macOS-only files (ignore on Linux and Windows)
+# Not macOS
 ################################################################################
 {{- if ne .chezmoi.os "darwin" }}
-
-# GitHub identity (personal)
+.Brewfile
 .gitconfig-github
-
-# macOS-specific scripts
-run_once_configure-macos.sh
-run_once_configure-dock.sh
-
-# Brewfile (Linux uses .Brewfile.linux, Windows uses Scoop)
-.Brewfile
-
-# KeePassXC-dependent files (personal password manager)
-run_once_after_ssh_key_restore.sh
+.chezmoiscripts/50-macos-defaults.sh
+.chezmoiscripts/55-macos-dock.sh
+# Ghostty config lives under ~/Library on macOS only
+Library
+# KeePassXC-backed (personal Mac only)
+.chezmoiscripts/10-ssh-key-restore.sh
 .ssh/config
-
 {{- end }}
 
 ################################################################################
-# Linux/macOS only (ignore on Windows)
+# Not Linux
 ################################################################################
-{{- if eq .chezmoi.os "windows" }}
-
-# Brewfiles (Windows uses Scoop)
-.Brewfile
+{{- if ne .chezmoi.os "linux" }}
 .Brewfile.linux
-
-# SSH config (Windows handles SSH differently)
-.ssh/config
-
+.chezmoiscripts/60-linux-font-cache.sh
 {{- end }}
 
 ################################################################################
-# Windows-only files (ignore on macOS and Linux)
+# Not Windows
 ################################################################################
 {{- if ne .chezmoi.os "windows" }}
-
-# Scoop config
-.config/scoop/
-
-# PowerShell profile
-Documents/
-
+.chezmoiscripts/*.ps1
+.config/scoop
+Documents
 {{- end }}
 
 ################################################################################
-# Opt-in features (toggled by ~/.config/chezmoi/chezmoi.toml)
+# Windows (no POSIX shell setup)
 ################################################################################
-# EPFL VPN helpers — installed only when `epfl_vpn = true` in chezmoi.toml.
-# Default falls back to "macOS only" for installs that predate the flag, so
-# existing personal Macs keep working without re-running `chezmoi init`.
+{{- if eq .chezmoi.os "windows" }}
+.chezmoiscripts/*.sh
+.Brewfile
+.Brewfile.linux
+.ssh/config
+.local/bin
+.shrc.d
+{{- end }}
+
+################################################################################
+# Encrypted files need the age key (~/.config/chezmoi/key.txt).
+# Machines without it simply skip them instead of failing `chezmoi apply`.
+################################################################################
+{{- if not (stat (joinPath .chezmoi.homeDir ".config/chezmoi/key.txt")) }}
+.ssh/config.d
+{{- end }}
+
+################################################################################
+# Feature flags (set at `chezmoi init`, stored in ~/.config/chezmoi/chezmoi.toml)
+################################################################################
 {{- $epfl_vpn := eq .chezmoi.os "darwin" -}}
 {{- if hasKey . "epfl_vpn" }}{{ $epfl_vpn = .epfl_vpn }}{{ end }}
 {{- if not $epfl_vpn }}
-.shrc.d/epfl-vpn.sh
+.shrc.d/70-epfl-vpn.sh
 {{- end }}
 
-# Claude Code MCP servers — gated by personal_mcps / work_mcps flags.
 {{- $personal_mcps := eq .chezmoi.os "darwin" -}}
 {{- if hasKey . "personal_mcps" }}{{ $personal_mcps = .personal_mcps }}{{ end }}
-{{- $work_mcps := false -}}
-{{- if hasKey . "work_mcps" }}{{ $work_mcps = .work_mcps }}{{ end }}
 {{- if not $personal_mcps }}
 .claude/mcp-servers/moodle.json
 .claude/mcp-servers/edstem.json
 {{- end }}
+
+{{- $work_mcps := false -}}
+{{- if hasKey . "work_mcps" }}{{ $work_mcps = .work_mcps }}{{ end }}
 {{- if not $work_mcps }}
 .claude/mcp-servers/atlassian.json
 .claude/mcp-servers/slack.json
