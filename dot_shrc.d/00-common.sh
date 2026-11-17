@@ -11,6 +11,12 @@ export PYTHONSTARTUP="$HOME/.pythonrc"
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 
+# Claude Code: disable the built-in self-updater. The `claude` binary is managed
+# by chezmoi (.chezmoiexternal.toml.tmpl pulls it from GitHub releases `latest`),
+# so chezmoi is the source of truth — let it handle updates, not the background
+# updater. Force a refresh anytime with: chezmoi apply --refresh-externals
+export DISABLE_AUTOUPDATER=1
+
 ################################################################################
 # Modern CLI tools integration
 ################################################################################

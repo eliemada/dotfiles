@@ -1,0 +1,8 @@
+################################################################################
+# ~/.gitconfig-madauto
+# Git identity for Madauto repos (remote git@github-madauto:...)
+# noreply address is tied to the madauto-mg account, so it survives email changes
+################################################################################
+[user]
+	name = "Elie BRUNO"
+	email = "293809874+madauto-mg@users.noreply.github.com"

@@ -36,3 +36,29 @@
     refreshPeriod   = "8760h"   # yearly
     exact           = true
 {{- end }}
+
+################################################################################
+# Claude Code CLI (macOS + Linux)
+# Pulled straight from the official GitHub releases `latest` channel so we always
+# track the true newest version, instead of waiting on the Homebrew cask autobump
+# bot (which trails each release by hours). The release ships a .tar.gz containing
+# a single `claude` binary; archive-file extracts just that file to ~/.local/bin.
+#
+# NOTE: Claude Code's built-in self-updater is disabled via DISABLE_AUTOUPDATER=1
+# (set in dot_shrc.d/00-common.sh) so chezmoi remains the source of truth for this
+# binary. Run `chezmoi apply --refresh-externals` to force an immediate update.
+################################################################################
+{{- $ccAsset := "" }}
+{{- if eq .chezmoi.os "darwin" }}
+{{-   if eq .chezmoi.arch "arm64" }}{{ $ccAsset = "claude-darwin-arm64.tar.gz" }}{{ else }}{{ $ccAsset = "claude-darwin-x64.tar.gz" }}{{ end }}
+{{- else if eq .chezmoi.os "linux" }}
+{{-   if eq .chezmoi.arch "arm64" }}{{ $ccAsset = "claude-linux-arm64.tar.gz" }}{{ else }}{{ $ccAsset = "claude-linux-x64.tar.gz" }}{{ end }}
+{{- end }}
+{{- if $ccAsset }}
+[".local/bin/claude"]
+    type          = "archive-file"
+    url           = "https://github.com/anthropics/claude-code/releases/latest/download/{{ $ccAsset }}"
+    path          = "claude"
+    executable    = true
+    refreshPeriod = "24h"
+{{- end }}
