@@ -5,8 +5,20 @@
 ################################################################################
 
 ################################################################################
+# Private hosts (servers, IPs, accounts) live in ~/.ssh/config.d/, which chezmoi
+# stores age-encrypted. Include must come first: ssh uses the first value it sees,
+# so these blocks win over the Host * defaults below.
+################################################################################
+Include ~/.ssh/config.d/*
+
+################################################################################
 # Global defaults — applied to every host unless a later block overrides
 ################################################################################
+# github-madauto resolves to github.com, so it needs its own multiplexing socket;
+# otherwise it reuses an open eliemada connection (ssh uses the first value set).
+Host github-madauto
+    ControlPath ~/.ssh/control/github-madauto-%C
+
 Host *
     # Agent + macOS Keychain: passphrase is remembered securely once entered
     AddKeysToAgent yes
@@ -36,6 +48,17 @@ Host github.com
     IdentitiesOnly yes
 
 ################################################################################
+# GitHub — Madauto work account (madauto-mg)
+# Remotes use git@github-madauto:madauto-mg/<repo>.git to select this key.
+# Key not yet in KeePassXC; local file is the canonical source until then.
+################################################################################
+Host github-madauto
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_github_madauto
+    IdentitiesOnly yes
+
+################################################################################
 # GitLab EPFL
 ################################################################################
 Host gitlab.epfl.ch
@@ -52,15 +75,7 @@ Host izar.hpc.epfl.ch jed.hpc.epfl.ch kuma.hpc.epfl.ch
     IdentityFile ~/.ssh/id_ed25519_epfl_hpc
     IdentitiesOnly yes
 
-################################################################################
-# Hetzner — tactics (root)
-# Key restored by run_once_after_ssh_key_restore.sh from KeePassXC entry
-# `config/ssh/hetzner-tactics`. Until that entry exists, the local key file
-# (~/.ssh/hetzner-tactics, chmod 600) is the canonical source.
-################################################################################
-Host tactics
-    HostName 178.105.210.150
-    Port 22
-    User root
-    IdentityFile ~/.ssh/hetzner-tactics
-    IdentitiesOnly yes
+# Off campus / without the Mac VPN: tunnel through Ravinala's epfl-vpn container
+# (Hermes-Agent/tools/epfl-vpn). Direct when the host is reachable.
+Match host izar.hpc.epfl.ch,jed.hpc.epfl.ch,kuma.hpc.epfl.ch !exec "nc -z -G 2 %h 22 >/dev/null 2>&1"
+    ProxyCommand ssh unraid docker exec -i epfl-vpn nc %h %p

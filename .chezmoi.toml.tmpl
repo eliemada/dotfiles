@@ -4,9 +4,20 @@
 # Supports: macOS, Linux, Windows
 ################################################################################
 
+################################################################################
+# Encryption (age) — private files are stored as encrypted_*.age in the repo.
+# The identity (private key) lives only in ~/.config/chezmoi/key.txt and is
+# backed up in KeePassXC as `config/chezmoi/age-key` (attachment key.txt).
+# New machine: restore key.txt BEFORE `chezmoi apply`.
+################################################################################
+encryption = "age"
+[age]
+    identity  = "~/.config/chezmoi/key.txt"
+    recipient = "age1709fwy2dm6mp3qdh2n5ex8frpdj49k6ju9gz507yzwgkqv2mg4vqx4nwk7"
+
 [data]
-    name = "{{ promptString "name" }}"
-    email = "{{ promptString "email" }}"
+    name = "{{ promptStringOnce . "name" "Full name" }}"
+    email = "{{ promptStringOnce . "email" "Email" }}"
 {{- if eq .chezmoi.os "darwin" }}
     keepassdb = "/Users/{{ .chezmoi.username }}/Dropbox/PW.kdbx"
 {{- end }}
