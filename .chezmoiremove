@@ -1,0 +1,7 @@
+# Targets that were renamed/moved in the 2026-11 reorg; delete stale copies.
+.bash_aliases
+.bash_functions
+.shrc.d/00-common.sh
+.shrc.d/epfl-vpn.sh
+.shrc.d/git-alias.sh.pre
+README.md

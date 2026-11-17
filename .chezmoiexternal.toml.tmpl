@@ -27,7 +27,7 @@
 
 ################################################################################
 # JetBrains Mono Nerd Font (Linux only — macOS uses brew cask, Windows scoop)
-# fc-cache is still needed after extraction; see run_once_install_nerd_font.sh
+# fc-cache is still needed after extraction; see .chezmoiscripts/run_onchange_60-linux-font-cache.sh.tmpl
 ################################################################################
 {{- if eq .chezmoi.os "linux" }}
 [".local/share/fonts/JetBrainsMonoNerdFont"]
@@ -45,7 +45,7 @@
 # a single `claude` binary; archive-file extracts just that file to ~/.local/bin.
 #
 # NOTE: Claude Code's built-in self-updater is disabled via DISABLE_AUTOUPDATER=1
-# (set in dot_shrc.d/00-common.sh) so chezmoi remains the source of truth for this
+# (set in dot_shrc.d/50-env-tools.sh) so chezmoi remains the source of truth for this
 # binary. Run `chezmoi apply --refresh-externals` to force an immediate update.
 ################################################################################
 {{- $ccAsset := "" }}
@@ -62,3 +62,13 @@
     executable    = true
     refreshPeriod = "24h"
 {{- end }}
+
+################################################################################
+# Claude Code skills that live in their own upstream repos (all platforms).
+# Own skills are tracked directly under dot_claude/skills/. Installer-managed
+# skills (GSD, mattpocock/skills) are NOT tracked; see README "Claude Code".
+################################################################################
+[".claude/skills/stop-slop"]
+    type          = "git-repo"
+    url           = "https://github.com/hardikpandya/stop-slop.git"
+    refreshPeriod = "168h"

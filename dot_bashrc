@@ -3,37 +3,10 @@
 # Bash startup: source shared snippets and includes
 ################################################################################
 
-# Source shared shell configuration
-for file in $(find ~/.shrc.d -name '*.sh.pre' -type f) ; do
-  source "$file" ;
+# Shared snippets: ~/.shrc.d, sourced in filename order (same as zsh).
+for file in ~/.shrc.d/*.sh.pre ~/.shrc.d/*.sh ~/.shrc.d/*.bash; do
+  [ -r "$file" ] && . "$file"
 done
-
-for file in $(find ~/.shrc.d -name '*.sh' -type f) ; do
-  source "$file" ;
-done
-
-for file in $(find ~/.shrc.d -name '*.bash' -type f) ; do
-  source "$file" ;
-done
-
-################################################################################
-# Includes
-################################################################################
-
-# Load functions declarations from separate configuration file.
-if [ -f "$HOME"/.bash_functions ]; then
-    \. "$HOME"/.bash_functions
-fi
-
-# Load alias definitions from separate configuration file.
-if [ -f "$HOME"/.bash_aliases ]; then
-    \. "$HOME"/.bash_aliases
-fi
-
-# Load custom code from separate configuration file.
-if [ -f "$HOME"/.bash_extras ]; then
-    \. "$HOME"/.bash_extras
-fi
 
 ################################################################################
 # Zoxide (MUST be last to override cd properly)
@@ -41,5 +14,3 @@ fi
 if command -v zoxide > /dev/null 2>&1; then
   eval "$(zoxide init bash --cmd cd)"
 fi
-export PATH=$PATH:/Users/eliebruno/.runai/bin
-source <(/Users/eliebruno/.runai/bin/runai completion bash)

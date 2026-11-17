@@ -68,9 +68,8 @@ setopt HIST_IGNORE_SPACE
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-for file in $(find ~/.shrc.d -name '*.sh.pre' -type f) ; do 
-  source "$file" ;
-done
+# Early snippets (*.sh.pre) load before oh-my-zsh, in filename order.
+for file in ~/.shrc.d/*.sh.pre(N); do source "$file"; done
 
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
@@ -102,28 +101,10 @@ source $ZSH/oh-my-zsh.sh
 
 
 ################################################################################
-# Includes
+# Shared snippets: ~/.shrc.d/NN-*.sh, sourced in filename order (same as bash).
+# 10 functions · 20-23 aliases · 30 local (~/.bash_extras) · 50 env/tools · 60+ extras
 ################################################################################
-
-# Load cross-compatible Bash functions declarations from separate file.
-if [ -f "$HOME"/.bash_functions ]; then
-    \. "$HOME"/.bash_functions
-fi
-
-# Load cross-compatible Bash alias definitions from separate file.
-if [ -f "$HOME"/.bash_aliases ]; then
-    \. "$HOME"/.bash_aliases
-fi
-
-# Load cross-compatible Bash custom code from separate file.
-if [ -f "$HOME"/.bash_extras ]; then
-    \. "$HOME"/.bash_extras
-fi
-
-# Load shared shell snippets (including Starship init) after OMZ
-for file in $(find ~/.shrc.d -name '*.sh' -type f) ; do
-  source "$file"
-done
+for file in ~/.shrc.d/*.sh(N); do source "$file"; done
 
 ################################################################################
 # Zoxide (MUST be last to override cd properly)
@@ -131,44 +112,3 @@ done
 if command -v zoxide > /dev/null 2>&1; then
   eval "$(zoxide init zsh --cmd z)"
 fi
-
-# bun completions
-[ -s "/Users/eliebruno/.bun/_bun" ] && source "/Users/eliebruno/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-export PATH=$PATH:/Users/eliebruno/.runai/bin
-source <(/Users/eliebruno/.runai/bin/runai completion zsh)
-
-################################################################################
-# tactics / justice-raw R2 browsing
-################################################################################
-# Loads R2_* from the tactics project .env, remaps to AWS_* for stu, then opens
-# the TUI. Run `justice` from anywhere.
-justice() {
-  local env_file="$HOME/Desktop/code/tactics/.env"
-  [[ -f "$env_file" ]] || { echo "missing $env_file"; return 1; }
-  set -a; source "$env_file"; set +a
-  AWS_ACCESS_KEY_ID="$R2_ACCESS_KEY_ID" \
-  AWS_SECRET_ACCESS_KEY="$R2_SECRET_ACCESS_KEY" \
-  AWS_DEFAULT_REGION=auto \
-    stu -e "$R2_S3_ENDPOINT" --region auto -b "$R2_BUCKET" --path-style always "$@"
-}
-
-# rclone-based helpers against the [justice] remote
-alias jls='rclone lsf justice:justice-raw'              # jls _catalog/items.parquet/
-alias jtree='rclone tree justice:justice-raw'           # jtree _catalog --max-depth 2
-alias jdu='rclone ncdu justice:justice-raw'             # interactive disk-usage browser
-alias jsize='rclone size justice:justice-raw'           # total bytes/object count
-
-# s5cmd against justice (fast parallel ls/cp)
-js5() {
-  local env_file="$HOME/Desktop/code/tactics/.env"
-  [[ -f "$env_file" ]] || { echo "missing $env_file"; return 1; }
-  set -a; source "$env_file"; set +a
-  AWS_ACCESS_KEY_ID="$R2_ACCESS_KEY_ID" \
-  AWS_SECRET_ACCESS_KEY="$R2_SECRET_ACCESS_KEY" \
-  AWS_REGION=auto \
-    s5cmd --endpoint-url "$R2_S3_ENDPOINT" "$@"
-}
