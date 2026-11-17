@@ -13,7 +13,10 @@
 tap "buo/cask-upgrade"
 tap "eugenmayer/dockersync"
 tap "heroku/brew"
-tap "RfidResearchGroup/proxmark3"
+# tap "rfidresearchgroup/proxmark3"   # not installed; uncomment to restore
+tap "crmne/tap"
+tap "mobai-app/tap"
+tap "mongodb/brew"
 
 ################################################################################
 # SHELL & DEVELOPMENT ENVIRONMENT
@@ -24,6 +27,17 @@ brew "bash-completion"                      # Autocompletions for `bash`
 brew "asdf"                                 # Extendable version manager
 brew "direnv"                               # Directory specific env variables
 brew "autoconf"                             # Configuration shell script maker
+brew "zsh"
+brew "chezmoi"
+brew "age"                                  # chezmoi file encryption
+brew "mise"                                 # runtime version manager
+brew "rustup"
+brew "go"
+brew "node"
+brew "python@3.12"
+brew "python@3.13"
+brew "dotnet"
+brew "sbt"
 
 ################################################################################
 # MODERN CLI TOOLS
@@ -57,6 +71,9 @@ brew "parallel"                              # Run jobs in parallel
 brew "pre-commit"                           # Framework for managing and maintaining multi-language pre-commit hooks
 brew "prek"                                 # A modern replacement for 'pre-co'
 brew "git-lfs"                              # Git extension for versioning large files
+brew "git-delta"                            # chezmoi diff pager
+brew "stu"                                  # S3/R2 TUI browser
+brew "rainfrog"                             # database TUI
 
 ################################################################################
 # SYSTEM UTILITIES
@@ -76,6 +93,7 @@ brew "tmux"                                 # Terminal multiplexer
 brew "tmuxinator"                           # Tmux session controller
 brew "less"                                 # Terminal pager
 brew "lesspipe"                             # Input filter for `less`
+brew "herdr"                                # agent multiplexer (config: ~/.config/herdr)
 
 ################################################################################
 # TEXT EDITORS
@@ -92,20 +110,42 @@ brew "wget"                                 # Web content downloader
 brew "rsync"                                # File transfer and sync tool
 brew "unison"                               # Unison file synchronizer
 brew "telnet"                               # Virtual terminal client
+brew "rclone"
+brew "s5cmd"
+brew "socat"
+brew "openconnect"                          # EPFL VPN (epfl_vpn flag)
+brew "vpn-slice"
+brew "freerdp"
+brew "hcloud"                               # Hetzner Cloud CLI
+brew "opentofu"
+brew "msgvault"
 
 ################################################################################
 # DEVELOPMENT TOOLS
 ################################################################################
 
 brew "gh"                                   # GitHub CLI
-brew "npm"                                  # Node package manager
 brew "uv"                                   # UV - A python manager
+brew "actionlint"
+brew "gitleaks"
+brew "cargo-deny"
+brew "lychee"                               # link checker
+brew "ninja"
+brew "boost"
+brew "libomp"
+brew "graphviz"
+brew "mermaid-cli"
+brew "yosys"
+brew "ns-3"
+brew "mobai-app/tap/simslim"
 
 ################################################################################
 # AI / LLM TOOLING
 ################################################################################
 
 brew "rtk"                                  # Rust Token Killer - CLI proxy that filters noisy command output to cut LLM token usage 60-90%
+brew "ccusage"                              # Claude Code usage stats
+brew "gdown"
 
 ################################################################################
 # IMAGE & VIDEO OPTIMIZATION
@@ -115,19 +155,27 @@ brew "jpegoptim"                            # JPEG compressor/optimizer
 brew "optipng"                              # PNG compressor/optimizer
 brew "tidy-html5"                           # HTML corrector
 brew "latexindent"                           # LaTeX indent tool
+brew "imagemagick"
+brew "pngquant"
+brew "potrace"
+brew "exiftool"
+brew "ghostscript"
+brew "zbar"
 
 ################################################################################
 # DATABASES
 ################################################################################
 
-brew "postgresql", restart_service: true    # PostgreSQL RDBMS
 brew "mariadb"                              # MariaDB RDBMS
+brew "postgresql@14"
+brew "postgresql@17"
 
 ################################################################################
 # CONTAINERIZATION
 ################################################################################
 
 brew "podman"                               # Container management
+brew "podman-compose"
 
 ################################################################################
 # SYSTEM LIBRARIES
@@ -146,6 +194,7 @@ cask "librewolf"                            # Privacy-focused Firefox fork, remo
 cask "brave-browser"                        # Privacy-focused Chromium browser
 cask "firefox"                              # Mozilla Firefox browser
 cask "brave-browser"                        # Privacy-focused Chromium browser
+cask "google-chrome"
 
 ################################################################################
 # GUI APPLICATIONS - DEVELOPMENT
@@ -156,6 +205,15 @@ cask "jetbrains-toolbox"                    # JetBrains IDE Toolbox
 cask "ghostty"                              # Terminal emulator
 cask "basictex"                             # Minimal TeX Live distribution
 cask "monitorcontrol"                       # Control external monitor brightness
+cask "zed"
+cask "cursor"
+cask "antigravity"
+cask "android-studio"
+cask "android-commandlinetools"
+cask "temurin"
+cask "pgadmin4"
+cask "logisim-evolution"
+cask "openscad"
 
 ################################################################################
 # GUI APPLICATIONS - PRODUCTIVITY
@@ -166,6 +224,12 @@ cask "notion"                               # Note-taking and productivity
 cask "obsidian"                             # Knowledge management
 cask "anki"                                 # Flashcard learning app
 cask "jordanbaird-ice"                      # Menu bar
+cask "claude"
+cask "libreoffice"
+cask "meetily"
+cask "dropbox"
+cask "onedrive"
+cask "proton-drive"
 
 ################################################################################
 # GUI APPLICATIONS - COMMUNICATION
@@ -178,6 +242,11 @@ cask "telegram"                             # Telegram desktop
 cask "signal"                               # Signal desktop
 cask "spotify"                              # Music streaming
 cask "plex"                                # Media server
+cask "thunderbird"
+cask "proton-mail"
+cask "proton-mail-bridge"
+cask "windows-app"
+cask "rustdesk"
 
 ################################################################################
 # GUI APPLICATIONS - UTILITIES
@@ -192,13 +261,17 @@ cask "omnissa-horizon-client"               # VPN client for work
 cask "wireshark-app"                        # Network protocol analyzer
 cask "logi-options+"                        # Logitech device manager
 cask "tailscale-app"                        # Mesh VPN
+cask "obs"
+cask "transmission"
+cask "openmtp"
+cask "crmne/tap/spotifast"
 
 
 ################################################################################
 # HARDWARE & SECURITY TOOLS
 ################################################################################
 
-brew "rfidresearchgroup/proxmark3/proxmark3"                            # RFID research toolkit
+# brew "rfidresearchgroup/proxmark3/proxmark3"                            # RFID research toolkit
 
 ################################################################################
 # GUI APPLICATIONS - NETWORKING & SECURITY
@@ -225,3 +298,29 @@ cask "android-platform-tools"              # Android SDK platform-tools
 ################################################################################
 
 cask "font-jetbrains-mono-nerd-font"    # JetBrains Mono Nerd Font
+
+################################################################################
+# DOCUMENTS & PDF
+################################################################################
+brew "pandoc"
+brew "poppler"
+brew "qpdf"
+brew "verapdf"
+brew "libredwg"
+
+################################################################################
+# SECURITY & REVERSE ENGINEERING
+################################################################################
+brew "apkeep"
+brew "jadx"
+brew "capstone"
+brew "hashcat"
+brew "john-jumbo"
+
+################################################################################
+# FONTS
+################################################################################
+cask "font-inter"
+cask "font-barlow"
+cask "font-fira-sans-condensed"
+cask "font-tex-gyre-schola-math"
