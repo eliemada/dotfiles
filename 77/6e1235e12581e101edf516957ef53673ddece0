@@ -1,0 +1,49 @@
+.chezmoiexternal.toml.tmpl
+  s_624b6ffad80628::t_c9fd317c33f322 30,48,65-74
+.chezmoiremove
+  s_624b6ffad80628::t_36a994a411715a 1-7
+dot_bashrc
+  s_624b6ffad80628::t_f709c0c4c4a7af 6-8
+dot_shrc.d/00-git-aliases.sh.pre
+  s_624b6ffad80628::t_7c34260fcbc521 2
+dot_shrc.d/10-functions.sh
+  s_624b6ffad80628::t_8f896101d1a1c9 4
+dot_shrc.d/20-aliases-core.sh
+  s_624b6ffad80628::t_5ed953117b405d 4-6
+dot_shrc.d/21-aliases-system.sh
+  s_624b6ffad80628::t_9ae0d35b6ad2e8 1-155
+dot_shrc.d/22-aliases-dev.sh
+  s_624b6ffad80628::t_bc41fa53e70b5c 1-72
+dot_shrc.d/23-aliases-paths.sh
+  s_624b6ffad80628::t_c5c97523838e82 1-106
+dot_shrc.d/30-local.sh
+  s_624b6ffad80628::t_dea6eeeaab37e5 1-7
+dot_shrc.d/50-env-tools.sh
+  s_624b6ffad80628::t_5a55793aa5663d 3
+dot_shrc.d/55-toolchains.sh
+  s_624b6ffad80628::t_307c2298a42655 1-19
+dot_shrc.d/60-git-ai.sh
+  s_624b6ffad80628::t_67df03bf07efeb 1-6
+dot_shrc.d/61-claude-abl.sh
+  s_624b6ffad80628::t_ef1f066c5dcf15 1-14
+dot_shrc.d/65-tactics-r2.sh
+  s_624b6ffad80628::t_c7d11d4241c508 1-34
+dot_zshrc
+  s_624b6ffad80628::t_828d84046d404b 71-72,104-105,107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "776e1235e12581e101edf516957ef53673ddece0",
+  "prompts": {},
+  "sessions": {
+    "s_624b6ffad80628": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1e743a-ac0c-414d-bd43-3d55a7340906",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    }
+  }
+}
