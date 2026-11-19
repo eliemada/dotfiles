@@ -1,0 +1,19 @@
+.chezmoiscripts/run_once_20-install-cli-tools.sh
+  s_624b6ffad80628::t_38710a64f6a5d6 3,8,13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d625ab3bd1f79ec280ec72e4403dc67e30e3d5f8",
+  "prompts": {},
+  "sessions": {
+    "s_624b6ffad80628": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1e743a-ac0c-414d-bd43-3d55a7340906",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    }
+  }
+}
