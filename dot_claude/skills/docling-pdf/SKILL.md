@@ -1,55 +1,45 @@
 ---
 name: docling-pdf
-description: >
-  Convert PDF documents to Markdown using docling via uv for high-quality text extraction with OCR, table detection, and image export.
-  Use this skill whenever Claude needs to extract text or content from a PDF file — whether to read it, analyze it, answer questions about it, or process its contents.
-  Triggers: user provides a PDF file path, asks to read/extract/convert/parse a PDF, references PDF content, or asks questions that require reading a PDF.
-  Do NOT use for creating or editing PDFs — only for extracting content from existing PDFs.
+description: Extract a PDF into clean Markdown with docling (OCR, table structure, figures exported as images). Use when the plain Read tool isn't enough, meaning a scanned or image-only PDF, tables or multi-column layouts that must stay structured, a long paper or report you want as a reusable .md file, or text that must be fed into another tool. Not needed for quickly reading a short born-digital PDF (use Read), and not for editing or creating PDFs (use pdf-typst-diff or the pdf skill).
 ---
 
-# Docling PDF Extraction
+# Docling: PDF → Markdown
 
-Extract text from PDFs using `docling` via `uvx` (zero-install, uv handles the package).
+docling runs layout analysis, table-structure recognition and OCR, so it keeps tables and
+reading order that simple text extraction loses. It's slow, though (seconds to minutes per
+document, plus a one-time model download of about 1 GB on first use). Try the Read tool first
+for short, text-based PDFs, and reach for this when structure or OCR matters.
 
-## Workflow
-
-### 1. Convert the PDF
-
-Run the bundled script:
-
-```bash
-bash <skill_path>/scripts/convert_pdf.sh "/path/to/file.pdf"
-```
-
-This outputs to `/tmp/docling/<filename>/` with:
-- `<filename>.md` — the full extracted Markdown
-- Referenced PNG images in the same directory
-
-### 2. Read the extracted Markdown
-
-After conversion, read the `.md` file with the Read tool to get the PDF contents.
-
-### 3. Read extracted images if needed
-
-If the markdown references images (e.g., `![](image_0.png)`), read them with the Read tool using the full path in `/tmp/docling/<filename>/`.
-
-### 4. Save to memory if the user requests it
-
-If the user wants the extracted text persisted across sessions, save the markdown content to `~/.claude/projects/<project>/memory/` using Write tool.
-
-## Handling special cases
-
-- **Password-protected PDFs**: Add `--pdf-password <pass>` to the docling command
-- **Scanned/image PDFs with poor results**: Re-run with `--force-ocr` flag
-- **macOS OCR optimization**: Add `--ocr-engine ocrmac` for faster processing
-- **Large PDFs timing out**: Add `--document-timeout 300` for a 5-minute timeout
-
-For the full CLI reference, see [references/docling-cli.md](references/docling-cli.md).
-
-## Manual invocation
-
-If the script doesn't fit the need, run docling directly:
+## Convert
 
 ```bash
-uvx docling "/path/to/file.pdf" --to md --image-export-mode referenced --ocr --output /tmp/docling/<stem>
+bash scripts/convert_pdf.sh "/path/to/file.pdf" [output_dir]
 ```
+
+(The path is relative to this skill's directory.) It runs `uvx docling convert`, so nothing needs
+installing besides `uv`. By default it writes to `/tmp/docling/<stem>/`:
+
+- `<stem>.md`: the full document as Markdown
+- `*.png`: figures, referenced from the Markdown
+
+Then Read the `.md` file. Read the referenced images only if the question depends on a figure.
+On the first run, tell the user the model download may take a few minutes, so a silent wait
+doesn't look like a hang.
+
+## Options worth knowing
+
+Pass extra flags by running docling directly:
+
+```bash
+uvx docling convert "/path/file.pdf" --to md --image-export-mode referenced --ocr --output /tmp/docling/<stem> [flags]
+```
+
+| Situation | Flag |
+|---|---|
+| Scanned PDF and the text came out poor | `--force-ocr` |
+| macOS, want faster OCR | `--ocr-engine ocrmac` (macOS only) |
+| Very large document times out | `--document-timeout 600` |
+| Password-protected | `--pdf-password '<password>'` (ask the user; never guess) |
+| Only some pages needed | `--page-range 1-10` |
+
+Full CLI notes: `references/docling-cli.md`.

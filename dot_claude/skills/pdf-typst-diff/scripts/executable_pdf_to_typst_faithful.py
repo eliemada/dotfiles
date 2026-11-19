@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["pymupdf>=1.24"]
+# ///
 """High-fidelity PDF → Typst: preserves the exact visual appearance.
 
 Two modes:

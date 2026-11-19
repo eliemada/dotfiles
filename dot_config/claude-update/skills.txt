@@ -6,3 +6,10 @@
 # obsidian-vault, qa, request-refactor-plan, write-a-skill, zoom-out) are frozen
 # copies tracked directly in dot_claude/skills/.
 mattpocock/skills code-review codebase-design diagnosing-bugs domain-modeling git-guardrails-claude-code grill-me grill-with-docs handoff improve-codebase-architecture migrate-to-shoehorn prototype scaffold-exercises setup-matt-pocock-skills setup-pre-commit tdd teach to-spec to-tickets triage writing-beats writing-fragments writing-shape
+
+# Single-skill repos (SKILL.md at the repo root, matched by its name: field)
+danyuchn/asd-ste100-skill asd-ste100
+dickwu/apple-design-skill apple-design
+hardikpandya/stop-slop stop-slop
+# REA: the skill lives inside the tool's repo
+morluto/rea reverse-engineer-anything

@@ -7,7 +7,7 @@
 #   claude-update --verbose  same, but also print to the terminal
 #
 # Steps (each one independent; a failure is logged and the rest still run):
-#   1. Claude Code binary + git-external skills (chezmoi externals)
+#   1. Claude Code binary (chezmoi external)
 #   2. Skill packages from ~/.config/claude-update/skills.txt (archive download, via mirror)
 #   3. Own skills that are git clones in ~/.claude/skills (git pull --ff-only)
 #   4. GSD (get-shit-done) for Claude Code
@@ -51,8 +51,7 @@ has() { command -v "$1" >/dev/null 2>&1; }
 
 update_externals() {
   has chezmoi || { echo "chezmoi missing"; return 1; }
-  chezmoi apply --force --refresh-externals=always \
-    "$HOME/.local/bin/claude" "$SKILLS_DIR/stop-slop"
+  chezmoi apply --force --refresh-externals=always "$HOME/.local/bin/claude"
 }
 
 # Skill packages: download each repo as an archive from $DOTFILES_GITHUB_BASE
@@ -69,9 +68,14 @@ update_skill_packages() {
     fi
     for name in $rest; do
       dir=$(find "$tmp" -type f -name SKILL.md -path "*/$name/SKILL.md" | head -1)
+      # Single-skill repos keep SKILL.md at the top: match on its `name:` field
+      if [[ -z "$dir" ]]; then
+        dir=$(find "$tmp" -mindepth 2 -maxdepth 2 -name SKILL.md -exec grep -l -m1 "^name: *$name *$" {} + | head -1)
+      fi
       if [[ -z "$dir" ]]; then echo "$src: skill $name not found"; rc=1; continue; fi
       dir=$(dirname "$dir")
       rm -rf "${SKILLS_DIR:?}/$name" && cp -R "$dir" "$SKILLS_DIR/$name"
+      rm -rf "$SKILLS_DIR/$name/.git" "$SKILLS_DIR/$name/.github"
     done
     echo "$src: $(wc -w <<<"$rest" | tr -d ' ') skills synced"
     rm -rf "$tmp"
@@ -84,7 +88,6 @@ update_git_skills() {
   for d in "$SKILLS_DIR"/*/.git; do
     [[ -e "$d" ]] || continue
     d=${d%/.git}
-    [[ "$(basename "$d")" == stop-slop ]] && continue   # chezmoi external
     echo "git pull $(basename "$d")"
     git -C "$d" pull --ff-only -q || return 1
   done

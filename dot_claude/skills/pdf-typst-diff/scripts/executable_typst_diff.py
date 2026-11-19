@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# ///
 """Diff two Typst (.typ) files: unified text diff, side-by-side HTML,
 JSON statistics, and an annotated Typst file with insertions/deletions
 marked using #strike and #highlight.

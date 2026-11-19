@@ -22,7 +22,7 @@ mkdir -p "$OUTPUT_DIR"
 echo "Converting: $PDF_PATH"
 echo "Output dir: $OUTPUT_DIR"
 
-uvx docling \
+uvx docling convert \
   "$PDF_PATH" \
   --to md \
   --image-export-mode referenced \

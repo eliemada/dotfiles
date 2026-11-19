@@ -73,15 +73,3 @@
     executable    = true
     refreshPeriod = "24h"
 {{- end }}
-
-################################################################################
-# Claude Code skills that live in their own upstream repos (all platforms).
-# Own skills are tracked directly under dot_claude/skills/. Installer-managed
-# skills (GSD, mattpocock/skills) are NOT tracked; see README "Claude Code".
-################################################################################
-[".claude/skills/stop-slop"]
-    type            = "archive"
-    url             = "{{ $gh }}/hardikpandya/stop-slop/archive/HEAD.tar.gz"
-    stripComponents = 1
-    exact           = true
-    refreshPeriod   = "168h"
