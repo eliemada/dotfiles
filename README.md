@@ -1,170 +1,147 @@
 # Dotfiles (chezmoi)
 
-Cross-platform dotfiles managed with [chezmoi](https://www.chezmoi.io): **macOS** (main), **Linux**, **Windows**.
+One repo, two real profiles:
 
-> **Rule of thumb:** never edit `~/.zshrc`, `~/.ssh/config`, etc. directly. Edit with
-> `chezmoi edit <file>` or capture a change with `chezmoi re-add <file>`. Per-machine
-> tweaks that should *not* be shared go in `~/.bash_extras` (untracked, sourced by `30-local.sh`).
+| | **Mac** (personal) | **Linux** (work, e.g. QRT) |
+|---|---|---|
+| Shell (zsh + oh-my-zsh, starship, aliases, functions) | ✓ | ✓ |
+| Modern CLI tools (eza, bat, fzf, rg, zoxide, atuin, delta, lazygit, …) | Brewfile | Brewfile.linux |
+| herdr + `hwt`, Claude Code, skills, rules, plugins | ✓ | ✓ |
+| Daily auto-update of Claude + skills + plugins | launchd | systemd timer (cron fallback) |
+| Git aliases / defaults | ✓ | ✓ |
+| Git identity | personal, per remote | work email asked at `chezmoi init` |
+| GUI apps, Ghostty, macOS defaults, Dock | ✓ | — |
+| KeePassXC, personal GitHub/GitLab keys, personal MCPs, EPFL VPN | ✓ | — |
+| Servers / internal hosts | `~/.ssh/config.d/*` — local, never in this repo | same |
+
+Windows is still supported (PowerShell profile + Scoop) but not actively used.
+
+> **Rule of thumb:** don't edit `~/.zshrc`, `~/.gitconfig`, … directly. Use `chezmoi edit <file>`,
+> or `chezmoi re-add <file>` after a live edit. Machine-only tweaks go in `~/.bash_extras`
+> (untracked); machine-only SSH hosts in `~/.ssh/config.d/<name>` (untracked).
 
 ## New machine
 
+**Mac**
 ```bash
-# macOS: install Homebrew first, then
-brew install chezmoi age keepassxc
-
-# 1. Restore the age key (decrypts private SSH hosts). Without it, encrypted
-#    files are skipped, not fatal.
-mkdir -p ~/.config/chezmoi
-keepassxc-cli attachment-export ~/Dropbox/PW.kdbx config/chezmoi/age-key key.txt ~/.config/chezmoi/key.txt
-chmod 600 ~/.config/chezmoi/key.txt
-
-# 2. Init (asks name/email + feature flags once) and apply
-chezmoi init --apply eliemada/dotfiles
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install chezmoi keepassxc
+chezmoi init --apply eliemada/dotfiles      # KeePassXC asks for the master password
 ```
 
-Linux: same, with `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply eliemada/dotfiles`.
-Windows: `scoop install chezmoi; chezmoi init --apply eliemada/dotfiles`.
+**Linux (QRT)** — needs sudo for the first run only (apt packages + login shell):
+```bash
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply eliemada/dotfiles
+# asks: name, git email (use the work address), feature flags (answer no)
+exec zsh
+```
+The first apply: installs apt basics + zsh (script 00) → Linuxbrew + tools (10) → codex/gemini
+(20) → rtk (30) → enables the daily updater, whose first run installs GSD + skills (70).
+
+> Before installing AI tooling on a work machine, check the employer's policy on which tools
+> may see internal code. Nothing from a work machine is synced back into this repo.
+
+## Claude Code on both machines
+
+**What is shared (via this repo):** `CLAUDE.md`, `RTK.md`, `settings.json`, `rules/`, hooks,
+own skills, the skill-package list, herdr config. Same agent behaviour everywhere.
+
+**What is NOT shared:** sessions/history (`~/.claude/projects`), credentials, MCP secrets.
+Each machine logs in to Claude Code itself.
+
+**Daily updater** — `~/.local/bin/claude-update` (log: `~/.local/state/claude-update.log`):
+1. Claude Code binary + `stop-slop` (chezmoi externals, from GitHub releases)
+2. skill packages in `~/.config/claude-update/skills.txt` — installs missing, updates all
+3. own skills that are git clones (`git pull --ff-only`)
+4. GSD (`get-shit-done-cc`); its rewrite of hook paths in settings.json is undone
+5. plugin marketplaces + every installed plugin
+
+Run it by hand anytime: `claude-update --verbose`. Restart Claude Code afterwards.
+Add a skill package: append a line to `dot_config/claude-update/skills.txt`.
+After changing settings with `/config` or installing a plugin: `claude-settings-capture`, then commit.
+
+**Working across Mac + remote Linux (herdr):**
+- Run herdr on each machine. On the remote one: `ssh <host> -t herdr` — the herdr server keeps
+  agents running when the SSH connection drops; reattach with the same command.
+- Or use the herdr desktop app (`brew install --cask herdr-app`), which shows local and SSH
+  machines' spaces and agents in one window.
+- `claude --remote-control` exposes a session to claude.ai / the mobile app.
+- New worktree + agent in one go: `hwt <branch> [task]` (or `prefix+t` in herdr).
 
 ## Layout
 
 ```
-.chezmoi.toml.tmpl          config: age encryption, prompts, feature flags, KeePassXC
-.chezmoiignore              what is skipped per OS / per flag (patterns match TARGET paths)
-.chezmoiexternal.toml.tmpl  things chezmoi downloads: oh-my-zsh + plugins, claude binary,
-                            nerd font (Linux), stop-slop skill
+.chezmoi.toml.tmpl          prompts (name, email), feature flags, KeePassXC (Mac)
+.chezmoiignore              what each OS / flag skips (patterns match TARGET paths)
+.chezmoiexternal.toml.tmpl  downloads: oh-my-zsh + plugins, claude binary, nerd font (Linux), stop-slop
 .chezmoiremove              stale targets deleted after renames
-.chezmoiscripts/            run scripts, executed in NN order (see below)
-.chezmoitemplates/          shared template snippets (KeePassXC MCP secrets)
+.chezmoiscripts/            run scripts, in NN order (table below)
 
-dot_zshrc, dot_bashrc       thin: oh-my-zsh, then source ~/.shrc.d/*, then zoxide
-dot_shrc.d/                 ALL shared shell config, sourced in filename order by bash AND zsh
-  00-git-aliases.sh.pre       loaded before oh-my-zsh
-  10-functions.sh             extract, mkcd, update, cb, ...
-  20-aliases-core.sh          better defaults, navigation, files, time
-  21-aliases-system.sh        network, power, sysadmin, macOS
-  22-aliases-dev.sh           applications, development
-  23-aliases-paths.sh         path/config shortcuts, misc
-  30-local.sh                 sources ~/.bash_extras (machine-local, untracked)
-  50-env-tools.sh             env vars, eza/bat/fzf/atuin/starship init
-  55-toolchains.sh            bun, Run:ai
-  60-git-ai.sh  61-claude-abl.sh  65-tactics-r2.sh
-  70-epfl-vpn.sh              only if epfl_vpn = true
+dot_zshrc, dot_bashrc       thin: oh-my-zsh, then ~/.shrc.d/*, then zoxide
+dot_bash_profile            login bash → zsh when chsh isn't allowed (LDAP accounts)
+dot_shrc.d/                 ALL shared shell config, filename order, bash AND zsh
+  00-git-aliases.sh.pre  01-homebrew.sh.pre      (before oh-my-zsh)
+  10-functions  20-23 aliases (core, system, dev, paths)  30-local (~/.bash_extras)
+  50-env-tools  55-toolchains  60-git-ai
+  61-claude-abl  65-tactics-r2  70-epfl-vpn     (Mac / flag only)
 
-dot_config/                 ~/.config: herdr, zed, atuin, gh, git, starship, eza, fzf,
-                            carapace, scoop (Windows)
-private_Library/…/com.mitchellh.ghostty/config   Ghostty (macOS)
-dot_local/bin/              personal scripts (hwt: herdr worktree + agent)
-dot_claude/                 Claude Code: CLAUDE.md, RTK.md, settings.json, rules/, hooks/,
-                            own skills/, mcp-servers/
-private_dot_ssh/
-  config.tmpl                 public defaults + GitHub/GitLab/EPFL HPC
-  private_config.d/encrypted_private_hosts.age   servers, IPs, accounts (age)
-dot_gitconfig*.tmpl         git + per-remote identities (github, gitlab, madauto)
-dot_Brewfile(.linux)        Homebrew packages
-Documents/PowerShell/       Windows profile
+dot_config/                 herdr (template), zed, atuin, gh, git, starship, eza, fzf, carapace,
+                            claude-update/skills.txt, systemd/user (Linux)
+private_Library/            Ghostty config, LaunchAgents (Mac)
+dot_local/bin/              hwt, claude-update, claude-settings-capture
+dot_claude/                 CLAUDE.md, RTK.md, settings.json.tmpl, rules/, hooks/, skills/, mcp-servers/
+private_dot_ssh/config.tmpl defaults + Include ~/.ssh/config.d/*; personal git keys on Mac only
+dot_gitconfig.tmpl          aliases/defaults everywhere; personal per-remote identities on Mac only
+dot_Brewfile, dot_Brewfile.linux
 ```
 
-### Scripts (`.chezmoiscripts/`)
+### Scripts
 
-| # | Script | When | OS |
+| # | Script | Runs | OS |
 |---|---|---|---|
+| before-00 | linux-system: apt basics, zsh login shell | once | Linux |
 | 05 | scoop-install | Scoopfile changes | Windows |
-| 10 | brew-bundle | **any Brewfile changes** (hash embedded) | macOS, Linux |
-| 20 | install-cli-tools | once | macOS, Linux |
+| 10 | brew-bundle (installs Homebrew if missing) | a Brewfile changes | Mac, Linux |
+| 20 | install-cli-tools: codex, gemini-cli (npm) | once | Mac, Linux |
 | 30 | rtk-setup | rtk version changes | all |
 | 40 | claude-mcp-setup | MCP definitions change | all |
-| 50 | macos-defaults | once | macOS |
-| 55 | macos-dock | once | macOS |
+| 50 / 55 | macos-defaults / macos-dock | once | Mac |
 | 60 | linux-font-cache | font changes | Linux |
-| after-10 | ssh-key-restore (KeePassXC) | once | macOS |
+| after-10 | ssh-key-restore (KeePassXC) | once | Mac |
+| after-70 | claude-update-schedule (+ first run) | unit files change | Mac, Linux |
 
-Script run-state is keyed by content hash, so renaming a script does not re-run it.
-
-## Secrets
-
-Two mechanisms, nothing secret is committed in plain text (the repo is **public**):
-
-| What | How | Edit |
-|---|---|---|
-| SSH hosts, server IPs, accounts | age-encrypted file in repo | `chezmoi edit ~/.ssh/config.d/hosts` |
-| SSH key paths, MCP tokens | KeePassXC at apply time (`keepassxcAttribute`) | KeePassXC |
-| Project credentials (R2, abliteration) | read at call time from untracked `.env` files | the project |
-
-Add a new private file: `chezmoi add --encrypt <file>`.
-The age **public** key is in `.chezmoi.toml.tmpl`; the **private** key is only in
-`~/.config/chezmoi/key.txt` and KeePassXC entry `config/chezmoi/age-key`.
+Run-state is keyed by content hash: renaming a script doesn't re-run it, editing it does.
 
 ## Feature flags
 
-Asked once at `chezmoi init`, stored in `~/.config/chezmoi/chezmoi.toml`. Change by editing
-that file and running `chezmoi apply`, or re-prompt with `chezmoi init --force`.
+Asked once at `chezmoi init`, stored in `~/.config/chezmoi/chezmoi.toml`
+(edit + `chezmoi apply`, or `chezmoi init --force` to re-ask).
 
 | Flag | Installs | Default |
 |---|---|---|
-| `epfl_vpn` | `~/.shrc.d/70-epfl-vpn.sh` (`epfl`, `epfl-ssh`) | macOS: on |
-| `personal_mcps` | Claude MCP servers `moodle`, `edstem` | macOS: on |
-| `work_mcps` | Claude MCP servers `atlassian`, `slack` | off |
-
-## Claude Code
-
-Tracked here: `CLAUDE.md`, `RTK.md`, `settings.json` (template, `$HOME` substituted),
-`rules/`, `hooks/herdr-agent-state.sh`, own skills (`apple-design`, `asd-ste100`,
-`docling-pdf`, `pdf-typst-diff`, `reverse-engineer-anything`), MCP definitions.
-`stop-slop` comes from its upstream repo via `.chezmoiexternal`.
-
-**Not tracked** (reinstall with their own installer on a new machine):
-
-```bash
-npx get-shit-done-cc@latest          # GSD: gsd-* skills, agents, hooks
-npx skills add mattpocock/skills     # mattpocock skills (lock: ~/.agents/.skill-lock.json)
-# impeccable: ships a platform binary, install from its upstream
-# plugins: listed in settings.json, Claude Code installs them on start
-```
-
-Claude Code rewrites `settings.json` itself (`/config`, `/model`, plugin installs). Capture
-those changes back into the template (plain `re-add` does not work on templates):
-
-```bash
-sed "s|$HOME|{{ .chezmoi.homeDir }}|g" ~/.claude/settings.json \
-  > "$(chezmoi source-path)/dot_claude/settings.json.tmpl"
-```
+| `epfl_vpn` | `~/.shrc.d/70-epfl-vpn.sh` | Mac: on |
+| `personal_mcps` | MCP servers `moodle`, `edstem` (KeePassXC) | Mac: on |
+| `work_mcps` | MCP servers `atlassian`, `slack` | off |
 
 ### MCP servers
 
-Definitions live in `dot_claude/mcp-servers/*.json.tmpl`; script 40 applies them with
-`claude mcp add-json -s user` and removes orphans. Secrets: KeePassXC on macOS,
-`promptStringOnce` at init elsewhere (stored in the local, uncommitted chezmoi.toml).
-
-| Flag | KeePassXC entry | Fields |
-|---|---|---|
-| `personal_mcps` | `Claude/moodle` | URL = `moodle.epfl.ch`, Password = API token |
-| `personal_mcps` | `Claude/edstem` | Password = API token, URL = `eu` / `us` |
-| `work_mcps` | `Claude/atlassian` | URL, UserName = email, Password = API token |
-| `work_mcps` | `Claude/slack` | custom strings `xoxc_token`, `xoxd_token` |
-
-Add one: create `dot_claude/mcp-servers/<name>.json.tmpl`, `chezmoi apply`.
-Remove one: delete the file, `chezmoi apply`.
+`dot_claude/mcp-servers/*.json.tmpl`; script 40 applies them with `claude mcp add-json -s user`
+and removes orphans. Secrets: KeePassXC on Mac (`Claude/<name>` entries), `promptStringOnce`
+elsewhere (stored only in the local chezmoi.toml).
 
 ## Packages
 
-- macOS: `dot_Brewfile` (sectioned). After `brew install x`, add it to the right section.
-  Check drift: `brew bundle check --file="$(chezmoi source-path)/dot_Brewfile"`.
-- Linux: `dot_Brewfile.linux` (CLI only). Windows: `dot_config/scoop/Scoopfile.json`.
+- Mac: `dot_Brewfile` (sectioned). Drift check: `brew bundle check --file="$(chezmoi source-path)/dot_Brewfile"`
+- Linux: `dot_Brewfile.linux`. Windows: `dot_config/scoop/Scoopfile.json`.
 
 ## Everyday commands
 
 ```bash
-chezmoi status / diff        # what would change (KeePassXC templates need a real terminal)
-chezmoi apply                # apply everything
-chezmoi edit --apply FILE    # edit source + apply
-chezmoi re-add FILE          # capture a live edit back into the source
-chezmoi add [--encrypt] FILE # start managing a file
-chezmoi unmanaged ~/.config  # find configs not yet tracked
-chezmoi cd                   # jump to the source repo (commit + push from there)
+chezmoi diff / apply          # preview / apply (KeePassXC templates need a real terminal)
+chezmoi edit --apply FILE     # edit source + apply
+chezmoi re-add FILE           # capture a live edit
+chezmoi add FILE              # start managing a file
+chezmoi unmanaged ~/.config   # configs not tracked yet
+chezmoi update                # git pull + apply (do this on the Linux box to get Mac changes)
+chezmoi cd                    # go to the repo to commit/push
 ```
-
-## RTK (Rust Token Killer)
-
-`rtk` (Homebrew; GitHub release on Windows) proxies shell output to cut LLM tokens.
-Script 30 runs `rtk init -g` for Claude Code and Codex; it embeds `rtk --version`, so a
-`brew upgrade rtk` re-runs it. Windows: bump `$DesiredVersion` in the `.ps1.tmpl`.
