@@ -29,14 +29,46 @@ brew install chezmoi keepassxc
 chezmoi init --apply eliemada/dotfiles      # KeePassXC asks for the master password
 ```
 
-**Linux (QRT)** — needs sudo for the first run only (apt packages + login shell):
+**Linux (QRT)**: one-way, through a download mirror (Artifactory). Needs sudo on the first run only.
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply eliemada/dotfiles
-# asks: name, git email (use the work address), feature flags (answer no)
+M=https://<artifactory>/artifactory/<github-remote>   # proxies https://github.com; or M=https://github.com
+
+# 1. chezmoi binary + this repo, both as plain downloads (no git needed)
+mkdir -p ~/.local/bin ~/.local/share/chezmoi
+curl -fsSL "$M/twpayne/chezmoi/releases/latest/download/chezmoi-linux-amd64" -o ~/.local/bin/chezmoi
+chmod +x ~/.local/bin/chezmoi
+curl -fsSL "$M/eliemada/dotfiles/archive/HEAD.tar.gz" | tar xz --strip-components 1 -C ~/.local/share/chezmoi
+
+# 2. init + apply. Asks: name, git email (work address), the mirror URLs below,
+#    feature flags (answer no).
+~/.local/bin/chezmoi init --apply
 exec zsh
 ```
-The first apply: installs apt basics + zsh (script 00) → Linuxbrew + tools (10) → codex/gemini
-(20) → rtk (30) → enables the daily updater, whose first run installs GSD + skills (70).
+The first apply runs: apt basics + zsh (script 00), then Homebrew + tools (10), then codex (20), then rtk (30), then the daily updater, whose first run installs GSD and the skills (70).
+
+**Updating QRT:** make changes on the Mac, push, then run `dotfiles-pull` on QRT. It uses `chezmoi update` if git
+works; otherwise it downloads the repo archive through the mirror and replaces the source (the old source
+is kept as `~/.local/share/chezmoi.prev`). Nothing is ever pushed from QRT, so keep machine-only tweaks in
+`~/.bash_extras` and `~/.ssh/config.d/`. Never edit the source there.
+
+### Download mirrors
+
+Every outside fetch is built from `[data.mirror]` in `~/.config/chezmoi/chezmoi.toml` (asked on Linux;
+public defaults on the Mac). Change a value, then `chezmoi apply`.
+
+| Key | Used for | Public default |
+|---|---|---|
+| `github` | oh-my-zsh + plugins, stop-slop, skill packages, Claude binary, nerd font, Homebrew itself, this repo (`dotfiles-pull`) | `https://github.com` |
+| `npm` | `npm_config_registry`: codex, GSD | public npm |
+| `pypi` | `UV_INDEX_URL` / `PIP_INDEX_URL` | public PyPI |
+| `brew_api` | `HOMEBREW_API_DOMAIN` (formula metadata) | formulae.brew.sh |
+| `brew_bottle` | `HOMEBREW_ARTIFACT_DOMAIN` (prebuilt bottles) | ghcr.io |
+
+Repos are fetched as `<github>/<owner>/<repo>/archive/HEAD.tar.gz` and releases as
+`<github>/<owner>/<repo>/releases/...`, so the mirror only needs to proxy HTTP downloads from
+github.com, not the git protocol. When `github` isn't the public URL, Homebrew is installed by
+untarring `Homebrew/brew` (no git), `brew update` is disabled (upgrade = re-run the bundle), and
+plugin-marketplace updates are skipped, because marketplaces are git repos.
 
 > Before installing AI tooling on a work machine, check the employer's policy on which tools
 > may see internal code. Nothing from a work machine is synced back into this repo.
@@ -51,14 +83,14 @@ Each machine logs in to Claude Code itself.
 
 **Daily updater** — `~/.local/bin/claude-update` (log: `~/.local/state/claude-update.log`):
 1. Claude Code binary + `stop-slop` (chezmoi externals, from GitHub releases)
-2. skill packages in `~/.config/claude-update/skills.txt` — installs missing, updates all
+2. skill packages in `~/.config/claude-update/skills.txt`: downloaded as archives (via the mirror), copied in
 3. own skills that are git clones (`git pull --ff-only`)
 4. GSD (`get-shit-done-cc`); its rewrite of hook paths in settings.json is undone
-5. plugin marketplaces + every installed plugin
+5. plugin marketplaces + every installed plugin (skipped behind a mirror)
 
 Run it by hand anytime: `claude-update --verbose`. Restart Claude Code afterwards.
 Add a skill package: append a line to `dot_config/claude-update/skills.txt`.
-After changing settings with `/config` or installing a plugin: `claude-settings-capture`, then commit.
+After changing settings with `/config` or installing a plugin (on the Mac): `claude-settings-capture`, then commit and push.
 
 **Working across Mac + remote Linux (herdr):**
 - Run herdr on each machine. On the remote one: `ssh <host> -t herdr` — the herdr server keeps
@@ -71,7 +103,7 @@ After changing settings with `/config` or installing a plugin: `claude-settings-
 ## Layout
 
 ```
-.chezmoi.toml.tmpl          prompts (name, email), feature flags, KeePassXC (Mac)
+.chezmoi.toml.tmpl          prompts (name, email), download mirrors, feature flags, KeePassXC (Mac)
 .chezmoiignore              what each OS / flag skips (patterns match TARGET paths)
 .chezmoiexternal.toml.tmpl  downloads: oh-my-zsh + plugins, claude binary, nerd font (Linux), stop-slop
 .chezmoiremove              stale targets deleted after renames
@@ -80,7 +112,7 @@ After changing settings with `/config` or installing a plugin: `claude-settings-
 dot_zshrc, dot_bashrc       thin: oh-my-zsh, then ~/.shrc.d/*, then zoxide
 dot_bash_profile            login bash → zsh when chsh isn't allowed (LDAP accounts)
 dot_shrc.d/                 ALL shared shell config, filename order, bash AND zsh
-  00-git-aliases.sh.pre  01-homebrew.sh.pre      (before oh-my-zsh)
+  00-git-aliases.sh.pre  01-homebrew.sh.pre  02-mirrors.sh.pre (generated)   (before oh-my-zsh)
   10-functions  20-23 aliases (core, system, dev, paths)  30-local (~/.bash_extras)
   50-env-tools  55-toolchains  60-git-ai
   61-claude-abl  65-tactics-r2  70-epfl-vpn     (Mac / flag only)
@@ -88,7 +120,7 @@ dot_shrc.d/                 ALL shared shell config, filename order, bash AND zs
 dot_config/                 herdr (template), zed, atuin, gh, git, starship, eza, fzf, carapace,
                             claude-update/skills.txt, systemd/user (Linux)
 private_Library/            Ghostty config, LaunchAgents (Mac)
-dot_local/bin/              hwt, claude-update, claude-settings-capture
+dot_local/bin/              hwt, claude-update, claude-settings-capture, dotfiles-pull
 dot_claude/                 CLAUDE.md, RTK.md, settings.json.tmpl, rules/, hooks/, skills/, mcp-servers/
 private_dot_ssh/config.tmpl defaults + Include ~/.ssh/config.d/*; personal git keys on Mac only
 dot_gitconfig.tmpl          aliases/defaults everywhere; personal per-remote identities on Mac only
@@ -102,7 +134,7 @@ dot_Brewfile, dot_Brewfile.linux
 | before-00 | linux-system: apt basics, zsh login shell | once | Linux |
 | 05 | scoop-install | Scoopfile changes | Windows |
 | 10 | brew-bundle (installs Homebrew if missing) | a Brewfile changes | Mac, Linux |
-| 20 | install-cli-tools: codex, gemini-cli (npm) | once | Mac, Linux |
+| 20 | install-cli-tools: codex (npm) | once | Mac, Linux |
 | 30 | rtk-setup | rtk version changes | all |
 | 40 | claude-mcp-setup | MCP definitions change | all |
 | 50 / 55 | macos-defaults / macos-dock | once | Mac |
@@ -142,6 +174,6 @@ chezmoi edit --apply FILE     # edit source + apply
 chezmoi re-add FILE           # capture a live edit
 chezmoi add FILE              # start managing a file
 chezmoi unmanaged ~/.config   # configs not tracked yet
-chezmoi update                # git pull + apply (do this on the Linux box to get Mac changes)
+dotfiles-pull                 # one-way update on QRT (git if possible, else archive via mirror)
 chezmoi cd                    # go to the repo to commit/push
 ```
