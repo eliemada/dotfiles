@@ -1,0 +1,23 @@
+dot_claude/rules/core.md
+  s_624b6ffad80628::t_83a9c65675059c 1-38
+dot_claude/rules/python.md
+  s_624b6ffad80628::t_1c57a8a2d95733 5,7-20
+dot_claude/rules/typescript.md
+  s_624b6ffad80628::t_5576c1711225d0 8,10-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5ec604e4ddd55437dded507a9229d165671f1761",
+  "prompts": {},
+  "sessions": {
+    "s_624b6ffad80628": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1e743a-ac0c-414d-bd43-3d55a7340906",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    }
+  }
+}
