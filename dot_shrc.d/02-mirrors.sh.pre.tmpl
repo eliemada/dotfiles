@@ -1,0 +1,25 @@
+################################################################################
+# ~/.shrc.d/02-mirrors.sh.pre — download mirrors from chezmoi data (.mirror).
+# Generated: edit ~/.config/chezmoi/chezmoi.toml [data.mirror], then chezmoi apply.
+# Empty values = public sources (nothing exported).
+################################################################################
+# shellcheck shell=bash
+export DOTFILES_GITHUB_BASE={{ .mirror.github | quote }}
+{{- if .mirror.npm }}
+export npm_config_registry={{ .mirror.npm | quote }}
+{{- end }}
+{{- if .mirror.pypi }}
+export UV_INDEX_URL={{ .mirror.pypi | quote }}
+export UV_DEFAULT_INDEX={{ .mirror.pypi | quote }}
+export PIP_INDEX_URL={{ .mirror.pypi | quote }}
+{{- end }}
+{{- if .mirror.brew_api }}
+export HOMEBREW_API_DOMAIN={{ .mirror.brew_api | quote }}
+{{- end }}
+{{- if .mirror.brew_bottle }}
+export HOMEBREW_ARTIFACT_DOMAIN={{ .mirror.brew_bottle | quote }}
+{{- end }}
+{{- if ne .mirror.github "https://github.com" }}
+# brew was installed from an archive (no git remote): `brew update` can't work.
+export HOMEBREW_NO_AUTO_UPDATE=1
+{{- end }}

@@ -5,25 +5,36 @@
 # `git clone` or `curl | unzip`.
 #
 # Reference: https://www.chezmoi.io/reference/special-files/chezmoiexternal-format/
+#
+# All URLs are built from .mirror.github (https://github.com, or an Artifactory
+# remote on work machines). Repos are fetched as archives, not `git clone`, because
+# HTTP mirrors proxy downloads but usually not the git protocol.
 ################################################################################
+{{- $gh := .mirror.github }}
 
 ################################################################################
 # Oh My Zsh + community plugins (all platforms with zsh)
 ################################################################################
 [".oh-my-zsh"]
-    type          = "git-repo"
-    url           = "https://github.com/ohmyzsh/ohmyzsh.git"
-    refreshPeriod = "168h"   # weekly pull
+    type            = "archive"
+    url             = "{{ $gh }}/ohmyzsh/ohmyzsh/archive/HEAD.tar.gz"
+    stripComponents = 1
+    exact           = false   # omz writes cache/ and log/ at runtime; nested plugins below
+    refreshPeriod   = "168h"
 
 [".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
-    type          = "git-repo"
-    url           = "https://github.com/zsh-users/zsh-autosuggestions.git"
-    refreshPeriod = "168h"
+    type            = "archive"
+    url             = "{{ $gh }}/zsh-users/zsh-autosuggestions/archive/HEAD.tar.gz"
+    stripComponents = 1
+    exact           = true
+    refreshPeriod   = "168h"
 
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
-    type          = "git-repo"
-    url           = "https://github.com/zsh-users/zsh-syntax-highlighting.git"
-    refreshPeriod = "168h"
+    type            = "archive"
+    url             = "{{ $gh }}/zsh-users/zsh-syntax-highlighting/archive/HEAD.tar.gz"
+    stripComponents = 1
+    exact           = true
+    refreshPeriod   = "168h"
 
 ################################################################################
 # JetBrains Mono Nerd Font (Linux only — macOS uses brew cask, Windows scoop)
@@ -32,7 +43,7 @@
 {{- if eq .chezmoi.os "linux" }}
 [".local/share/fonts/JetBrainsMonoNerdFont"]
     type            = "archive"
-    url             = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
+    url             = "{{ $gh }}/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
     refreshPeriod   = "8760h"   # yearly
     exact           = true
 {{- end }}
@@ -57,7 +68,7 @@
 {{- if $ccAsset }}
 [".local/bin/claude"]
     type          = "archive-file"
-    url           = "https://github.com/anthropics/claude-code/releases/latest/download/{{ $ccAsset }}"
+    url           = "{{ $gh }}/anthropics/claude-code/releases/latest/download/{{ $ccAsset }}"
     path          = "claude"
     executable    = true
     refreshPeriod = "24h"
@@ -69,6 +80,8 @@
 # skills (GSD, mattpocock/skills) are NOT tracked; see README "Claude Code".
 ################################################################################
 [".claude/skills/stop-slop"]
-    type          = "git-repo"
-    url           = "https://github.com/hardikpandya/stop-slop.git"
-    refreshPeriod = "168h"
+    type            = "archive"
+    url             = "{{ $gh }}/hardikpandya/stop-slop/archive/HEAD.tar.gz"
+    stripComponents = 1
+    exact           = true
+    refreshPeriod   = "168h"

@@ -60,6 +60,26 @@
 {{- end }}
 {{- end }}
 
+################################################################################
+# Download mirrors (e.g. QRT Artifactory). Every outside fetch in these dotfiles
+# goes through these values; defaults are the public sources. Asked on Linux only.
+# Change later: edit ~/.config/chezmoi/chezmoi.toml, then `chezmoi apply`.
+#   github      base for archives + release downloads   (replaces https://github.com)
+#   npm         npm registry URL          ("" = public npm)
+#   pypi        PyPI simple index URL     ("" = public PyPI)
+#   brew_api    HOMEBREW_API_DOMAIN       ("" = formulae.brew.sh)
+#   brew_bottle HOMEBREW_ARTIFACT_DOMAIN  ("" = ghcr.io / GitHub)
+################################################################################
+{{- $ask := eq .chezmoi.os "linux" }}
+{{- $m := dict "github" "https://github.com" "npm" "" "pypi" "" "brew_api" "" "brew_bottle" "" }}
+{{- if hasKey . "mirror" }}{{ $m = merge (deepCopy .mirror) $m }}{{ end }}
+[data.mirror]
+    github      = {{ if $ask }}{{ promptStringOnce . "mirror.github" "Mirror for GitHub downloads" $m.github | quote }}{{ else }}{{ $m.github | quote }}{{ end }}
+    npm         = {{ if $ask }}{{ promptStringOnce . "mirror.npm" "npm registry URL (empty = public)" $m.npm | quote }}{{ else }}{{ $m.npm | quote }}{{ end }}
+    pypi        = {{ if $ask }}{{ promptStringOnce . "mirror.pypi" "PyPI index URL (empty = public)" $m.pypi | quote }}{{ else }}{{ $m.pypi | quote }}{{ end }}
+    brew_api    = {{ if $ask }}{{ promptStringOnce . "mirror.brew_api" "HOMEBREW_API_DOMAIN (empty = public)" $m.brew_api | quote }}{{ else }}{{ $m.brew_api | quote }}{{ end }}
+    brew_bottle = {{ if $ask }}{{ promptStringOnce . "mirror.brew_bottle" "HOMEBREW_ARTIFACT_DOMAIN (empty = public)" $m.brew_bottle | quote }}{{ else }}{{ $m.brew_bottle | quote }}{{ end }}
+
 [diff]
     pager = "delta"
 

@@ -41,7 +41,17 @@ if ! command -v brew >/dev/null 2>&1; then
       eval "$("$HOME/.linuxbrew/bin/brew" shellenv)"
     else
       echo "Homebrew not found. Installing Linuxbrew..."
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+{{- if eq .mirror.github "https://github.com" }}
+      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+{{- else }}
+      # Mirror mode: no git access, so use Homebrew's "untar anywhere" install
+      # into the standard prefix (keeps prebuilt bottles usable).
+      PREFIX=/home/linuxbrew/.linuxbrew
+      sudo mkdir -p "$PREFIX/Homebrew" && sudo chown -R "$(id -un)" /home/linuxbrew
+      curl -fsSL "{{ .mirror.github }}/Homebrew/brew/archive/HEAD.tar.gz" \
+        | tar xz --strip-components 1 -C "$PREFIX/Homebrew"
+      mkdir -p "$PREFIX/bin" && ln -sf ../Homebrew/bin/brew "$PREFIX/bin/brew"
+{{- end }}
       if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
       elif [ -x "$HOME/.linuxbrew/bin/brew" ]; then
@@ -50,6 +60,9 @@ if ! command -v brew >/dev/null 2>&1; then
     fi
   fi
 fi
+
+# Mirror settings (npm/pypi/Homebrew API + bottles) from chezmoi data
+. "$HOME/.shrc.d/02-mirrors.sh.pre" 2>/dev/null || true
 
 # Select appropriate Brewfile based on OS
 if [ "$OS" = "darwin" ]; then
