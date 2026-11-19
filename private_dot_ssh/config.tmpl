@@ -1,26 +1,26 @@
 ################################################################################
 # ~/.ssh/config  —  managed by chezmoi (edit private_dot_ssh/config.tmpl)
-# Per-host SSH configuration. Keys for github/gitlab restored from KeePassXC
-# by run_once_after_ssh_key_restore.sh; other keys are referenced directly.
+#
+# Shared defaults only. Machine-specific hosts (servers, work/QRT internal hosts)
+# go in ~/.ssh/config.d/<name> — NOT tracked by chezmoi, never pushed.
 ################################################################################
 
-################################################################################
-# Private hosts (servers, IPs, accounts) live in ~/.ssh/config.d/, which chezmoi
-# stores age-encrypted. Include must come first: ssh uses the first value it sees,
-# so these blocks win over the Host * defaults below.
-################################################################################
+# Must come first: ssh keeps the first value it sees, so local host blocks
+# override the Host * defaults below.
 Include ~/.ssh/config.d/*
 
-################################################################################
-# Global defaults — applied to every host unless a later block overrides
-################################################################################
+{{- if eq .chezmoi.os "darwin" }}
+
 # github-madauto resolves to github.com, so it needs its own multiplexing socket;
 # otherwise it reuses an open eliemada connection (ssh uses the first value set).
 Host github-madauto
     ControlPath ~/.ssh/control/github-madauto-%C
+{{- end }}
 
+################################################################################
+# Defaults for every host
+################################################################################
 Host *
-    # Agent + macOS Keychain: passphrase is remembered securely once entered
     AddKeysToAgent yes
 {{- if eq .chezmoi.os "darwin" }}
     UseKeychain yes
@@ -33,13 +33,14 @@ Host *
     ServerAliveInterval 60
     ServerAliveCountMax 3
 
-    # Connection multiplexing: reuse one TCP session across ssh / scp / rsync
+    # Multiplexing: reuse one TCP session across ssh / scp / rsync / git
     ControlMaster auto
     ControlPath ~/.ssh/control/%C
     ControlPersist 10m
+{{- if eq .chezmoi.os "darwin" }}
 
 ################################################################################
-# GitHub
+# Personal git hosting (Mac only; keys restored from KeePassXC)
 ################################################################################
 Host github.com
     HostName github.com
@@ -47,35 +48,16 @@ Host github.com
     IdentityFile {{ keepassxcAttribute "config/ssh/github.com" "SSHKeyPath" }}
     IdentitiesOnly yes
 
-################################################################################
-# GitHub — Madauto work account (madauto-mg)
-# Remotes use git@github-madauto:madauto-mg/<repo>.git to select this key.
-# Key not yet in KeePassXC; local file is the canonical source until then.
-################################################################################
+# Madauto account: remotes use git@github-madauto:madauto-mg/<repo>.git
 Host github-madauto
     HostName github.com
     User git
     IdentityFile ~/.ssh/id_ed25519_github_madauto
     IdentitiesOnly yes
 
-################################################################################
-# GitLab EPFL
-################################################################################
 Host gitlab.epfl.ch
     HostName gitlab.epfl.ch
     User git
     IdentityFile {{ keepassxcAttribute "config/ssh/gitlab.epfl.ch" "SSHKeyPath" }}
     IdentitiesOnly yes
-
-################################################################################
-# EPFL HPC clusters (Izar, Jed, Kuma)
-################################################################################
-Host izar.hpc.epfl.ch jed.hpc.epfl.ch kuma.hpc.epfl.ch
-    User enbruno
-    IdentityFile ~/.ssh/id_ed25519_epfl_hpc
-    IdentitiesOnly yes
-
-# Off campus / without the Mac VPN: tunnel through Ravinala's epfl-vpn container
-# (Hermes-Agent/tools/epfl-vpn). Direct when the host is reachable.
-Match host izar.hpc.epfl.ch,jed.hpc.epfl.ch,kuma.hpc.epfl.ch !exec "nc -z -G 2 %h 22 >/dev/null 2>&1"
-    ProxyCommand ssh unraid docker exec -i epfl-vpn nc %h %p
+{{- end }}

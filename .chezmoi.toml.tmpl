@@ -4,27 +4,16 @@
 # Supports: macOS, Linux, Windows
 ################################################################################
 
-################################################################################
-# Encryption (age) — private files are stored as encrypted_*.age in the repo.
-# The identity (private key) lives only in ~/.config/chezmoi/key.txt and is
-# backed up in KeePassXC as `config/chezmoi/age-key` (attachment key.txt).
-# New machine: restore key.txt BEFORE `chezmoi apply`.
-################################################################################
-encryption = "age"
-[age]
-    identity  = "~/.config/chezmoi/key.txt"
-    recipient = "age1709fwy2dm6mp3qdh2n5ex8frpdj49k6ju9gz507yzwgkqv2mg4vqx4nwk7"
-
 [data]
     name = "{{ promptStringOnce . "name" "Full name" }}"
-    email = "{{ promptStringOnce . "email" "Email" }}"
+    email = "{{ promptStringOnce . "email" "Git email (work address on work machines)" }}"
 {{- if eq .chezmoi.os "darwin" }}
     keepassdb = "/Users/{{ .chezmoi.username }}/Dropbox/PW.kdbx"
 {{- end }}
 
     # Opt-in: install EPFL VPN helpers (epfl, epfl-ssh shell functions).
     # Requires openconnect + keepassxc + macOS Keychain entry "keepassxc-master".
-    # Defaults to ON for macOS, OFF for Linux/Windows (e.g. Citadel workstations).
+    # Defaults to ON for macOS, OFF for Linux/Windows (e.g. the QRT workstation).
     # Change later by editing ~/.config/chezmoi/chezmoi.toml and running `chezmoi apply`.
     epfl_vpn = {{ promptBoolOnce . "epfl_vpn" "Install EPFL VPN helpers" (eq .chezmoi.os "darwin") }}
 
@@ -34,7 +23,7 @@ encryption = "age"
     personal_mcps = {{ promptBoolOnce . "personal_mcps" "Install personal MCP servers (moodle + edstem)" (eq .chezmoi.os "darwin") }}
 
     # Opt-in: work MCP servers for Claude Code (Atlassian + Slack stealth).
-    # Defaults to OFF everywhere — turn ON on Citadel workstations at init.
+    # Defaults to OFF everywhere (only if a work machine allows these MCPs).
     work_mcps = {{ promptBoolOnce . "work_mcps" "Install work MCP servers (Atlassian + Slack)" false }}
 
 ################################################################################

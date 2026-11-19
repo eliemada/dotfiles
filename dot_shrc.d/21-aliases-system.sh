@@ -18,12 +18,6 @@
 # Networking
 ################################################################################
 
-# NII GPU servers: connect directly or append a remote command.
-alias gpu7='ssh gpu7'
-alias g7='ssh gpu7'
-alias gpu8='ssh gpu8'
-alias g8='ssh gpu8'
-
 # Pings hostname(s) 30 times in quick succession.
 if [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
     alias fastping='ping -n 30'
