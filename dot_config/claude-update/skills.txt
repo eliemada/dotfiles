@@ -1,5 +1,8 @@
-# Skill packages installed with `npx skills` (vercel skills CLI).
-# claude-update installs missing ones and updates all of them daily.
+# Skill packages: claude-update downloads <owner/repo> as an archive (from GitHub or
+# the mirror in chezmoi data) and copies the listed skill folders, daily.
 # Format: <github-owner/repo> <skill> <skill> ...   (edit, then `chezmoi apply`)
-
-mattpocock/skills caveman design-an-interface diagnose edit-article git-guardrails-claude-code grill-me grill-with-docs handoff improve-codebase-architecture migrate-to-shoehorn obsidian-vault prototype qa request-refactor-plan review scaffold-exercises setup-matt-pocock-skills setup-pre-commit tdd teach to-issues to-prd triage ubiquitous-language write-a-skill writing-beats writing-fragments writing-shape zoom-out
+#
+# mattpocock/skills (MIT). Skills it dropped upstream (caveman, edit-article,
+# obsidian-vault, qa, request-refactor-plan, write-a-skill, zoom-out) are frozen
+# copies tracked directly in dot_claude/skills/.
+mattpocock/skills code-review codebase-design diagnosing-bugs domain-modeling git-guardrails-claude-code grill-me grill-with-docs handoff improve-codebase-architecture migrate-to-shoehorn prototype scaffold-exercises setup-matt-pocock-skills setup-pre-commit tdd teach to-spec to-tickets triage writing-beats writing-fragments writing-shape

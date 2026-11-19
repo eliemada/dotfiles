@@ -8,10 +8,10 @@
 #
 # Steps (each one independent; a failure is logged and the rest still run):
 #   1. Claude Code binary + git-external skills (chezmoi externals)
-#   2. Skill packages from ~/.config/claude-update/skills.txt (install missing, update all)
+#   2. Skill packages from ~/.config/claude-update/skills.txt (archive download, via mirror)
 #   3. Own skills that are git clones in ~/.claude/skills (git pull --ff-only)
 #   4. GSD (get-shit-done) for Claude Code
-#   5. Plugin marketplaces + every installed plugin
+#   5. Plugin marketplaces + every installed plugin (needs GitHub; skipped behind a mirror)
 # Changes to ~/.claude/settings.json made by installers are reported, not
 # auto-committed: capture them with `claude-settings-capture`.
 ################################################################################
@@ -27,6 +27,7 @@ mkdir -p "$STATE_DIR"
 
 # launchd/systemd start with a bare PATH
 . "$HOME/.shrc.d/01-homebrew.sh.pre" 2>/dev/null || true
+. "$HOME/.shrc.d/02-mirrors.sh.pre" 2>/dev/null || true   # GitHub/npm mirrors
 export PATH="$HOME/.local/bin:$PATH"
 
 if [[ "${1:-}" == "--verbose" || -t 1 ]]; then
@@ -54,20 +55,28 @@ update_externals() {
     "$HOME/.local/bin/claude" "$SKILLS_DIR/stop-slop"
 }
 
+# Skill packages: download each repo as an archive from $DOTFILES_GITHUB_BASE
+# (GitHub or an Artifactory mirror) and copy the listed skill folders. Works
+# without git or GitHub access; re-copies every run, so it also updates.
 update_skill_packages() {
-  has npx || { echo "npx missing (brew install node)"; return 1; }
   [[ -r "$SKILLS_LIST" ]] || { echo "no $SKILLS_LIST"; return 0; }
-  local src missing name
+  local base="${DOTFILES_GITHUB_BASE:-https://github.com}" src rest name dir tmp rc=0
   while read -r src rest; do
     [[ -z "$src" || "$src" == \#* ]] && continue
-    missing=()
-    for name in $rest; do [[ -d "$SKILLS_DIR/$name" ]] || missing+=("$name"); done
-    if ((${#missing[@]})); then
-      echo "installing from $src: ${missing[*]}"
-      npx -y skills add "$src" -g -a claude-code --copy -y -s "${missing[@]}" </dev/null || return 1
+    tmp=$(mktemp -d)
+    if ! curl -fsSL "$base/$src/archive/HEAD.tar.gz" | tar xz -C "$tmp"; then
+      echo "$src: download failed ($base)"; rm -rf "$tmp"; rc=1; continue
     fi
+    for name in $rest; do
+      dir=$(find "$tmp" -type f -name SKILL.md -path "*/$name/SKILL.md" | head -1)
+      if [[ -z "$dir" ]]; then echo "$src: skill $name not found"; rc=1; continue; fi
+      dir=$(dirname "$dir")
+      rm -rf "${SKILLS_DIR:?}/$name" && cp -R "$dir" "$SKILLS_DIR/$name"
+    done
+    echo "$src: $(wc -w <<<"$rest" | tr -d ' ') skills synced"
+    rm -rf "$tmp"
   done <"$SKILLS_LIST"
-  npx -y skills update -g -y </dev/null
+  return $rc
 }
 
 update_git_skills() {
@@ -94,6 +103,11 @@ update_gsd() {
 
 update_plugins() {
   has claude || { echo "claude missing"; return 1; }
+  # Marketplaces are git repos on GitHub; behind a download-only mirror they
+  # can't be refreshed, so don't report a daily failure for it.
+  if [[ "${DOTFILES_GITHUB_BASE:-https://github.com}" != "https://github.com" ]]; then
+    echo "mirror mode: plugin updates skipped (marketplaces need GitHub git access)"; return 0
+  fi
   claude plugin marketplace update || return 1
   local id rc=0
   for id in $(claude plugin list --json 2>/dev/null | python3 -c 'import json,sys; print("\n".join(p["id"] for p in json.load(sys.stdin)))'); do

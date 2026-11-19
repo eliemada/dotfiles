@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+################################################################################
+# dotfiles-pull — one-way update of these dotfiles on a machine that can't push
+# (e.g. QRT): the Mac is the only place changes are made and pushed.
+#
+#   dotfiles-pull           update the chezmoi source, then chezmoi apply
+#   dotfiles-pull --no-apply
+#
+# Uses `chezmoi update` when the source is a git clone with a reachable remote;
+# otherwise downloads the repo archive from $DOTFILES_GITHUB_BASE (GitHub or an
+# Artifactory mirror) and replaces the source. The previous source is kept as
+# ~/.local/share/chezmoi.prev, so a bad pull is one `mv` away from undone.
+# Local edits to the source are NOT kept: put machine-only tweaks in
+# ~/.bash_extras and ~/.ssh/config.d/ instead.
+################################################################################
+set -euo pipefail
+
+REPO="${DOTFILES_REPO:-eliemada/dotfiles}"
+. "$HOME/.shrc.d/02-mirrors.sh.pre" 2>/dev/null || true
+BASE="${DOTFILES_GITHUB_BASE:-https://github.com}"
+SRC="$(chezmoi source-path 2>/dev/null || echo "$HOME/.local/share/chezmoi")"
+apply=true; [[ "${1:-}" == "--no-apply" ]] && apply=false
+
+# git path only with a real, reachable origin (chezmoi init creates a remote-less repo)
+if git -C "$SRC" remote get-url origin >/dev/null 2>&1 && git -C "$SRC" fetch -q origin 2>/dev/null; then
+  echo "dotfiles-pull: git remote reachable → chezmoi update"
+  if $apply; then chezmoi update; else git -C "$SRC" pull --ff-only; fi
+  exit 0
+fi
+
+echo "dotfiles-pull: downloading $BASE/$REPO/archive/HEAD.tar.gz"
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+curl -fsSL "$BASE/$REPO/archive/HEAD.tar.gz" | tar xz --strip-components 1 -C "$tmp"
+[[ -f "$tmp/.chezmoi.toml.tmpl" ]] || { echo "dotfiles-pull: archive doesn't look like the dotfiles repo"; exit 1; }
+
+rm -rf "$SRC.prev"
+[[ -d "$SRC" ]] && mv "$SRC" "$SRC.prev"
+mkdir -p "$(dirname "$SRC")" && mv "$tmp" "$SRC" && trap - EXIT
+echo "dotfiles-pull: source updated (previous kept in $SRC.prev)"
+
+if $apply; then
+  chezmoi init --no-tty --promptDefaults >/dev/null   # pick up new config prompts/defaults
+  chezmoi apply
+fi
