@@ -10,10 +10,9 @@
 #   1. Claude Code binary (chezmoi external)
 #   2. Skill packages from ~/.config/claude-update/skills.txt (archive download, via mirror)
 #   3. Own skills that are git clones in ~/.claude/skills (git pull --ff-only)
-#   4. GSD (get-shit-done) for Claude Code
-#   5. Plugin marketplaces + every installed plugin (needs GitHub; skipped behind a mirror)
-# Changes to ~/.claude/settings.json made by installers are reported, not
-# auto-committed: capture them with `claude-settings-capture`.
+#   4. Plugin marketplaces + every installed plugin (needs GitHub; skipped behind a mirror)
+# Changes to ~/.claude/settings.json made by plugin updates are reported, not
+# auto-committed: capture them with `claude-settings-capture` (on the Mac).
 ################################################################################
 set -uo pipefail
 
@@ -93,17 +92,6 @@ update_git_skills() {
   done
 }
 
-update_gsd() {
-  has npx || return 1
-  # GSD rewrites hook commands in settings.json to an absolute node path
-  # (/opt/homebrew/bin/node), which breaks on other machines. Keep ours.
-  local keep rc
-  keep=$(mktemp) && cp "$SETTINGS" "$keep" 2>/dev/null
-  npx -y get-shit-done-cc@latest --claude --global </dev/null; rc=$?
-  [[ -s "$keep" ]] && cp "$keep" "$SETTINGS"; rm -f "$keep"
-  return $rc
-}
-
 update_plugins() {
   has claude || { echo "claude missing"; return 1; }
   # Marketplaces are git repos on GitHub; behind a download-only mirror they
@@ -126,7 +114,6 @@ before=$(cksum "$SETTINGS" 2>/dev/null)
 step "claude binary + externals" update_externals
 step "skill packages"            update_skill_packages
 step "git skills"                update_git_skills
-step "GSD"                       update_gsd
 step "plugins"                   update_plugins
 
 if [[ -n "$before" && "$before" != "$(cksum "$SETTINGS" 2>/dev/null)" ]]; then

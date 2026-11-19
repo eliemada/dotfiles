@@ -44,7 +44,7 @@ curl -fsSL "$M/eliemada/dotfiles/archive/HEAD.tar.gz" | tar xz --strip-component
 ~/.local/bin/chezmoi init --apply
 exec zsh
 ```
-The first apply runs: apt basics + zsh (script 00), then Homebrew + tools (10), then codex (20), then rtk (30), then the daily updater, whose first run installs GSD and the skills (70).
+The first apply runs: apt basics + zsh (script 00), then Homebrew + tools (10), then codex (20), then rtk (30), then the daily updater, whose first run installs the skills (70).
 
 **Updating QRT:** make changes on the Mac, push, then run `dotfiles-pull` on QRT. It uses `chezmoi update` if git
 works; otherwise it downloads the repo archive through the mirror and replaces the source (the old source
@@ -58,8 +58,8 @@ public defaults on the Mac). Change a value, then `chezmoi apply`.
 
 | Key | Used for | Public default |
 |---|---|---|
-| `github` | oh-my-zsh + plugins, stop-slop, skill packages, Claude binary, nerd font, Homebrew itself, this repo (`dotfiles-pull`) | `https://github.com` |
-| `npm` | `npm_config_registry`: codex, GSD | public npm |
+| `github` | oh-my-zsh + plugins, skill packages, Claude binary, nerd font, Homebrew itself, this repo (`dotfiles-pull`) | `https://github.com` |
+| `npm` | `npm_config_registry`: codex | public npm |
 | `pypi` | `UV_INDEX_URL` / `PIP_INDEX_URL` | public PyPI |
 | `brew_api` | `HOMEBREW_API_DOMAIN` (formula metadata) | formulae.brew.sh |
 | `brew_bottle` | `HOMEBREW_ARTIFACT_DOMAIN` (prebuilt bottles) | ghcr.io |
@@ -82,15 +82,32 @@ own skills, the skill-package list, herdr config. Same agent behaviour everywher
 Each machine logs in to Claude Code itself.
 
 **Daily updater** — `~/.local/bin/claude-update` (log: `~/.local/state/claude-update.log`):
-1. Claude Code binary + `stop-slop` (chezmoi externals, from GitHub releases)
+1. Claude Code binary (chezmoi external, from GitHub releases)
 2. skill packages in `~/.config/claude-update/skills.txt`: downloaded as archives (via the mirror), copied in
 3. own skills that are git clones (`git pull --ff-only`)
-4. GSD (`get-shit-done-cc`); its rewrite of hook paths in settings.json is undone
-5. plugin marketplaces + every installed plugin (skipped behind a mirror)
+4. plugin marketplaces + every installed plugin (skipped behind a mirror)
 
 Run it by hand anytime: `claude-update --verbose`. Restart Claude Code afterwards.
 Add a skill package: append a line to `dot_config/claude-update/skills.txt`.
 After changing settings with `/config` or installing a plugin (on the Mac): `claude-settings-capture`, then commit and push.
+
+**What's installed (about 40 skills, down from about 480):**
+- Workflow: **superpowers** (plugin): brainstorm, plan, TDD, debug, review. It's the only workflow system;
+  GSD and everything-claude-code were removed because they duplicated it.
+- `mattpocock/skills` (small, sharp: grill-me, handoff, triage, tdd, code-review, ...), synced from upstream.
+- Third-party single skills synced from upstream: asd-ste100, apple-design, stop-slop, reverse-engineer-anything.
+- Own skills, tracked here: docling-pdf, pdf-typst-diff, plus 7 frozen mattpocock skills dropped upstream.
+- Plugins on everywhere: superpowers, document-skills, astral, clangd-lsp.
+- Rules: `dot_claude/rules/` (core, python, typescript). Short, with reasons, ~70 lines.
+
+**Plugins only for some projects.** Domain plugins (travel-hacker, claude-seo, expo, sentry,
+resend, ui-ux-pro-max) are installed but disabled at user level. Turn one on inside a project:
+```bash
+cd ~/code/my-expo-app
+claude plugin enable expo@claude-plugins-official --scope project   # shared: .claude/settings.json (commit it)
+claude plugin enable travel-hacker@borski --scope local             # just you: .claude/settings.local.json
+```
+`claude plugin list` shows what's on where. Restart Claude Code after changing.
 
 **Working across Mac + remote Linux (herdr):**
 - Run herdr on each machine. On the remote one: `ssh <host> -t herdr` — the herdr server keeps
@@ -105,7 +122,7 @@ After changing settings with `/config` or installing a plugin (on the Mac): `cla
 ```
 .chezmoi.toml.tmpl          prompts (name, email), download mirrors, feature flags, KeePassXC (Mac)
 .chezmoiignore              what each OS / flag skips (patterns match TARGET paths)
-.chezmoiexternal.toml.tmpl  downloads: oh-my-zsh + plugins, claude binary, nerd font (Linux), stop-slop
+.chezmoiexternal.toml.tmpl  downloads: oh-my-zsh + plugins, claude binary, nerd font (Linux)
 .chezmoiremove              stale targets deleted after renames
 .chezmoiscripts/            run scripts, in NN order (table below)
 
