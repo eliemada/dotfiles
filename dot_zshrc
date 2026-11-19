@@ -97,7 +97,7 @@ add_plugin pip
 plugins+=(zsh-syntax-highlighting)
 
 # Enable Oh My Zsh after selecting all the plugins
-source $ZSH/oh-my-zsh.sh
+[ -r "$ZSH/oh-my-zsh.sh" ] && source "$ZSH/oh-my-zsh.sh"   # missing until first `chezmoi apply`
 
 
 ################################################################################

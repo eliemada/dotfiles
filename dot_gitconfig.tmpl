@@ -6,6 +6,9 @@
 	name = {{ .name | quote }}
 	email = {{ .email | quote }}
 
+{{- if eq .chezmoi.os "darwin" }}
+# Personal identities per remote (Mac only). On work machines (QRT) user.email
+# above is the work address entered at `chezmoi init`.
 [includeIf "hasconfig:remote.*.url:https://github.com/**"]
 	path = ~/.gitconfig-github
 
@@ -20,6 +23,7 @@
 
 [includeIf "hasconfig:remote.*.url:git@github-madauto:*/**"]
 	path = ~/.gitconfig-madauto
+{{- end }}
 
 [core]
 	editor = "nano"

@@ -40,8 +40,6 @@ brew "yq"                                   # YAML processor
 brew "glow"                                 # Terminal markdown viewer
 brew "lazygit"                              # Terminal UI for git
 brew "lazydocker"                           # Terminal UI for docker
-brew "yt-dlp"                               # YouTube video downloader
-brew "ffmpeg"                               # Audio and video processing
 brew "parallel"                             # Run jobs in parallel
 brew "pre-commit"                           # Pre-commit hook framework
 brew "git-lfs"                              # Git extension for versioning large files
@@ -51,8 +49,6 @@ brew "git-lfs"                              # Git extension for versioning large
 ################################################################################
 
 brew "htop"                                 # Interactive system-monitor
-brew "neofetch"                             # System information tool
-brew "fswatch"                              # File change monitor
 brew "gnupg"                                # GNU privacy guard
 
 ################################################################################
@@ -77,13 +73,11 @@ brew "nano"                                 # Nano text editor
 
 brew "wget"                                 # Web content downloader
 brew "rsync"                                # File transfer and sync tool
-brew "unison"                               # Unison file synchronizer
 
 ################################################################################
 # DEVELOPMENT TOOLS
 ################################################################################
 
-brew "npm"                                  # Node package manager
 brew "uv"                                   # UV - A python manager
 
 ################################################################################
@@ -98,3 +92,15 @@ brew "rtk"                                  # Rust Token Killer - CLI proxy that
 
 brew "colordiff"                            # Colour-highlighted diff output
 brew "typst"                                # Typst - a modern typesetting systemlt
+
+################################################################################
+# PARITY WITH THE MAC SETUP
+################################################################################
+brew "node"                                 # npm/npx (skills + GSD installers)
+brew "git-delta"                            # diff pager (chezmoi, git)
+brew "gh"                                   # GitHub CLI
+brew "mise"                                 # runtime version manager
+brew "chezmoi"
+brew "age"
+brew "herdr"                                # agent multiplexer (same config as Mac)
+

@@ -18,14 +18,19 @@ README.md
 ################################################################################
 {{- if ne .chezmoi.os "darwin" }}
 .Brewfile
+# Personal identities & projects (work Linux gets tools only)
 .gitconfig-github
+.gitconfig-gitlab
+.gitconfig-madauto
+.config/git/madauto-coauthor.sh
+.shrc.d/61-claude-abl.sh
+.shrc.d/65-tactics-r2.sh
 .chezmoiscripts/50-macos-defaults.sh
 .chezmoiscripts/55-macos-dock.sh
 # Ghostty config lives under ~/Library on macOS only
 Library
 # KeePassXC-backed (personal Mac only)
 .chezmoiscripts/10-ssh-key-restore.sh
-.ssh/config
 {{- end }}
 
 ################################################################################
@@ -58,14 +63,6 @@ Documents
 {{- end }}
 
 ################################################################################
-# Encrypted files need the age key (~/.config/chezmoi/key.txt).
-# Machines without it simply skip them instead of failing `chezmoi apply`.
-################################################################################
-{{- if not (stat (joinPath .chezmoi.homeDir ".config/chezmoi/key.txt")) }}
-.ssh/config.d
-{{- end }}
-
-################################################################################
 # Feature flags (set at `chezmoi init`, stored in ~/.config/chezmoi/chezmoi.toml)
 ################################################################################
 {{- $epfl_vpn := eq .chezmoi.os "darwin" -}}
@@ -86,4 +83,12 @@ Documents
 {{- if not $work_mcps }}
 .claude/mcp-servers/atlassian.json
 .claude/mcp-servers/slack.json
+{{- end }}
+
+# Schedulers: launchd on macOS, systemd on Linux
+{{- if ne .chezmoi.os "darwin" }}
+Library/LaunchAgents
+{{- end }}
+{{- if ne .chezmoi.os "linux" }}
+.config/systemd
 {{- end }}

@@ -1,5 +1,11 @@
 ################################################################################
 # ~/.bash_profile
-# Minimal profile that sources ~/.bashrc
+# Login bash: hand over to zsh when it exists but couldn't be set as login shell
+# (common on LDAP/AD-managed Linux workstations). Otherwise source ~/.bashrc.
 ################################################################################
+if [ -z "${ZSH_VERSION:-}" ] && [ -z "${NO_ZSH:-}" ] && [ -z "${BASH_EXECUTION_STRING:-}" ] && [[ $- == *i* ]] \
+   && [[ "${SHELL:-}" != */zsh ]] && command -v zsh >/dev/null 2>&1; then
+  export SHELL="$(command -v zsh)"
+  exec zsh -l
+fi
 source ~/.bashrc

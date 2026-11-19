@@ -1,10 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ################################################################################
-# run_once_install_cli_tools.sh
-# Install AI CLI tools globally (run once by chezmoi)
+# Global AI CLIs via npm (run once). Claude Code itself is NOT installed here:
+# chezmoi downloads the official binary (.chezmoiexternal.toml.tmpl).
 ################################################################################
+set -uo pipefail
+. "$HOME/.shrc.d/01-homebrew.sh.pre" 2>/dev/null || true   # fresh Linux: brew not on PATH yet
 
-# Install AI CLI tools globally
-npm install -g @anthropic-ai/claude-code
-npm install -g @openai/codex
-npm install -g @google-ai/generativelanguage
+if ! command -v npm >/dev/null 2>&1; then
+  echo "install-cli-tools: npm not found (brew \"node\" missing?); skipping"; exit 0
+fi
+npm install -g @openai/codex @google/gemini-cli || echo "install-cli-tools: npm install failed"

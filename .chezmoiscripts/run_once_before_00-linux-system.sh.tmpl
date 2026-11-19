@@ -1,0 +1,32 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+################################################################################
+# Linux bootstrap (runs once, before files are applied):
+# system packages Homebrew and oh-my-zsh need, then zsh as login shell.
+# Everything else (modern CLI tools) comes from ~/.Brewfile.linux.
+################################################################################
+set -euo pipefail
+
+SUDO=""
+if [ "$(id -u)" -ne 0 ]; then
+  if command -v sudo >/dev/null 2>&1; then SUDO="sudo"; else
+    echo "linux-system: no sudo; skipping system packages (install zsh, git, curl, build tools yourself)"; exit 0
+  fi
+fi
+
+if command -v apt-get >/dev/null 2>&1; then
+  $SUDO apt-get update -y
+  $SUDO apt-get install -y build-essential procps curl file git zsh unzip fontconfig ca-certificates
+elif command -v dnf >/dev/null 2>&1; then
+  $SUDO dnf install -y @development-tools procps-ng curl file git zsh unzip fontconfig
+else
+  echo "linux-system: unknown package manager; install zsh git curl gcc make yourself"
+fi
+
+# zsh as login shell. On LDAP/AD-managed accounts chsh can fail: then bash
+# hands over to zsh from ~/.bash_profile instead (see dot_bash_profile).
+ZSH_BIN="$(command -v zsh || true)"
+if [ -n "$ZSH_BIN" ] && [ "${SHELL:-}" != "$ZSH_BIN" ]; then
+  $SUDO chsh -s "$ZSH_BIN" "$(id -un)" || echo "linux-system: chsh failed; ~/.bash_profile will exec zsh"
+fi
+{{ end -}}

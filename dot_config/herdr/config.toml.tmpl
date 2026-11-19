@@ -14,10 +14,12 @@ auto_switch = false
 new_cwd = "follow"
 kitty_graphics = true
 
+{{- if eq .chezmoi.os "darwin" }}
 [worktrees]
-# Inside nii-thesis (code/ is gitignored there) so PyCharm, ruff and ty see them.
-# Layout: code/.worktrees/<repo>/<branch-slug>
+# Mac: inside nii-thesis (code/ is gitignored there) so PyCharm, ruff and ty see them.
+# Layout: code/.worktrees/<repo>/<branch-slug>. Other machines use herdr's default.
 directory = "~/Desktop/code/nii-thesis/code/.worktrees"
+{{- end }}
 
 [keys]
 # Prefix-only bindings. Direct shortcuts live in Ghostty as cmd+… → "ctrl+b <key>"
