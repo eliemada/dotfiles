@@ -1,0 +1,36 @@
+dot_local/bin/executable_skill-sync
+  s_624b6ffad80628::t_d25db89350977d 1-141
+  s_624b6ffad80628::t_b78456d8e6a9d5 142-149
+.chezmoi.toml.tmpl
+  s_624b6ffad80628::t_e5c0453a5e454c 68-69,76,80-81
+README.md
+  s_624b6ffad80628::t_d90195d830f702 61-62,87,89,95-100,102,105-120,158
+dot_Brewfile
+  s_624b6ffad80628::t_c15c3a5ff46e9e 168
+dot_Brewfile.linux
+  s_624b6ffad80628::t_d6f6ef538f2b2e 106
+dot_claude/settings.json.tmpl
+  s_624b6ffad80628::t_b832282ec820f3 86-89,100-101,121-126
+dot_config/claude-update/skills.txt
+  s_624b6ffad80628::t_33cfacdd638e31 3-5,18-23
+dot_local/bin/executable_claude-update
+  s_624b6ffad80628::t_d1039b9763487b 56-57,59,72-104,107,113,115,117
+dot_shrc.d/02-mirrors.sh.pre.tmpl
+  s_624b6ffad80628::t_339755b1c35a77 8-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "941aa79229aed0a2c0ee253cc839227e96c9248e",
+  "prompts": {},
+  "sessions": {
+    "s_624b6ffad80628": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1e743a-ac0c-414d-bd43-3d55a7340906",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    }
+  }
+}
