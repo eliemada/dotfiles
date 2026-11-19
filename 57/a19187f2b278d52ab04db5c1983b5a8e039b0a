@@ -1,0 +1,32 @@
+dot_local/bin/executable_claude-settings-capture
+  s_624b6ffad80628::t_be7bac2421623b 1-9
+dot_local/bin/executable_claude-update
+  s_624b6ffad80628::t_0fcc24add3d929 1-117
+  s_624b6ffad80628::t_6d2a5da6468572 118-123
+.chezmoiscripts/run_onchange_after_70-claude-update-schedule.sh.tmpl
+  s_624b6ffad80628::t_d0d73519774d69 1-29
+dot_config/claude-update/skills.txt
+  s_624b6ffad80628::t_bf6e841e13400f 1-5
+dot_config/systemd/user/claude-update.service
+  s_624b6ffad80628::t_b32d8a1f0ccf29 1-9
+dot_config/systemd/user/claude-update.timer
+  s_624b6ffad80628::t_13beb2bd41a57d 1-11
+private_Library/LaunchAgents/dev.dotfiles.claude-update.plist.tmpl
+  s_624b6ffad80628::t_f6fc524de0018b 1-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "57a19187f2b278d52ab04db5c1983b5a8e039b0a",
+  "prompts": {},
+  "sessions": {
+    "s_624b6ffad80628": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1e743a-ac0c-414d-bd43-3d55a7340906",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    }
+  }
+}
