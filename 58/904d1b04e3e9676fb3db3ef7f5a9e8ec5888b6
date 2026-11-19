@@ -1,0 +1,51 @@
+.chezmoiignore
+  s_68117d74d6a09a::t_5ef1962eedf6c8 21,23-27,87-94
+.chezmoiscripts/run_once_20-install-cli-tools.sh
+  s_624b6ffad80628::t_3aa2db5df46e80 1,3-4,6-7,9-12
+.chezmoiscripts/run_once_before_00-linux-system.sh.tmpl
+  s_624b6ffad80628::t_986befb76090bb 1-32
+dot_Brewfile.linux
+  s_624b6ffad80628::t_2b7a7e940cb2f7 94-106
+dot_bash_profile
+  s_624b6ffad80628::t_aa87c892ba46fd 3-4,6-10
+dot_config/herdr/config.toml.tmpl
+  s_b7103dde4399dd::t_e54df6cedf87b3 17,19-20,22
+dot_gitconfig.tmpl
+  s_624b6ffad80628::t_51bc3f5fe3c6a7 9-11,26
+dot_shrc.d/01-homebrew.sh.pre
+  s_624b6ffad80628::t_236ff337a3e17e 1-12
+dot_zshrc
+  s_624b6ffad80628::t_b087e70860d858 100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "58904d1b04e3e9676fb3db3ef7f5a9e8ec5888b6",
+  "prompts": {},
+  "sessions": {
+    "s_624b6ffad80628": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1e743a-ac0c-414d-bd43-3d55a7340906",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    },
+    "s_68117d74d6a09a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "624ef3d7-749c-4a86-b2b1-d20235782640",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    },
+    "s_b7103dde4399dd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ae10355c-29c9-457a-bb00-7ea7b3b36349",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    }
+  }
+}
