@@ -1,6 +1,8 @@
 # Skill packages: claude-update downloads <owner/repo> as an archive (from GitHub or
 # the mirror in chezmoi data) and copies the listed skill folders, daily.
-# Format: <github-owner/repo> <skill> <skill> ...   (edit, then `chezmoi apply`)
+# Format: <owner/repo> [--folders] <skill>[=<local-name>] ...   (edit, then `chezmoi apply`)
+#   --folders  fetch only the listed skill folders (for huge repos)
+#   =name      install under a clearer local name
 #
 # mattpocock/skills (MIT). Skills it dropped upstream (caveman, edit-article,
 # obsidian-vault, qa, request-refactor-plan, write-a-skill, zoom-out) are frozen
@@ -13,3 +15,9 @@ dickwu/apple-design-skill apple-design
 hardikpandya/stop-slop stop-slop
 # REA: the skill lives inside the tool's repo
 morluto/rea reverse-engineer-anything
+
+# Added 2026-11-19
+trailofbits/skills --folders property-based-testing          # Hypothesis / invariant tests (CC-BY-SA-4.0)
+K-Dense-AI/scientific-agent-skills --folders polars statistical-analysis   # repo is ~245 MB as an archive
+duckdb/duckdb-skills read-file=duckdb-read-file query=duckdb-query duckdb-docs   # duckdb CLI comes from the Brewfiles
+marimo-team/skills marimo-notebook jupyter-to-marimo

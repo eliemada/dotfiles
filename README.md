@@ -58,7 +58,8 @@ public defaults on the Mac). Change a value, then `chezmoi apply`.
 
 | Key | Used for | Public default |
 |---|---|---|
-| `github` | oh-my-zsh + plugins, skill packages, Claude binary, nerd font, Homebrew itself, this repo (`dotfiles-pull`) | `https://github.com` |
+| `github` | oh-my-zsh + plugins, skill-package archives, Claude binary, nerd font, Homebrew itself, this repo (`dotfiles-pull`) | `https://github.com` |
+| `github_api` / `github_raw` | file listing + downloads for `--folders` skills | api.github.com / raw.githubusercontent.com |
 | `npm` | `npm_config_registry`: codex | public npm |
 | `pypi` | `UV_INDEX_URL` / `PIP_INDEX_URL` | public PyPI |
 | `brew_api` | `HOMEBREW_API_DOMAIN` (formula metadata) | formulae.brew.sh |
@@ -83,22 +84,39 @@ Each machine logs in to Claude Code itself.
 
 **Daily updater** — `~/.local/bin/claude-update` (log: `~/.local/state/claude-update.log`):
 1. Claude Code binary (chezmoi external, from GitHub releases)
-2. skill packages in `~/.config/claude-update/skills.txt`: downloaded as archives (via the mirror), copied in
+2. skill packages in `~/.config/claude-update/skills.txt` via `skill-sync` (archive or only the needed folders, via the mirror)
 3. own skills that are git clones (`git pull --ff-only`)
-4. plugin marketplaces + every installed plugin (skipped behind a mirror)
+4. plugins: install any listed in settings.json but missing, then update marketplaces + all plugins (skipped behind a mirror)
 
 Run it by hand anytime: `claude-update --verbose`. Restart Claude Code afterwards.
 Add a skill package: append a line to `dot_config/claude-update/skills.txt`.
 After changing settings with `/config` or installing a plugin (on the Mac): `claude-settings-capture`, then commit and push.
 
-**What's installed (about 40 skills, down from about 480):**
-- Workflow: **superpowers** (plugin): brainstorm, plan, TDD, debug, review. It's the only workflow system;
-  GSD and everything-claude-code were removed because they duplicated it.
-- `mattpocock/skills` (small, sharp: grill-me, handoff, triage, tdd, code-review, ...), synced from upstream.
-- Third-party single skills synced from upstream: asd-ste100, apple-design, stop-slop, reverse-engineer-anything.
+**What's installed (about 47 skills, down from about 480):**
+- Workflow: **superpowers** (plugin): brainstorm, plan, TDD, debug, review. It's the only workflow system.
+- `mattpocock/skills` (grill-me, handoff, triage, tdd, code-review, ...).
+- Data/quant: polars, statistical-analysis (K-Dense), property-based-testing (Trail of Bits),
+  duckdb-read-file / duckdb-query / duckdb-docs (DuckDB), marimo-notebook, jupyter-to-marimo.
+- Single skills: asd-ste100, apple-design, stop-slop, reverse-engineer-anything.
 - Own skills, tracked here: docling-pdf, pdf-typst-diff, plus 7 frozen mattpocock skills dropped upstream.
-- Plugins on everywhere: superpowers, document-skills, astral, clangd-lsp.
+- Plugins on everywhere: superpowers, document-skills, astral, clangd-lsp, **claude-hud** (status line).
 - Rules: `dot_claude/rules/` (core, python, typescript). Short, with reasons, ~70 lines.
+
+**How it all stays in sync (Mac → QRT):**
+
+| What | Defined in (this repo) | Applied by |
+|---|---|---|
+| Skill packages | `dot_config/claude-update/skills.txt` | `skill-sync` (daily via claude-update): archive or `--folders`, through the mirror |
+| Own / frozen skills | `dot_claude/skills/` | chezmoi (`dotfiles-pull` on QRT) |
+| Plugins + marketplaces | `enabledPlugins` / `extraKnownMarketplaces` in `settings.json.tmpl` | claude-update installs missing ones, then updates all |
+| claude-hud status line | `statusLine` in settings (portable `node` + fixed launcher) | claude-update refreshes the launcher after plugin updates |
+| Rules, CLAUDE.md, hooks | `dot_claude/` | chezmoi |
+
+Add a skill: append `<owner/repo> [--folders] <skill>[=<local-name>]` to `skills.txt` on the Mac,
+commit and push, then `claude-update` (or wait for the daily run). Use `--folders` for huge repos
+(only that folder is downloaded) and `=name` when the upstream name is too generic.
+Add a plugin: `claude plugin install …` on the Mac, then `claude-settings-capture`, commit and push.
+Behind a download-only mirror, plugins can't install or update (marketplaces are git repos), but skills can.
 
 **Plugins only for some projects.** Domain plugins (travel-hacker, claude-seo, expo, sentry,
 resend, ui-ux-pro-max) are installed but disabled at user level. Turn one on inside a project:
@@ -137,7 +155,7 @@ dot_shrc.d/                 ALL shared shell config, filename order, bash AND zs
 dot_config/                 herdr (template), zed, atuin, gh, git, starship, eza, fzf, carapace,
                             claude-update/skills.txt, systemd/user (Linux)
 private_Library/            Ghostty config, LaunchAgents (Mac)
-dot_local/bin/              hwt, claude-update, claude-settings-capture, dotfiles-pull
+dot_local/bin/              hwt, claude-update, skill-sync, claude-settings-capture, dotfiles-pull
 dot_claude/                 CLAUDE.md, RTK.md, settings.json.tmpl, rules/, hooks/, skills/, mcp-servers/
 private_dot_ssh/config.tmpl defaults + Include ~/.ssh/config.d/*; personal git keys on Mac only
 dot_gitconfig.tmpl          aliases/defaults everywhere; personal per-remote identities on Mac only

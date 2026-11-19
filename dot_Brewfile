@@ -165,6 +165,7 @@ brew "zbar"
 ################################################################################
 # DATABASES
 ################################################################################
+brew "duckdb"                               # SQL on Parquet/CSV (duckdb skills)
 
 brew "mariadb"                              # MariaDB RDBMS
 brew "postgresql@14"

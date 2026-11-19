@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+"""skill-sync: install/update Claude Code skills listed in skills.txt.
+
+Each non-comment line of ~/.config/claude-update/skills.txt is:
+
+    <owner/repo> [--folders] <skill>[=<local-name>] ...
+
+  default     download the whole repo archive  <github>/<repo>/archive/HEAD.tar.gz
+  --folders   fetch only the skill folders: one file listing from the GitHub API, then
+              each file from raw. Use for big repos (archive of hundreds of MB).
+  =name       install under another name (rewrites `name:` in SKILL.md), for upstream
+              names that are too generic, e.g. query=duckdb-query.
+
+A skill is found by folder name (`*/<skill>/SKILL.md`), or for single-skill repos by
+the `name:` field of a top-level SKILL.md. Every run replaces the installed copy, so
+it both installs and updates. Stdlib only; all URLs come from env so a mirror
+(Artifactory) can stand in for GitHub:
+
+  DOTFILES_GITHUB_BASE  https://github.com
+  DOTFILES_GITHUB_API   https://api.github.com
+  DOTFILES_GITHUB_RAW   https://raw.githubusercontent.com
+"""
+from __future__ import annotations
+
+import io
+import json
+import os
+import re
+import shutil
+import sys
+import tarfile
+import tempfile
+import urllib.request
+from pathlib import Path, PurePosixPath
+
+HOME = Path.home()
+LIST = Path(os.environ.get("SKILLS_LIST", HOME / ".config/claude-update/skills.txt"))
+DEST = Path(os.environ.get("SKILLS_DIR", HOME / ".claude/skills"))
+BASE = os.environ.get("DOTFILES_GITHUB_BASE", "https://github.com").rstrip("/")
+API = os.environ.get("DOTFILES_GITHUB_API", "https://api.github.com").rstrip("/")
+RAW = os.environ.get("DOTFILES_GITHUB_RAW", "https://raw.githubusercontent.com").rstrip("/")
+SKIP_PARTS = {".git", ".github", "__pycache__", ".venv", "node_modules",
+              ".claude-plugin", ".cursor-plugin", ".cursorrules"}  # plugin manifests: keep it a plain skill
+
+
+def fetch(url: str) -> bytes:
+    req = urllib.request.Request(url, headers={"User-Agent": "skill-sync"})
+    with urllib.request.urlopen(req, timeout=120) as r:
+        return r.read()
+
+
+def parse(spec: str) -> tuple[str, str]:
+    name, _, alias = spec.partition("=")
+    return name, alias or name
+
+
+def install(src_dir: Path, name: str, alias: str) -> None:
+    target = DEST / alias
+    if target.is_symlink() or target.is_file():
+        target.unlink()
+    elif target.exists():
+        shutil.rmtree(target)
+    shutil.copytree(src_dir, target, ignore=shutil.ignore_patterns(*SKIP_PARTS))
+    if alias != name:
+        md = target / "SKILL.md"
+        text = md.read_text()
+        md.write_text(re.sub(r"(?m)^name:.*$", f"name: {alias}", text, count=1))
+
+
+def find_in_tree(root: Path, name: str) -> Path | None:
+    for md in root.rglob("SKILL.md"):
+        if md.parent.name == name and not SKIP_PARTS & set(md.parts):
+            return md.parent
+    for md in root.glob("*/SKILL.md"):  # single-skill repo: SKILL.md at the top
+        if re.search(rf"(?m)^name:\s*{re.escape(name)}\s*$", md.read_text(errors="ignore")):
+            return md.parent
+    return None
+
+
+def sync_archive(repo: str, specs: list[str]) -> int:
+    data = fetch(f"{BASE}/{repo}/archive/HEAD.tar.gz")
+    failures = 0
+    with tempfile.TemporaryDirectory() as tmp:
+        with tarfile.open(fileobj=io.BytesIO(data)) as tar:
+            try:
+                tar.extractall(tmp, filter="data")  # Python >= 3.12 (and patched 3.8+)
+            except TypeError:  # older Python: refuse unsafe paths ourselves
+                bad = [m.name for m in tar.getmembers()
+                       if m.name.startswith("/") or ".." in PurePosixPath(m.name).parts]
+                if bad:
+                    raise RuntimeError(f"unsafe paths in archive: {bad[:3]}")
+                tar.extractall(tmp)
+        for spec in specs:
+            name, alias = parse(spec)
+            found = find_in_tree(Path(tmp), name)
+            if found is None:
+                print(f"  {repo}: skill {name} not found"); failures += 1; continue
+            install(found, name, alias)
+    return failures
+
+
+def sync_folders(repo: str, specs: list[str]) -> int:
+    tree = json.loads(fetch(f"{API}/repos/{repo}/git/trees/HEAD?recursive=1"))
+    blobs = [t["path"] for t in tree["tree"] if t["type"] == "blob"]
+    failures = 0
+    for spec in specs:
+        name, alias = parse(spec)
+        roots = [str(PurePosixPath(p).parent) for p in blobs
+                 if PurePosixPath(p).name == "SKILL.md" and PurePosixPath(p).parent.name == name]
+        if not roots:
+            print(f"  {repo}: skill {name} not found"); failures += 1; continue
+        root = roots[0]
+        with tempfile.TemporaryDirectory() as tmp:
+            for path in blobs:
+                if not path.startswith(root + "/"):
+                    continue
+                rel = PurePosixPath(path).relative_to(root)
+                if SKIP_PARTS & set(rel.parts):
+                    continue
+                out = Path(tmp, name, *rel.parts)
+                out.parent.mkdir(parents=True, exist_ok=True)
+                out.write_bytes(fetch(f"{RAW}/{repo}/HEAD/{path}"))
+            install(Path(tmp, name), name, alias)
+    return failures
+
+
+def main() -> int:
+    if not LIST.exists():
+        print(f"no {LIST}"); return 0
+    DEST.mkdir(parents=True, exist_ok=True)
+    failures = 0
+    for line in LIST.read_text().splitlines():
+        words = line.split("#", 1)[0].split()
+        if not words:
+            continue
+        repo, rest = words[0], words[1:]
+        folders = "--folders" in rest
+        specs = [w for w in rest if w != "--folders"]
+        try:
+            n = (sync_folders if folders else sync_archive)(repo, specs)
+        except Exception as exc:  # network/mirror errors: report, keep going
+            print(f"  {repo}: failed ({exc})"); failures += len(specs); continue
+        failures += n
+        print(f"{repo}: {len(specs) - n}/{len(specs)} skills synced{' (folders)' if folders else ''}")
+    return 1 if failures else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

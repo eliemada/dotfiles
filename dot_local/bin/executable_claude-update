@@ -53,33 +53,10 @@ update_externals() {
   chezmoi apply --force --refresh-externals=always "$HOME/.local/bin/claude"
 }
 
-# Skill packages: download each repo as an archive from $DOTFILES_GITHUB_BASE
-# (GitHub or an Artifactory mirror) and copy the listed skill folders. Works
-# without git or GitHub access; re-copies every run, so it also updates.
+# Skill packages listed in ~/.config/claude-update/skills.txt (see skill-sync --help
+# in its docstring): whole-repo archive or only the needed folders, via the mirror.
 update_skill_packages() {
-  [[ -r "$SKILLS_LIST" ]] || { echo "no $SKILLS_LIST"; return 0; }
-  local base="${DOTFILES_GITHUB_BASE:-https://github.com}" src rest name dir tmp rc=0
-  while read -r src rest; do
-    [[ -z "$src" || "$src" == \#* ]] && continue
-    tmp=$(mktemp -d)
-    if ! curl -fsSL "$base/$src/archive/HEAD.tar.gz" | tar xz -C "$tmp"; then
-      echo "$src: download failed ($base)"; rm -rf "$tmp"; rc=1; continue
-    fi
-    for name in $rest; do
-      dir=$(find "$tmp" -type f -name SKILL.md -path "*/$name/SKILL.md" | head -1)
-      # Single-skill repos keep SKILL.md at the top: match on its `name:` field
-      if [[ -z "$dir" ]]; then
-        dir=$(find "$tmp" -mindepth 2 -maxdepth 2 -name SKILL.md -exec grep -l -m1 "^name: *$name *$" {} + | head -1)
-      fi
-      if [[ -z "$dir" ]]; then echo "$src: skill $name not found"; rc=1; continue; fi
-      dir=$(dirname "$dir")
-      rm -rf "${SKILLS_DIR:?}/$name" && cp -R "$dir" "$SKILLS_DIR/$name"
-      rm -rf "$SKILLS_DIR/$name/.git" "$SKILLS_DIR/$name/.github"
-    done
-    echo "$src: $(wc -w <<<"$rest" | tr -d ' ') skills synced"
-    rm -rf "$tmp"
-  done <"$SKILLS_LIST"
-  return $rc
+  python3 "$HOME/.local/bin/skill-sync"
 }
 
 update_git_skills() {
@@ -92,16 +69,52 @@ update_git_skills() {
   done
 }
 
+# Plugins are synced through settings.json (chezmoi): enabledPlugins + extraKnownMarketplaces.
+# On a machine that lacks one, add its marketplace and install it. Plugins set to false
+# (enabled per project only) are installed too, so `enable --scope project` just works.
+ensure_plugins() {
+  local want have line rc=0
+  have=$(claude plugin list --json 2>/dev/null | python3 -c 'import json,sys; print("\n".join(p["id"] for p in json.load(sys.stdin)))')
+  while IFS=$'\t' read -r kind a b; do
+    case $kind in
+      market) claude plugin marketplace list 2>/dev/null | grep -q "❯ $a\b" \
+                || { echo "adding marketplace $a ($b)"; claude plugin marketplace add "$b" || rc=1; } ;;
+      plugin) grep -qx "$a" <<<"$have" \
+                || { echo "installing plugin $a"; claude plugin install "$a" </dev/null || rc=1; } ;;
+    esac
+  done < <(python3 - "$SETTINGS" <<'PY'
+import json, sys
+s = json.load(open(sys.argv[1]))
+for name, m in s.get("extraKnownMarketplaces", {}).items():
+    src = m.get("source", {})
+    if src.get("source") == "github":
+        print(f"market\t{name}\t{src['repo']}")
+for pid in s.get("enabledPlugins", {}):
+    print(f"plugin\t{pid}\t")
+PY
+)
+  # claude-hud: statusLine runs a fixed-path launcher; refresh it from the installed plugin
+  local hud
+  hud=$(ls -d "$HOME"/.claude/plugins/cache/claude-hud/claude-hud/*/scripts/statusline.mjs 2>/dev/null | sort -V | tail -1)
+  if [[ -n "$hud" ]]; then
+    mkdir -p "$HOME/.claude/plugins/claude-hud" && cp "$hud" "$HOME/.claude/plugins/claude-hud/statusline.mjs"
+  fi
+  return $rc
+}
+
 update_plugins() {
   has claude || { echo "claude missing"; return 1; }
+  local rc=0
   # Marketplaces are git repos on GitHub; behind a download-only mirror they
   # can't be refreshed, so don't report a daily failure for it.
   if [[ "${DOTFILES_GITHUB_BASE:-https://github.com}" != "https://github.com" ]]; then
     echo "mirror mode: plugin updates skipped (marketplaces need GitHub git access)"; return 0
   fi
+  ensure_plugins || rc=1
   claude plugin marketplace update || return 1
-  local id rc=0
+  local id
   for id in $(claude plugin list --json 2>/dev/null | python3 -c 'import json,sys; print("\n".join(p["id"] for p in json.load(sys.stdin)))'); do
+    [[ "$id" == *@skills-dir ]] && continue   # loaded from ~/.claude/skills, updated by skill-sync
     claude plugin update "$id" </dev/null || { echo "plugin $id: update failed"; rc=1; }
   done
   return $rc

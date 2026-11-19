@@ -5,6 +5,8 @@
 ################################################################################
 # shellcheck shell=bash
 export DOTFILES_GITHUB_BASE={{ .mirror.github | quote }}
+export DOTFILES_GITHUB_API={{ .mirror.github_api | default "https://api.github.com" | quote }}
+export DOTFILES_GITHUB_RAW={{ .mirror.github_raw | default "https://raw.githubusercontent.com" | quote }}
 {{- if .mirror.npm }}
 export npm_config_registry={{ .mirror.npm | quote }}
 {{- end }}

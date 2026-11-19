@@ -83,6 +83,10 @@
     ]
   },
   "enableArtifact": false,
+  "statusLine": {
+    "type": "command",
+    "command": "node \"$HOME/.claude/plugins/claude-hud/statusline.mjs\""
+  },
   "enabledPlugins": {
     "astral@astral-sh": true,
     "clangd-lsp@claude-plugins-official": true,
@@ -93,7 +97,8 @@
     "travel-hacker@borski": false,
     "sentry@claude-plugins-official": false,
     "expo@claude-plugins-official": false,
-    "resend@claude-plugins-official": false
+    "resend@claude-plugins-official": false,
+    "claude-hud@claude-hud": true
   },
   "extraKnownMarketplaces": {
     "agricidaniel-seo": {
@@ -112,6 +117,12 @@
       "source": {
         "source": "github",
         "repo": "borski/travel-hacking-toolkit"
+      }
+    },
+    "claude-hud": {
+      "source": {
+        "source": "github",
+        "repo": "jarrodwatts/claude-hud"
       }
     }
   },

@@ -103,4 +103,4 @@ brew "mise"                                 # runtime version manager
 brew "chezmoi"
 brew "age"
 brew "herdr"                                # agent multiplexer (same config as Mac)
-
+brew "duckdb"                               # SQL on Parquet/CSV (duckdb skills)

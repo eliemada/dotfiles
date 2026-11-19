@@ -65,16 +65,20 @@
 # goes through these values; defaults are the public sources. Asked on Linux only.
 # Change later: edit ~/.config/chezmoi/chezmoi.toml, then `chezmoi apply`.
 #   github      base for archives + release downloads   (replaces https://github.com)
+#   github_api  GitHub REST API (file listings for --folders skills)
+#   github_raw  raw file downloads (--folders skills)
 #   npm         npm registry URL          ("" = public npm)
 #   pypi        PyPI simple index URL     ("" = public PyPI)
 #   brew_api    HOMEBREW_API_DOMAIN       ("" = formulae.brew.sh)
 #   brew_bottle HOMEBREW_ARTIFACT_DOMAIN  ("" = ghcr.io / GitHub)
 ################################################################################
 {{- $ask := eq .chezmoi.os "linux" }}
-{{- $m := dict "github" "https://github.com" "npm" "" "pypi" "" "brew_api" "" "brew_bottle" "" }}
+{{- $m := dict "github" "https://github.com" "github_api" "https://api.github.com" "github_raw" "https://raw.githubusercontent.com" "npm" "" "pypi" "" "brew_api" "" "brew_bottle" "" }}
 {{- if hasKey . "mirror" }}{{ $m = merge (deepCopy .mirror) $m }}{{ end }}
 [data.mirror]
     github      = {{ if $ask }}{{ promptStringOnce . "mirror.github" "Mirror for GitHub downloads" $m.github | quote }}{{ else }}{{ $m.github | quote }}{{ end }}
+    github_api  = {{ if $ask }}{{ promptStringOnce . "mirror.github_api" "Mirror for api.github.com" $m.github_api | quote }}{{ else }}{{ $m.github_api | quote }}{{ end }}
+    github_raw  = {{ if $ask }}{{ promptStringOnce . "mirror.github_raw" "Mirror for raw.githubusercontent.com" $m.github_raw | quote }}{{ else }}{{ $m.github_raw | quote }}{{ end }}
     npm         = {{ if $ask }}{{ promptStringOnce . "mirror.npm" "npm registry URL (empty = public)" $m.npm | quote }}{{ else }}{{ $m.npm | quote }}{{ end }}
     pypi        = {{ if $ask }}{{ promptStringOnce . "mirror.pypi" "PyPI index URL (empty = public)" $m.pypi | quote }}{{ else }}{{ $m.pypi | quote }}{{ end }}
     brew_api    = {{ if $ask }}{{ promptStringOnce . "mirror.brew_api" "HOMEBREW_API_DOMAIN (empty = public)" $m.brew_api | quote }}{{ else }}{{ $m.brew_api | quote }}{{ end }}
