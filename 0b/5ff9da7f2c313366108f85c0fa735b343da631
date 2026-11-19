@@ -1,0 +1,21 @@
+private_dot_ssh/config.tmpl
+  s_624b6ffad80628::t_ff47f011aec123 3-5,8-9,12-13,18,20-22,36,40,43,51,63
+.chezmoi.toml.tmpl
+  s_624b6ffad80628::t_c811a82823ff4b 9,16,26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0b5ff9da7f2c313366108f85c0fa735b343da631",
+  "prompts": {},
+  "sessions": {
+    "s_624b6ffad80628": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a1e743a-ac0c-414d-bd43-3d55a7340906",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Elie BRUNO <contact@eliebruno.com>"
+    }
+  }
+}
