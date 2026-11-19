@@ -1,0 +1,9 @@
+# Daily claude-update (skills, plugins, GSD, claude binary). Managed by chezmoi.
+[Unit]
+Description=Update Claude Code, skills and plugins
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/claude-update
+Nice=10

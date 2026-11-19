@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# claude-settings-capture — copy the live ~/.claude/settings.json back into the
+# chezmoi source (as a template, $HOME → {{ .chezmoi.homeDir }}) and show the diff.
+# Claude Code (/config, /model, plugin installs) and GSD rewrite this file.
+set -euo pipefail
+src="$(chezmoi source-path)/dot_claude/settings.json.tmpl"
+sed "s|$HOME|{{ .chezmoi.homeDir }}|g" "$HOME/.claude/settings.json" > "$src"
+git -C "$(chezmoi source-path)" --no-pager diff --stat -- "$src"
+echo "Captured. Commit with: chezmoi cd && git commit -am 'chore(claude): capture settings'"

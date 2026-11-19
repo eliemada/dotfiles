@@ -1,0 +1,29 @@
+{{- if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") -}}
+#!/usr/bin/env bash
+################################################################################
+# (Re)load the daily claude-update schedule whenever its unit files change.
+# launchd plist  {{ include "private_Library/LaunchAgents/dev.dotfiles.claude-update.plist.tmpl" | sha256sum }}
+# systemd units  {{ include "dot_config/systemd/user/claude-update.timer" | sha256sum }} {{ include "dot_config/systemd/user/claude-update.service" | sha256sum }}
+################################################################################
+set -uo pipefail
+{{- if eq .chezmoi.os "darwin" }}
+PLIST="$HOME/Library/LaunchAgents/dev.dotfiles.claude-update.plist"
+launchctl bootout "gui/$(id -u)" "$PLIST" 2>/dev/null || true
+launchctl bootstrap "gui/$(id -u)" "$PLIST" && echo "claude-update: launchd job loaded (daily 10:30)"
+{{- else }}
+if command -v systemctl >/dev/null 2>&1 && systemctl --user show-environment >/dev/null 2>&1; then
+  systemctl --user daemon-reload
+  systemctl --user enable --now claude-update.timer && echo "claude-update: systemd timer enabled (daily 10:30)"
+  # Keep the timer running while logged out (needs polkit/sudo on some distros)
+  loginctl enable-linger "$(id -un)" 2>/dev/null || true
+else
+  # No user systemd (containers, some corp images): fall back to cron
+  line="30 10 * * * $HOME/.local/bin/claude-update"
+  ( crontab -l 2>/dev/null | grep -v 'claude-update'; echo "$line" ) | crontab - \
+    && echo "claude-update: cron entry installed (daily 10:30)"
+fi
+{{- end }}
+
+# First run in the background: installs GSD + skill packages on a fresh machine
+nohup "$HOME/.local/bin/claude-update" >/dev/null 2>&1 &
+{{ end -}}

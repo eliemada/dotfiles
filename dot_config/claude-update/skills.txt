@@ -1,0 +1,5 @@
+# Skill packages installed with `npx skills` (vercel skills CLI).
+# claude-update installs missing ones and updates all of them daily.
+# Format: <github-owner/repo> <skill> <skill> ...   (edit, then `chezmoi apply`)
+
+mattpocock/skills caveman design-an-interface diagnose edit-article git-guardrails-claude-code grill-me grill-with-docs handoff improve-codebase-architecture migrate-to-shoehorn obsidian-vault prototype qa request-refactor-plan review scaffold-exercises setup-matt-pocock-skills setup-pre-commit tdd teach to-issues to-prd triage ubiquitous-language write-a-skill writing-beats writing-fragments writing-shape zoom-out

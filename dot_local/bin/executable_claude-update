@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+################################################################################
+# claude-update — keep Claude Code + skills + plugins current (Mac and Linux).
+#
+# Runs daily from launchd (macOS) / systemd user timer (Linux); safe by hand.
+#   claude-update            update everything, log to ~/.local/state/claude-update.log
+#   claude-update --verbose  same, but also print to the terminal
+#
+# Steps (each one independent; a failure is logged and the rest still run):
+#   1. Claude Code binary + git-external skills (chezmoi externals)
+#   2. Skill packages from ~/.config/claude-update/skills.txt (install missing, update all)
+#   3. Own skills that are git clones in ~/.claude/skills (git pull --ff-only)
+#   4. GSD (get-shit-done) for Claude Code
+#   5. Plugin marketplaces + every installed plugin
+# Changes to ~/.claude/settings.json made by installers are reported, not
+# auto-committed: capture them with `claude-settings-capture`.
+################################################################################
+set -uo pipefail
+
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}"
+LOG="$STATE_DIR/claude-update.log"
+LOCK="$STATE_DIR/claude-update.lock"
+SKILLS_LIST="$HOME/.config/claude-update/skills.txt"
+SKILLS_DIR="$HOME/.claude/skills"
+SETTINGS="$HOME/.claude/settings.json"
+mkdir -p "$STATE_DIR"
+
+# launchd/systemd start with a bare PATH
+. "$HOME/.shrc.d/01-homebrew.sh.pre" 2>/dev/null || true
+export PATH="$HOME/.local/bin:$PATH"
+
+if [[ "${1:-}" == "--verbose" || -t 1 ]]; then
+  exec > >(tee -a "$LOG") 2>&1
+else
+  exec >>"$LOG" 2>&1
+fi
+
+if ! mkdir "$LOCK" 2>/dev/null; then
+  echo "$(date '+%F %T') another claude-update is running; exiting"; exit 0
+fi
+trap 'rmdir "$LOCK"' EXIT
+
+FAILED=()
+step() {
+  local name=$1; shift
+  echo "-- $name"
+  if ! "$@"; then FAILED+=("$name"); echo "!! $name failed"; fi
+}
+has() { command -v "$1" >/dev/null 2>&1; }
+
+update_externals() {
+  has chezmoi || { echo "chezmoi missing"; return 1; }
+  chezmoi apply --force --refresh-externals=always \
+    "$HOME/.local/bin/claude" "$SKILLS_DIR/stop-slop"
+}
+
+update_skill_packages() {
+  has npx || { echo "npx missing (brew install node)"; return 1; }
+  [[ -r "$SKILLS_LIST" ]] || { echo "no $SKILLS_LIST"; return 0; }
+  local src missing name
+  while read -r src rest; do
+    [[ -z "$src" || "$src" == \#* ]] && continue
+    missing=()
+    for name in $rest; do [[ -d "$SKILLS_DIR/$name" ]] || missing+=("$name"); done
+    if ((${#missing[@]})); then
+      echo "installing from $src: ${missing[*]}"
+      npx -y skills add "$src" -g -a claude-code --copy -y -s "${missing[@]}" </dev/null || return 1
+    fi
+  done <"$SKILLS_LIST"
+  npx -y skills update -g -y </dev/null
+}
+
+update_git_skills() {
+  local d
+  for d in "$SKILLS_DIR"/*/.git; do
+    [[ -e "$d" ]] || continue
+    d=${d%/.git}
+    [[ "$(basename "$d")" == stop-slop ]] && continue   # chezmoi external
+    echo "git pull $(basename "$d")"
+    git -C "$d" pull --ff-only -q || return 1
+  done
+}
+
+update_gsd() {
+  has npx || return 1
+  # GSD rewrites hook commands in settings.json to an absolute node path
+  # (/opt/homebrew/bin/node), which breaks on other machines. Keep ours.
+  local keep rc
+  keep=$(mktemp) && cp "$SETTINGS" "$keep" 2>/dev/null
+  npx -y get-shit-done-cc@latest --claude --global </dev/null; rc=$?
+  [[ -s "$keep" ]] && cp "$keep" "$SETTINGS"; rm -f "$keep"
+  return $rc
+}
+
+update_plugins() {
+  has claude || { echo "claude missing"; return 1; }
+  claude plugin marketplace update || return 1
+  local id rc=0
+  for id in $(claude plugin list --json 2>/dev/null | python3 -c 'import json,sys; print("\n".join(p["id"] for p in json.load(sys.stdin)))'); do
+    claude plugin update "$id" </dev/null || { echo "plugin $id: update failed"; rc=1; }
+  done
+  return $rc
+}
+
+echo
+echo "=== $(date '+%F %T') claude-update on $(hostname -s)"
+before=$(cksum "$SETTINGS" 2>/dev/null)
+
+step "claude binary + externals" update_externals
+step "skill packages"            update_skill_packages
+step "git skills"                update_git_skills
+step "GSD"                       update_gsd
+step "plugins"                   update_plugins
+
+if [[ -n "$before" && "$before" != "$(cksum "$SETTINGS" 2>/dev/null)" ]]; then
+  echo "NOTE: ~/.claude/settings.json was changed by an installer."
+  echo "      Run claude-settings-capture to keep it, or chezmoi apply to revert."
+fi
+
+if ((${#FAILED[@]})); then
+  echo "=== done with failures: ${FAILED[*]}"; exit 1
+fi
+echo "=== done"
